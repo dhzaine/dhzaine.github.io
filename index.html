@@ -1,625 +1,92 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>弹道打砖块 - 动态补充版</title>
-    <style>
-        * {
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+  <meta charset="UTF-8">
+  <!-- 关键：自适应手机/电脑 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我在呢</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
 
-        body {
-            background: linear-gradient(145deg, #0a0f1e 0%, #0c1222 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', 'Poppins', 'Courier New', monospace;
-            margin: 0;
-            padding: 20px;
-        }
+    body {
+      background: #121212;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
 
-        .game-container {
-            background: #03060c;
-            border-radius: 48px;
-            padding: 20px 24px 24px 24px;
-            box-shadow: 0 25px 40px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.08);
-        }
+    /* 标题样式 */
+    .title {
+      font-size: 42px;
+      margin-bottom: 10px;
+      color: #ffcc00;
+    }
 
-        canvas {
-            display: block;
-            margin: 0 auto;
-            border-radius: 28px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            cursor: none;
-            background: #010101;
-        }
+    .subtitle {
+      font-size: 18px;
+      color: #ccc;
+      margin-bottom: 40px;
+    }
 
-        .info-panel {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-top: 20px;
-            gap: 20px;
-            flex-wrap: wrap;
-            color: #eef5ff;
-            text-shadow: 0 2px 2px black;
-            font-weight: bold;
-        }
+    /* 游戏按钮区域（自适应布局） */
+    .game-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 900px;
+    }
 
-        .stats {
-            background: #10141faa;
-            backdrop-filter: blur(4px);
-            padding: 8px 18px;
-            border-radius: 60px;
-            display: flex;
-            gap: 24px;
-            font-size: 1.2rem;
-        }
+    /* 游戏按钮 */
+    .game-btn {
+      background: #222;
+      border: 2px solid #ffcc00;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 18px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
 
-        .level-box {
-            background: #ffd966cc;
-            color: #1f2a3a;
-            padding: 6px 20px;
-            border-radius: 32px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
+    .game-btn:hover {
+      background: #ffcc00;
+      color: #121212;
+      transform: scale(1.05);
+    }
 
-        button {
-            background: #2e3b4e;
-            border: none;
-            font-weight: bold;
-            font-size: 1rem;
-            padding: 6px 18px;
-            border-radius: 40px;
-            color: white;
-            cursor: pointer;
-            transition: 0.1s linear;
-            box-shadow: 0 2px 5px black;
-        }
-        button:hover {
-            background: #4f6f8f;
-            transform: scale(0.97);
-        }
-        .instruction {
-            font-size: 0.75rem;
-            background: #00000066;
-            padding: 6px 14px;
-            border-radius: 30px;
-        }
-        @media (max-width: 860px) {
-            .stats { font-size: 0.9rem; gap: 12px;}
-            .instruction { font-size: 0.65rem;}
-        }
-    </style>
+    /* 手机小屏优化 */
+    @media (max-width: 600px) {
+      .title {
+        font-size: 32px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div>
-    <div class="game-container">
-        <canvas id="gameCanvas" width="1000" height="700"></canvas>
-        <div class="info-panel">
-            <div class="stats">
-                <span>💥 得分: <span id="scoreValue">0</span></span>
-                <span>🎯 本关剩余砖块: <span id="bricksLeft">0</span></span>
-                <span>⭐ 关卡: <span id="levelNum">1</span></span>
-            </div>
-            <div class="level-box">
-                ⏳ 补充倒计时: <span id="refillTimer">--</span> s
-            </div>
-            <button id="resetGameBtn">🔄 新游戏</button>
-        </div>
-        <div class="instruction" style="margin-top: 12px; text-align: center;">
-            🖱️ 鼠标左右移动 → 武器移动 &nbsp;&nbsp;| &nbsp;&nbsp; 🖱️ 点击画面 / 按住任意键 → 发射子弹 (基于武器水平速度形成独特弹道)
-        </div>
-    </div>
-</div>
+  <!-- 标题 -->
+  <h1 class="title">我的个人游戏主页</h1>
+  <p class="subtitle">选择你想玩的游戏</p>
 
-<script>
-    (function(){
-        // ---------- CANVAS 元素 ----------
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-
-        // ---------- 区域划分 (像素坐标) ----------
-        // 整体高度 700，宽度1000
-        const BRICKS_TOP_Y = 40;        // 砖块区域起始Y
-        const BRICKS_BOTTOM_Y = 240;     // 砖块区域结束Y (高度200px)
-        const BULLET_ZONE_TOP = 260;     // 弹道区域起始 (中间区域)
-        const BULLET_ZONE_BOTTOM = 540;  // 弹道区域底部
-        const WEAPON_Y = 620;            // 武器所在Y坐标 (下方区域)
-        const GROUND_Y = 680;            // 底部边界
-
-        // 边界约束
-        const WEAPON_MIN_X = 35;
-        const WEAPON_MAX_X = canvas.width - 35;
-        
-        // ---------- 游戏全局变量 ----------
-        let score = 0;                  // 总分
-        let currentLevel = 1;          // 当前关卡 (影响补充周期)
-        
-        // 砖块数据: 二维数组, 存储每个砖块 { x, y, width, height, active }
-        let bricks = [];
-        const BRICK_ROWS = 3;           // 固定3行砖块 (上方展示区域)
-        const BRICK_COLS = 12;          // 12列 (铺满视觉)
-        let brickWidth = (canvas.width - 60) / BRICK_COLS;   // 左右留白30px, 实际间距微调
-        let brickHeight = 28;
-        let bricksPerRow = BRICK_COLS;
-        
-        // 自动补充参数
-        let refillTimer = 0;            // 当前剩余补充倒计时 (秒)
-        let refillIntervalSeconds = 3.5;  // 根据不同等级动态变化, 等级越高越快刷新
-        let lastTimestamp = 0;
-        
-        // ---------- 武器系统 ----------
-        let weaponX = canvas.width/2;    // 武器中心X
-        let weaponRadius = 18;           // 武器圆形半径 (视觉+碰撞)
-        
-        // ---------- 子弹系统 ----------
-        let bullets = [];               // 每颗子弹: {x, y, vx, vy, active}
-        let canShoot = true;            // 发射冷却限制 (为了手感不连爆)
-        let shootCooldown = 0;          // 帧冷却计数器
-        
-        // 武器速度跟踪 (用于弹道计算)
-        let lastWeaponX = weaponX;
-        let weaponVelocityX = 0;         // 单位: 像素/帧 (用于发射瞬间决定弹道水平速度)
-        
-        // 关卡升级标记 (胜利过渡)
-        let levelUpPending = false;
-        let levelUpAnimation = 0;
-        
-        // 游戏运行标志
-        let gameRunning = true;
-        
-        // ---------- 辅助函数: 初始化/重置砖块 ----------
-        function initBricksForLevel() {
-            bricks = [];
-            const startX = 30;   // 左偏移
-            const actualBrickW = (canvas.width - 60) / BRICK_COLS;
-            brickWidth = actualBrickW;
-            for(let row = 0; row < BRICK_ROWS; row++) {
-                for(let col = 0; col < BRICK_COLS; col++) {
-                    let brickX = startX + col * brickWidth;
-                    let brickY = BRICKS_TOP_Y + row * (brickHeight + 5);
-                    bricks.push({
-                        x: brickX,
-                        y: brickY,
-                        w: brickWidth - 2,    // 微小间隙视觉
-                        h: brickHeight - 2,
-                        active: true,
-                        row: row,
-                        col: col
-                    });
-                }
-            }
-            updateBricksLeftDisplay();
-        }
-        
-        // 移除所有激活砖块 (重置用)
-        function clearAllBricks() {
-            for(let b of bricks) b.active = false;
-            updateBricksLeftDisplay();
-        }
-        
-        // 补充一整行 (从顶部添加一行)
-        function addTopRowOfBricks() {
-            // 新行永远加在最顶端 (y = BRICKS_TOP_Y)
-            // 并且现有砖块整体下移? 不，游戏设计“从顶端补充砖块一整行”，新砖块直接在现有砖块上方插入一行
-            // 为了保持视觉整齐: 新增一行在最上面，原有的砖块y坐标向下移动 brickHeight+间隙
-            const shiftY = brickHeight + 5;
-            for(let brick of bricks) {
-                brick.y += shiftY;
-            }
-            // 移除超出BRICKS_BOTTOM_Y区域的砖块 (超出底部区域的砖块消失, 限制区域)
-            bricks = bricks.filter(brick => brick.y + brick.h < BRICKS_BOTTOM_Y + 20);
-            
-            // 在最顶部增加一整行新砖块
-            const startX = 30;
-            for(let col = 0; col < BRICK_COLS; col++) {
-                let brickX = startX + col * brickWidth;
-                bricks.push({
-                    x: brickX,
-                    y: BRICKS_TOP_Y,
-                    w: brickWidth - 2,
-                    h: brickHeight - 2,
-                    active: true,
-                    row: -1,
-                    col: col
-                });
-            }
-            // 重新整理保证active标记正确
-            updateBricksLeftDisplay();
-        }
-        
-        // 补充逻辑: 重置计时器并且增加一行
-        function performRefill() {
-            if(!gameRunning) return;
-            addTopRowOfBricks();
-            // 重置倒计时 (基于当前关卡周期)
-            resetRefillTimer();
-        }
-        
-        function resetRefillTimer() {
-            // 根据关卡设置补充周期: 关卡1 => 4秒, 2 => 3.5秒, 3 => 3秒, 4+ => 2.5秒 越来越快
-            let baseTime = Math.max(2.2, 4.5 - (currentLevel-1) * 0.45);
-            baseTime = Math.min(baseTime, 5.0);
-            refillIntervalSeconds = baseTime;
-            refillTimer = refillIntervalSeconds;
-        }
-        
-        // 更新UI显示剩余砖块数量
-        function updateBricksLeftDisplay() {
-            let activeCount = bricks.filter(b => b.active).length;
-            document.getElementById('bricksLeft').innerText = activeCount;
-        }
-        
-        // 更新分数与UI
-        function updateScoreUI() {
-            document.getElementById('scoreValue').innerText = score;
-            document.getElementById('levelNum').innerText = currentLevel;
-        }
-        
-        // 升级到下一关
-        function goToNextLevel() {
-            currentLevel++;
-            updateScoreUI();
-            // 清除所有现有子弹
-            bullets = [];
-            // 重置武器位置
-            weaponX = Math.min(WEAPON_MAX_X, Math.max(WEAPON_MIN_X, canvas.width/2));
-            // 重要: 清除所有砖块，然后根据新关卡生成全新砖块阵列
-            bricks = [];
-            initBricksForLevel();    // 生成3行完整砖块
-            // 重置补充周期
-            resetRefillTimer();
-            // 冷却重置
-            canShoot = true;
-            shootCooldown = 0;
-            levelUpPending = false;
-            // 额外更新显示
-            updateBricksLeftDisplay();
-        }
-        
-        // 检查是否只剩最后一块砖 (触发升级)
-        function checkLastBrickAndLevelUp() {
-            const activeBricks = bricks.filter(b => b.active === true);
-            const activeCount = activeBricks.length;
-            if(activeCount === 0 && bricks.length > 0) {
-                // 没砖了 -> 升级
-                if(!levelUpPending) {
-                    levelUpPending = true;
-                    goToNextLevel();
-                }
-            } else if(activeCount === 1 && bricks.length > 0 && !levelUpPending) {
-                // 仅剩最后一块砖时立刻升级! 满足需求: 击中最后一块砖时升级
-                // 但这个函数会在子弹碰撞中调用, 满足最后一块消失时升级, 保险起见在碰撞中处理.
-            }
-        }
-        
-        // 严格在子弹击中砖块时检测最后一块消失
-        function handleBrickCollision(bullet, brickIdx) {
-            const brick = bricks[brickIdx];
-            if(!brick.active) return false;
-            brick.active = false;
-            score += 10;
-            updateScoreUI();
-            updateBricksLeftDisplay();
-            
-            // 子弹击中后消失 (子弹移除)
-            bullet.active = false;
-            
-            // 关键: 检查击中后是否全地图无 active 砖块 (最后一块砖消失) -> 升级
-            const remainingActive = bricks.filter(b => b.active).length;
-            if(remainingActive === 0) {
-                if(!levelUpPending) {
-                    levelUpPending = true;
-                    goToNextLevel();
-                }
-            }
-            return true;
-        }
-        
-        // ---------- 子弹更新 & 物理碰撞 ----------
-        function updateBullets() {
-            for(let i=0; i<bullets.length; i++) {
-                const b = bullets[i];
-                if(!b.active) {
-                    bullets.splice(i,1);
-                    i--;
-                    continue;
-                }
-                // 移动
-                b.x += b.vx;
-                b.y += b.vy;
-                // 边界移除 (超出顶部或超出底部)
-                if(b.y + 6 < 0 || b.y - 6 > canvas.height) {
-                    b.active = false;
-                    bullets.splice(i,1);
-                    i--;
-                    continue;
-                }
-                // 碰撞检测: 遍历砖块
-                let hit = false;
-                for(let idx=0; idx<bricks.length; idx++) {
-                    const brick = bricks[idx];
-                    if(!brick.active) continue;
-                    // AABB碰撞
-                    if(b.x + 6 > brick.x && b.x - 6 < brick.x + brick.w &&
-                       b.y + 6 > brick.y && b.y - 6 < brick.y + brick.h) {
-                        handleBrickCollision(b, idx);
-                        hit = true;
-                        break;
-                    }
-                }
-                if(hit) {
-                    bullets.splice(i,1);
-                    i--;
-                }
-            }
-        }
-        
-        // 发射子弹: 利用武器水平速度形成独特弹道 (速度矢量合成)
-        function shootBullet() {
-            if(!gameRunning) return;
-            if(!canShoot) return;
-            // 武器瞬时速度 (像素/帧)
-            let horizSpeed = weaponVelocityX;
-            // 限制水平最大速度 ±12 避免太夸张
-            horizSpeed = Math.min(14, Math.max(-14, horizSpeed));
-            // 子弹发射点: 武器中心
-            let startX = weaponX;
-            let startY = WEAPON_Y - 12;
-            // 垂直速度向上 (基础速度 -9 ~ -12 根据手感)
-            let baseVy = -9.2;
-            // 水平速度直接继承武器水平速度 + 微小随机偏移避免太单调
-            let vx = horizSpeed * 0.95 + (Math.random() - 0.5)*0.8;
-            let vy = baseVy + (Math.random() - 0.5)*0.5;
-            
-            bullets.push({
-                x: startX,
-                y: startY,
-                vx: vx,
-                vy: vy,
-                active: true,
-                radius: 5
-            });
-            canShoot = false;
-            shootCooldown = 12;   // 大约200ms冷却 (60帧下)
-        }
-        
-        // ---------- 鼠标/键盘交互 ----------
-        function handleMouseMove(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            let mouseCanvasX = (e.clientX - rect.left) * scaleX;
-            mouseCanvasX = Math.min(WEAPON_MAX_X, Math.max(WEAPON_MIN_X, mouseCanvasX));
-            weaponX = mouseCanvasX;
-        }
-        
-        function handleShootTrigger(e) {
-            if(!gameRunning) return;
-            e.preventDefault();
-            shootBullet();
-        }
-        
-        // 每一帧前更新武器速度 (基于上一帧位置)
-        function updateWeaponVelocity() {
-            weaponVelocityX = weaponX - lastWeaponX;
-            lastWeaponX = weaponX;
-            // 限制异常值
-            if(Math.abs(weaponVelocityX) > 20) weaponVelocityX = 0;
-        }
-        
-        // 倒计时更新 (基于帧时间差)
-        let lastFrameTime = 0;
-        function updateRefillTimer(deltaSec) {
-            if(levelUpPending) return;
-            if(refillTimer > 0) {
-                refillTimer -= deltaSec;
-                if(refillTimer <= 0) {
-                    refillTimer = 0;
-                    performRefill();
-                }
-            }
-            // 更新显示
-            let disp = refillTimer > 0 ? refillTimer.toFixed(1) : "0.0";
-            document.getElementById('refillTimer').innerText = disp;
-        }
-        
-        // 更新冷却
-        function updateCooldown() {
-            if(shootCooldown > 0) {
-                shootCooldown--;
-                if(shootCooldown === 0) canShoot = true;
-            }
-        }
-        
-        // ---------- 渲染图形 (华丽视觉) ----------
-        function draw() {
-            ctx.clearRect(0,0, canvas.width, canvas.height);
-            
-            // 背景装饰：三个区域分割线
-            ctx.fillStyle = "#0b1424";
-            ctx.fillRect(0,0, canvas.width, canvas.height);
-            
-            // 区域高亮线
-            ctx.strokeStyle = "#3a506c";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(0, BRICKS_BOTTOM_Y); ctx.lineTo(canvas.width, BRICKS_BOTTOM_Y);
-            ctx.moveTo(0, BULLET_ZONE_TOP); ctx.lineTo(canvas.width, BULLET_ZONE_TOP);
-            ctx.moveTo(0, BULLET_ZONE_BOTTOM); ctx.lineTo(canvas.width, BULLET_ZONE_BOTTOM);
-            ctx.stroke();
-            
-            // 1. 砖块区域
-            for(let brick of bricks) {
-                if(!brick.active) continue;
-                // 渐变色砖块
-                let grad = ctx.createLinearGradient(brick.x, brick.y, brick.x+brick.w, brick.y+brick.h);
-                grad.addColorStop(0, "#f07c6c");
-                grad.addColorStop(1, "#dc4c3c");
-                ctx.fillStyle = grad;
-                ctx.shadowBlur = 4;
-                ctx.shadowColor = "rgba(0,0,0,0.5)";
-                ctx.fillRect(brick.x, brick.y, brick.w, brick.h);
-                ctx.strokeStyle = "#ffc857";
-                ctx.lineWidth = 1;
-                ctx.strokeRect(brick.x, brick.y, brick.w, brick.h);
-            }
-            ctx.shadowBlur = 0;
-            
-            // 2. 子弹 (弹道特效)
-            for(let b of bullets) {
-                ctx.beginPath();
-                ctx.arc(b.x, b.y, 5, 0, Math.PI*2);
-                ctx.fillStyle = "#ffdf70";
-                ctx.shadowBlur = 8;
-                ctx.fill();
-                ctx.fillStyle = "white";
-                ctx.beginPath();
-                ctx.arc(b.x-1, b.y-1, 2, 0, Math.PI*2);
-                ctx.fill();
-            }
-            
-            // 3. 武器区域: 炫酷炮台
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = "#3fc5ff";
-            ctx.beginPath();
-            ctx.arc(weaponX, WEAPON_Y, weaponRadius, 0, Math.PI*2);
-            ctx.fill();
-            ctx.fillStyle = "#1f6392";
-            ctx.beginPath();
-            ctx.arc(weaponX, WEAPON_Y, 10, 0, Math.PI*2);
-            ctx.fill();
-            ctx.fillStyle = "white";
-            ctx.beginPath();
-            ctx.arc(weaponX-3, WEAPON_Y-3, 4, 0, Math.PI*2);
-            ctx.fill();
-            // 显示武器速度方向指示器
-            if(Math.abs(weaponVelocityX) > 0.5){
-                ctx.beginPath();
-                let arrowX = weaponX + (weaponVelocityX>0? 16: -16);
-                ctx.moveTo(weaponX, WEAPON_Y-10);
-                ctx.lineTo(arrowX, WEAPON_Y-2);
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = "#ffbb88";
-                ctx.stroke();
-            }
-            
-            // 显示动态弹道指示 (当前速度)
-            ctx.font = "bold 14monospace";
-            ctx.fillStyle = "#c5e0ff";
-            ctx.fillText(`⚡ 水平速度: ${Math.abs(weaponVelocityX).toFixed(1)} px/f`, weaponX-45, WEAPON_Y-18);
-            
-            // 关卡特效用文字
-            if(levelUpPending){
-                ctx.font = "bold 32monospace";
-                ctx.fillStyle = "gold";
-                ctx.shadowBlur = 8;
-                ctx.fillText("LEVEL UP!", canvas.width/2-90, 130);
-                ctx.shadowBlur = 0;
-            }
-            
-            // 显示补充倒计时
-            ctx.font = "bold 14px 'Segoe UI'";
-            ctx.fillStyle = "#bcd0ff";
-            ctx.fillText("🔄 下一行补充", canvas.width-120, 35);
-        }
-        
-        // ---------- 动画主循环 ----------
-        let lastRender = 0;
-        function gameLoop(nowMs) {
-            if(!lastRender) lastRender = nowMs;
-            let delta = Math.min(0.033, (nowMs - lastRender) / 1000);
-            if(delta <= 0) {
-                lastRender = nowMs;
-                requestAnimationFrame(gameLoop);
-                return;
-            }
-            lastRender = nowMs;
-            
-            if(gameRunning && !levelUpPending) {
-                updateWeaponVelocity();
-                updateBullets();
-                updateCooldown();
-                updateRefillTimer(delta);
-                // 边界限制武器
-                weaponX = Math.min(WEAPON_MAX_X, Math.max(WEAPON_MIN_X, weaponX));
-            } else if(levelUpPending){
-                // 关卡升级过渡时，仍然轻微绘制，不更新逻辑
-            }
-            
-            draw();
-            requestAnimationFrame(gameLoop);
-        }
-        
-        // ---------- 重置游戏全局状态 ----------
-        function resetGame() {
-            gameRunning = true;
-            levelUpPending = false;
-            score = 0;
-            currentLevel = 1;
-            bullets = [];
-            updateScoreUI();
-            // 重置武器
-            weaponX = canvas.width/2;
-            lastWeaponX = weaponX;
-            weaponVelocityX = 0;
-            canShoot = true;
-            shootCooldown = 0;
-            // 重置砖块
-            initBricksForLevel();
-            resetRefillTimer();
-            updateBricksLeftDisplay();
-        }
-        
-        // 事件注册
-        function bindEvents() {
-            canvas.addEventListener('mousemove', handleMouseMove);
-            canvas.addEventListener('click', (e) => { 
-                e.preventDefault();
-                shootBullet();
-            });
-            window.addEventListener('keydown', (e) => {
-                const key = e.key;
-                if(key === ' ' || key === 'Space' || key === 'ArrowUp' || key === 'ArrowDown' || key === 'Enter'){
-                    e.preventDefault();
-                    shootBullet();
-                }
-            });
-            document.getElementById('resetGameBtn').addEventListener('click', () => {
-                resetGame();
-            });
-        }
-        
-        // 确保尺寸适配以及砖块宽精确计算
-        function recalcBrickLayout() {
-            brickWidth = (canvas.width - 60) / BRICK_COLS;
-            brickHeight = 28;
-            for(let brick of bricks) {
-                if(brick.col !== undefined){
-                    brick.w = brickWidth - 2;
-                }
-            }
-        }
-        
-        // 窗口变化重新布局 (简单)
-        window.addEventListener('resize', () => { recalcBrickLayout(); draw(); });
-        
-        // 启动
-        function start() {
-            initBricksForLevel();
-            resetRefillTimer();
-            bindEvents();
-            gameRunning = true;
-            lastWeaponX = weaponX;
-            requestAnimationFrame(gameLoop);
-        }
-        
-        start();
-    })();
-</script>
+  <!-- 游戏链接按钮（可自己改名字+链接） -->
+  <div class="game-buttons">
+    <a href="dazhuankuai/index.html" class="game-btn">打砖块</a>
+    <a href="https://你的游戏2链接" class="game-btn">游戏 2</a>
+    <a href="https://你的游戏3链接" class="game-btn">游戏 3</a>
+    <a href="https://你的游戏4链接" class="game-btn">游戏 4</a>
+    <a href="https://你的游戏5链接" class="game-btn">游戏 5</a>
+    <a href="https://你的游戏6链接" class="game-btn">游戏 6</a>
+  </div>
 </body>
 </html>
