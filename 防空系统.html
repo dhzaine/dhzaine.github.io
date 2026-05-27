@@ -26,7 +26,7 @@
             align-items: center;
             font-family: 'Segoe UI', 'Orbitron', 'Poppins', system-ui, -apple-system, monospace;
             color: #eef5ff;
-            padding: 12px;
+            padding: 8px;
             overflow-x: hidden;
         }
 
@@ -73,12 +73,12 @@
             transform: scale(0.96);
         }
 
-        /* 游戏容器 - 全宽适配 */
+        /* 游戏容器 - 全宽适配，最大化显示 */
         .game-container {
             background: rgba(2, 8, 20, 0.7);
             backdrop-filter: blur(8px);
             border-radius: clamp(20px, 4vw, 48px);
-            padding: clamp(10px, 2vw, 20px);
+            padding: 12px;
             box-shadow: 0 25px 45px rgba(0,0,0,0.7), 0 0 0 1px rgba(0, 255, 255, 0.2);
             display: none;
             width: 100%;
@@ -92,12 +92,12 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             background: #01040f;
-            width: 100%;
-            height: auto;
+            width: 100% !important;
+            height: auto !important;
             cursor: crosshair;
         }
 
-        /* 信息面板 - 手机优化 */
+        /* 信息面板 - 手机优化，紧凑排列 */
         .info-panel {
             display: flex;
             justify-content: center;
@@ -163,7 +163,7 @@
             color: #1a1a2a;
         }
 
-        /* 手机专用发射按钮 - 大而醒目 */
+        /* 手机专用大发射按钮 */
         .mobile-shoot-btn {
             display: none;
             position: fixed;
@@ -248,26 +248,47 @@
             border-radius: 30px;
         }
 
-        /* 手机横屏特殊处理 */
-        @media (max-width: 768px) and (orientation: landscape) {
+        /* 手机专用样式 - 按钮更大更易点 */
+        @media (max-width: 768px) {
             body {
                 padding: 6px;
             }
             .game-container {
-                padding: 6px;
+                padding: 10px;
             }
             .info-panel {
-                padding: 5px 8px;
-                gap: 5px;
+                padding: 6px 10px;
+                gap: 6px;
             }
             .stats {
-                font-size: 0.65rem;
-                gap: 6px;
-                padding: 3px 8px;
+                font-size: 0.7rem;
+                gap: 8px;
+                padding: 4px 10px;
             }
             .game-btn {
+                font-size: 0.65rem;
+                padding: 4px 10px;
+            }
+            .mobile-shoot-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 65px;
+                height: 65px;
+                font-size: 30px;
+                line-height: 61px;
+                bottom: 18px;
+                right: 18px;
+            }
+            .instruction {
                 font-size: 0.6rem;
-                padding: 3px 8px;
+            }
+        }
+
+        /* 手机横屏优化 */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .game-container {
+                padding: 6px;
             }
             .mobile-shoot-btn {
                 width: 55px;
@@ -277,17 +298,9 @@
                 bottom: 12px;
                 right: 12px;
             }
-        }
-
-        /* 手机竖屏显示专用按钮 */
-        @media (max-width: 768px) {
-            .mobile-shoot-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .game-btn {
-                padding: 4px 10px;
+            .stats {
+                font-size: 0.65rem;
+                gap: 6px;
             }
         }
     </style>
@@ -324,7 +337,7 @@
         </div>
     </div>
 
-    <!-- 手机专用浮动发射按钮 -->
+    <!-- 手机专用大发射按钮 -->
     <div class="mobile-shoot-btn" id="mobileShootBtn">🚀</div>
 
     <!-- 失败弹窗 -->
@@ -401,14 +414,14 @@
         let animationId = null;
         let wasPausedBeforeConfirm = false;
         
-        // 画布缩放计算 - 手机全宽适配
+        // 画布缩放计算 - 手机全宽适配，最大化游戏区域
         function updateCanvasScale() {
             if(!gameContainer) return;
             const containerWidth = gameContainer.clientWidth - 20;
-            const maxHeight = window.innerHeight * 0.7;
+            const maxHeight = window.innerHeight * 0.68;  // 留出足够空间给控制栏
             const widthRatio = containerWidth / BASE_WIDTH;
             const heightRatio = maxHeight / BASE_HEIGHT;
-            scaleRatio = Math.min(widthRatio, heightRatio, 1.2);
+            scaleRatio = Math.min(widthRatio, heightRatio, 1.1);
             const displayWidth = BASE_WIDTH * scaleRatio;
             const displayHeight = BASE_HEIGHT * scaleRatio;
             canvas.style.width = `${displayWidth}px`;
@@ -444,7 +457,7 @@
             if(clientX && clientY) handleMove(clientX, clientY);
         }
         
-        // 发射导弹函数（供各种方式调用）
+        // 发射导弹函数
         function shootProjectile() {
             if(!gameActive || gameOverFlag || paused || !canShoot) return;
             let speedX = Math.min(14, Math.max(-14, airDefenseVelocity));
@@ -454,7 +467,7 @@
             interceptors.push({ x: startX, y: startY, vx, vy, active: true });
             canShoot = false;
             shootCooldownFrames = 8;
-            // 触感反馈（如果支持）
+            // 震动反馈
             if(navigator.vibrate) navigator.vibrate(20);
         }
         
