@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>天穹防线 · 纵深弹道 | 全平台制霸</title>
+  <title>天穹防线 · 纵深弹道 | 紧凑操控 辽阔空域</title>
   <style>
     * {
       user-select: none;
@@ -28,15 +28,15 @@
       justify-content: center;
       font-family: 'Segoe UI', 'Orbitron', 'Poppins', system-ui, -apple-system, monospace;
       color: #eef5ff;
-      padding: 12px;
+      padding: 10px 12px;
       overflow-x: hidden;
       position: relative;
     }
 
-    /* 首页面板 */
+    /* 首页面板 (不变，精致) */
     .home-page {
       text-align: center;
-      padding: clamp(20px, 6vw, 40px);
+      padding: clamp(18px, 5vw, 36px);
       border-radius: clamp(24px, 6vw, 48px);
       background: rgba(5, 10, 30, 0.85);
       backdrop-filter: blur(12px);
@@ -48,51 +48,43 @@
     }
 
     .home-page h1 {
-      font-size: clamp(1.4rem, 6vw, 2.5rem);
+      font-size: clamp(1.3rem, 5vw, 2.3rem);
       background: linear-gradient(135deg, #00ffff, #ff44cc);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .home-page p {
-      margin: 10px 0;
+      margin: 8px 0;
       color: #bbd4ff;
-      font-size: clamp(0.8rem, 3.5vw, 1rem);
+      font-size: clamp(0.75rem, 3.2vw, 0.95rem);
     }
 
     .home-btn {
       background: linear-gradient(135deg, #ff3366, #ff6633);
       border: none;
       font-weight: bold;
-      font-size: clamp(0.9rem, 4vw, 1.1rem);
-      padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 30px);
+      font-size: clamp(0.85rem, 3.5vw, 1rem);
+      padding: clamp(8px, 2.5vw, 10px) clamp(18px, 4vw, 28px);
       border-radius: 60px;
       color: white;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 8px 20px rgba(255, 51, 102, 0.4);
-      margin: 8px 5px;
+      box-shadow: 0 6px 16px rgba(255, 51, 102, 0.4);
+      margin: 6px 4px;
     }
 
-    .home-btn:active {
-      transform: scale(0.96);
-    }
+    .home-btn:active { transform: scale(0.96); }
+    @media (hover: hover) { .home-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(255, 51, 102, 0.6); } }
 
-    @media (hover: hover) {
-      .home-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 25px rgba(255, 51, 102, 0.6);
-      }
-    }
-
-    /* 游戏主容器 — 提供弹道视觉延伸，内部画布占满宽度 */
+    /* 游戏主容器 — 弹道区占比更大 */
     .game-container {
       background: rgba(2, 8, 20, 0.7);
       backdrop-filter: blur(8px);
       border-radius: clamp(20px, 4vw, 48px);
-      padding: 12px 12px 18px 12px;
+      padding: 10px 10px 14px 10px;
       box-shadow: 0 25px 45px rgba(0,0,0,0.7), 0 0 0 1px rgba(0, 255, 255, 0.2);
       display: none;
       width: 100%;
@@ -113,29 +105,29 @@
       cursor: crosshair;
     }
 
-    /* 信息面板 — 视觉上下移至战车区域下方，但实际布局中下移靠margin控制 */
+    /* 信息面板 — 手机端紧凑缩小，释放垂直空间给弹道 */
     .info-panel {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 20px;
-      margin-bottom: 8px;
-      gap: 12px;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      gap: 10px;
       flex-wrap: wrap;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(12px);
-      padding: 10px 20px;
-      border-radius: 60px;
-      border: 1px solid rgba(0, 255, 255, 0.45);
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(10px);
+      padding: 6px 12px;
+      border-radius: 50px;
+      border: 1px solid rgba(0, 255, 255, 0.4);
     }
 
     .stats {
-      background: rgba(0, 20, 40, 0.9);
-      padding: 6px 18px;
-      border-radius: 40px;
+      background: rgba(0, 20, 40, 0.85);
+      padding: 4px 12px;
+      border-radius: 32px;
       display: flex;
-      gap: 24px;
-      font-size: 0.9rem;
+      gap: 16px;
+      font-size: 0.8rem;
       font-weight: bold;
       font-family: 'Orbitron', monospace;
       color: #0ff;
@@ -143,17 +135,15 @@
       justify-content: center;
     }
 
-    .stats span span {
-      color: #ffaa44;
-    }
+    .stats span span { color: #ffaa44; }
 
     .level-box {
       background: linear-gradient(135deg, #ffaa33, #ff6633);
       color: #0a0a1a;
-      padding: 6px 20px;
-      border-radius: 40px;
+      padding: 4px 14px;
+      border-radius: 32px;
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 0.75rem;
       white-space: nowrap;
     }
 
@@ -161,26 +151,17 @@
       background: linear-gradient(135deg, #1e2a4a, #0a1a2a);
       border: 1px solid rgba(0, 255, 255, 0.5);
       font-weight: bold;
-      font-size: 0.85rem;
-      padding: 6px 18px;
-      border-radius: 40px;
+      font-size: 0.7rem;
+      padding: 5px 12px;
+      border-radius: 32px;
       color: #ccf;
       cursor: pointer;
       transition: all 0.2s;
       white-space: nowrap;
     }
 
-    .game-btn:active {
-      transform: scale(0.96);
-    }
-
-    @media (hover: hover) {
-      .game-btn:hover {
-        background: linear-gradient(135deg, #2a3a5a, #1a2a3a);
-        border-color: #0ff;
-        color: #fff;
-      }
-    }
+    .game-btn:active { transform: scale(0.96); }
+    @media (hover: hover) { .game-btn:hover { background: linear-gradient(135deg, #2a3a5a, #1a2a3a); border-color: #0ff; color: #fff; } }
 
     .pause-btn-active {
       background: linear-gradient(135deg, #ffaa33, #ff6633);
@@ -188,11 +169,11 @@
       color: #1a1a2a;
     }
 
-    /* 手机专用底部控制区 — 超大触控，战车和所有操控都在屏幕偏下区域，为弹道让出天空 */
+    /* 手机专用底部控制区域 — 按钮缩小，更紧凑，不占用弹道区 */
     .mobile-controls {
       display: none;
       position: fixed;
-      bottom: calc(20px + var(--safe-area-inset-bottom));
+      bottom: calc(14px + var(--safe-area-inset-bottom));
       left: 0;
       right: 0;
       z-index: 60;
@@ -201,36 +182,36 @@
 
     .ctrl-left-group {
       position: absolute;
-      left: 20px;
+      left: 16px;
       bottom: 0;
       display: flex;
-      gap: 28px;
+      gap: 18px;
       pointer-events: auto;
     }
 
     .ctrl-right-group {
       position: absolute;
-      right: 20px;
+      right: 16px;
       bottom: 0;
       pointer-events: auto;
     }
 
     .ctrl-btn {
-      width: 78px;
-      height: 78px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
       background: linear-gradient(145deg, #1f2c4a, #0c142c);
-      border: 2px solid rgba(0, 255, 255, 0.9);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 255, 255, 0.5);
+      border: 2px solid rgba(0, 255, 255, 0.85);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5), 0 0 12px rgba(0, 255, 255, 0.4);
       color: white;
-      font-size: 36px;
+      font-size: 28px;
       font-weight: bold;
       text-align: center;
-      line-height: 74px;
+      line-height: 54px;
       cursor: pointer;
       transition: all 0.05s linear;
       touch-action: manipulation;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(4px);
     }
 
     .ctrl-btn:active {
@@ -241,23 +222,23 @@
 
     .ctrl-shoot {
       background: linear-gradient(135deg, #ff3366, #ff6633);
-      border-color: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 0 28px rgba(255, 51, 102, 0.8);
-      font-size: 38px;
+      border-color: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 20px rgba(255, 51, 102, 0.7);
+      font-size: 30px;
     }
 
     .instruction {
-      font-size: 0.72rem;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 7px 14px;
-      border-radius: 36px;
-      margin-top: 14px;
+      font-size: 0.62rem;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 5px 10px;
+      border-radius: 28px;
+      margin-top: 8px;
       text-align: center;
       color: #cceeff;
-      border: 1px solid rgba(0, 255, 255, 0.4);
+      border: 1px solid rgba(0, 255, 255, 0.35);
     }
 
-    /* 弹窗 */
+    /* 弹窗 (保留基础样式) */
     .game-over-modal, .custom-confirm-modal {
       position: fixed;
       top: 0;
@@ -275,165 +256,165 @@
     .modal-content, .confirm-content {
       background: rgba(8, 12, 28, 0.96);
       backdrop-filter: blur(20px);
-      padding: 24px 32px;
-      border-radius: 36px;
+      padding: 20px 28px;
+      border-radius: 32px;
       text-align: center;
       box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 0 2px rgba(0, 255, 255, 0.5);
-      min-width: 280px;
+      min-width: 260px;
       max-width: 85vw;
       border: 1px solid rgba(255, 100, 100, 0.6);
     }
-
     .drag-handle {
       position: absolute;
-      top: 12px;
-      right: 16px;
-      font-size: 12px;
+      top: 10px;
+      right: 14px;
+      font-size: 11px;
       color: #0ff;
       background: rgba(0,0,0,0.5);
-      padding: 4px 12px;
+      padding: 3px 10px;
       border-radius: 30px;
       cursor: grab;
     }
 
-    /* ========= 手机竖屏核心优化：战车、信息区、控制区整体下移，弹道区域上下拉伸 ========= */
+    /* ========= 手机竖屏核心：极简信息栏+缩小控制钮，最大化弹道区域 ========= */
     @media (max-width: 768px) and (orientation: portrait) {
       body {
-        padding: 8px 6px 0 6px;
+        padding: 6px 6px 0 6px;
         justify-content: flex-start;
       }
-
       .game-container {
-        margin: 0 auto;
-        padding: 10px 8px 28px 8px;
+        padding: 8px 6px 16px 6px;
       }
-
       .mobile-controls {
         display: block;
       }
-
-      /* 大触控区，操作更精准 */
+      /* 控制按钮比例缩小，更精致不占屏 */
       .ctrl-btn {
-        width: 74px;
-        height: 74px;
-        line-height: 70px;
-        font-size: 36px;
+        width: 52px;
+        height: 52px;
+        line-height: 48px;
+        font-size: 26px;
       }
-
-      .ctrl-left-group {
-        gap: 24px;
-        left: 12px;
+      .ctrl-shoot {
+        font-size: 28px;
       }
-
-      .ctrl-right-group {
-        right: 12px;
-      }
-
-      /* 信息面板下移更多，让上方画布天空区域增加，弹道纵深 */
-      .info-panel {
-        margin-top: 24px;
-        margin-bottom: 12px;
-        padding: 12px 16px;
-        gap: 14px;
-      }
-
-      .stats {
-        font-size: 0.85rem;
-        gap: 20px;
-        padding: 6px 16px;
-      }
-
-      .level-box {
-        font-size: 0.85rem;
-        padding: 6px 18px;
-      }
-
-      .game-btn {
-        font-size: 0.75rem;
-        padding: 6px 14px;
-      }
-
-      .instruction {
-        font-size: 0.7rem;
-        margin-top: 12px;
-        padding: 7px 12px;
-      }
-
-      canvas {
-        border-radius: 20px;
-        width: 100% !important;
-        height: auto !important;
-        /* 画布本身比例不变，但周围空隙让弹道视觉向上延伸 */
-      }
-    }
-
-    /* 手机横屏优化 — 控件精巧，信息区适当下移 */
-    @media (max-width: 900px) and (orientation: landscape) {
-      body {
-        padding: 8px 12px;
-        justify-content: center;
-      }
-
-      .mobile-controls {
-        display: block;
-      }
-
-      .ctrl-btn {
-        width: 60px;
-        height: 60px;
-        line-height: 56px;
-        font-size: 30px;
-      }
-
       .ctrl-left-group {
         gap: 16px;
-        left: 12px;
-        bottom: 6px;
+        left: 10px;
       }
-
       .ctrl-right-group {
-        right: 12px;
-        bottom: 6px;
+        right: 10px;
       }
-
+      /* 信息区域紧凑减小内边距，释放更多天空区域 */
       .info-panel {
-        margin-top: 16px;
-        padding: 6px 14px;
-        gap: 10px;
+        margin-top: 12px;
+        margin-bottom: 4px;
+        padding: 5px 10px;
+        gap: 8px;
       }
-
       .stats {
         font-size: 0.7rem;
-        gap: 14px;
-        padding: 4px 12px;
+        gap: 12px;
+        padding: 3px 10px;
       }
-
       .level-box {
-        font-size: 0.7rem;
-        padding: 4px 12px;
+        font-size: 0.65rem;
+        padding: 3px 12px;
+      }
+      .game-btn {
+        font-size: 0.6rem;
+        padding: 4px 10px;
+      }
+      .instruction {
+        font-size: 0.55rem;
+        margin-top: 6px;
+        padding: 4px 8px;
+      }
+      canvas {
+        border-radius: 18px;
+        width: 100% !important;
+        height: auto !important;
       }
     }
 
-    /* 平板竖屏 */
+    /* 手机横屏优化 — 按钮更紧凑，弹道水平视野开阔 */
+    @media (max-width: 900px) and (orientation: landscape) {
+      body {
+        padding: 6px 10px;
+        justify-content: center;
+      }
+      .mobile-controls {
+        display: block;
+      }
+      .ctrl-btn {
+        width: 48px;
+        height: 48px;
+        line-height: 44px;
+        font-size: 24px;
+      }
+      .ctrl-shoot {
+        font-size: 26px;
+      }
+      .ctrl-left-group {
+        gap: 14px;
+        left: 8px;
+        bottom: 4px;
+      }
+      .ctrl-right-group {
+        right: 8px;
+        bottom: 4px;
+      }
+      .info-panel {
+        margin-top: 8px;
+        padding: 4px 10px;
+        gap: 6px;
+      }
+      .stats {
+        font-size: 0.62rem;
+        gap: 10px;
+        padding: 2px 8px;
+      }
+      .level-box {
+        font-size: 0.6rem;
+        padding: 2px 10px;
+      }
+      .game-btn {
+        font-size: 0.55rem;
+        padding: 3px 8px;
+      }
+      .instruction {
+        font-size: 0.52rem;
+        margin-top: 5px;
+      }
+    }
+
+    /* 平板竖屏适当保持紧凑，但仍给弹道更多空间 */
     @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
       .mobile-controls {
         display: block;
       }
       .ctrl-btn {
-        width: 88px;
-        height: 88px;
-        line-height: 84px;
-        font-size: 40px;
+        width: 70px;
+        height: 70px;
+        line-height: 66px;
+        font-size: 32px;
       }
       .info-panel {
-        margin-top: 28px;
+        margin-top: 16px;
+        padding: 8px 16px;
+      }
+      .stats {
+        font-size: 0.85rem;
       }
     }
 
-    /* 电脑端隐藏手机控件，保留键盘鼠标体验 */
+    /* 电脑端完全隐藏手机触控栏 */
     @media (min-width: 901px) {
       .mobile-controls {
         display: none !important;
+      }
+      .info-panel {
+        margin-top: 18px;
       }
     }
 
@@ -468,7 +449,7 @@
     <button class="game-btn" id="gameFullscreenBtn">⛶ 全屏</button>
   </div>
   <div class="instruction">
-    🖱️ 滑动/手指控制战车水平机动 | 点击任意位置/发射按钮开火 | 炸弹突破禁区即失败
+    🖱️ 滑动/手指控制战车 | 点击/发射按钮开火 | 炸弹突破禁区即失败
   </div>
 </div>
 
@@ -520,7 +501,7 @@
     const btnRight = document.getElementById('btnRight');
     const btnShoot = document.getElementById('btnShoot');
 
-    // 固定逻辑分辨率 1000x700，弹道区上下留白通过画布内部视觉和战车位置凸显纵深
+    // 固定逻辑分辨率 1000x700，弹道区上下留白通过画布内部设计和缩放充分展示
     const BASE_WIDTH = 1000;
     const BASE_HEIGHT = 700;
     const BOMB_START_Y = 40;
@@ -569,10 +550,10 @@
 
     function updateCanvasScale() {
       if(!gameContainer) return;
-      const containerWidth = gameContainer.clientWidth - 20;
+      const containerWidth = gameContainer.clientWidth - 16;
       let maxHeight = window.innerHeight * 0.68;
       if(window.innerWidth > window.innerHeight) maxHeight = window.innerHeight * 0.78;
-      else maxHeight = window.innerHeight * 0.64;
+      else maxHeight = window.innerHeight * 0.66;
       const ratioW = containerWidth / BASE_WIDTH;
       const ratioH = maxHeight / BASE_HEIGHT;
       scaleRatio = Math.min(ratioW, ratioH, 1.28);
@@ -736,7 +717,7 @@
       airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, airDefenseX));
     }
 
-    // 绘图 — 保留所有视觉要素，天空与弹道区延伸感通过星尘和空旷背景体现
+    // 绘图函数 — 保持华丽视觉，星辰闪烁增强弹道延伸感
     function drawBombShape(bomb) {
       ctx.save(); ctx.shadowBlur=6; ctx.shadowColor="#ff5500";
       const grad = ctx.createLinearGradient(bomb.x,bomb.y,bomb.x+bomb.w,bomb.y+bomb.h);
@@ -755,7 +736,7 @@
       ctx.fillStyle="#4a6e3a"; ctx.beginPath(); ctx.moveTo(x-8,y-18); ctx.lineTo(x,y-32); ctx.lineTo(x+8,y-18); ctx.fill();
       ctx.fillStyle="#ff5555"; ctx.beginPath(); ctx.moveTo(x-3,y-48); ctx.lineTo(x,y-58); ctx.lineTo(x+3,y-48); ctx.fill();
       ctx.fillStyle="#88aaff"; ctx.beginPath(); ctx.arc(x+14,y-10,4,0,Math.PI*2); ctx.fill();
-      ctx.font="bold 10px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.fillText(`⚡ ${Math.abs(airDefenseVelocity).toFixed(1)}`, x-45, y-22);
+      ctx.font="bold 9px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.fillText(`⚡ ${Math.abs(airDefenseVelocity).toFixed(1)}`, x-45, y-22);
       ctx.restore();
     }
     function drawInterceptorMissile(inter) {
@@ -764,16 +745,16 @@
       ctx.fillStyle="#ffaa44"; ctx.beginPath(); ctx.moveTo(inter.x,inter.y-6); ctx.lineTo(inter.x+2,inter.y-3); ctx.lineTo(inter.x-2,inter.y-3); ctx.fill();
       ctx.restore();
     }
-    function drawResidential() { ctx.fillStyle="rgba(220,60,50,0.45)"; ctx.fillRect(0,RESIDENTIAL_LINE_Y,BASE_WIDTH,GROUND_Y-RESIDENTIAL_LINE_Y+12); ctx.fillStyle="#ff8877"; ctx.font="bold 16px 'Orbitron'"; ctx.textAlign="center"; ctx.fillText("⚠️ 绝对禁区",BASE_WIDTH/2,RESIDENTIAL_LINE_Y+24); ctx.textAlign="left"; }
-    function drawStars() { for(let i=0;i<160;i++) { const starX=(i*131)%BASE_WIDTH, starY=(i*253)%(RESIDENTIAL_LINE_Y-40); ctx.fillStyle=`rgba(255,255,200,${0.2+Math.sin(Date.now()*0.001+i)*0.1})`; ctx.beginPath(); ctx.arc(starX,starY,1,0,Math.PI*2); ctx.fill(); } }
+    function drawResidential() { ctx.fillStyle="rgba(220,60,50,0.45)"; ctx.fillRect(0,RESIDENTIAL_LINE_Y,BASE_WIDTH,GROUND_Y-RESIDENTIAL_LINE_Y+12); ctx.fillStyle="#ff8877"; ctx.font="bold 14px 'Orbitron'"; ctx.textAlign="center"; ctx.fillText("⚠️ 绝对禁区",BASE_WIDTH/2,RESIDENTIAL_LINE_Y+22); ctx.textAlign="left"; }
+    function drawStars() { for(let i=0;i<180;i++) { const starX=(i*131)%BASE_WIDTH, starY=(i*253)%(RESIDENTIAL_LINE_Y-30); ctx.fillStyle=`rgba(255,255,200,${0.2+Math.sin(Date.now()*0.001+i)*0.12})`; ctx.beginPath(); ctx.arc(starX,starY,1.2,0,Math.PI*2); ctx.fill(); } }
     function draw() {
       ctx.clearRect(0,0,BASE_WIDTH,BASE_HEIGHT); ctx.fillStyle="#03061a"; ctx.fillRect(0,0,BASE_WIDTH,BASE_HEIGHT);
       drawStars();
       for(let b of bombs) if(b.active) drawBombShape(b);
       for(let i of interceptors) drawInterceptorMissile(i);
       drawMissileLauncher(); drawResidential();
-      if(levelUpPending && !gameOverFlag){ ctx.font="bold 28px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.textAlign="center"; ctx.fillText("⚡ 等级提升 ⚡", BASE_WIDTH/2, 120); }
-      if(paused && gameActive && !gameOverFlag){ ctx.font="bold 36px 'Orbitron'"; ctx.fillStyle="#ffe5aa"; ctx.textAlign="center"; ctx.fillText("⏸ 暂停", BASE_WIDTH/2, BASE_HEIGHT/2); }
+      if(levelUpPending && !gameOverFlag){ ctx.font="bold 26px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.textAlign="center"; ctx.fillText("⚡ 等级提升 ⚡", BASE_WIDTH/2, 110); }
+      if(paused && gameActive && !gameOverFlag){ ctx.font="bold 32px 'Orbitron'"; ctx.fillStyle="#ffe5aa"; ctx.textAlign="center"; ctx.fillText("⏸ 暂停", BASE_WIDTH/2, BASE_HEIGHT/2); }
       ctx.textAlign="left";
     }
 
