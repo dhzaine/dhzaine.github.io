@@ -1,895 +1,861 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>天穹防线 - 导弹发射车 | 全平台制霸</title>
-    <style>
-        * {
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>天穹防线 · 弹道战车 | 全平台制霸</title>
+  <style>
+    * {
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        :root {
-            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
-            --vh: 1vh; /* 动态视口单位备用 */
-        }
+    :root {
+      --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+      --vh: 1vh;
+    }
 
-        body {
-            background: radial-gradient(ellipse at 20% 30%, #0a0f2a, #030617);
-            min-height: 100vh;
-            min-height: calc(var(--vh, 1vh) * 100);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', 'Orbitron', 'Poppins', system-ui, -apple-system, monospace;
-            color: #eef5ff;
-            padding: 12px;
-            overflow-x: hidden;
-            position: relative;
-        }
+    body {
+      background: radial-gradient(ellipse at 20% 30%, #0a0f2a, #030617);
+      min-height: 100vh;
+      min-height: calc(var(--vh, 1vh) * 100);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', 'Orbitron', 'Poppins', system-ui, -apple-system, monospace;
+      color: #eef5ff;
+      padding: 12px;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-        /* 首页霓虹风格 */
-        .home-page {
-            text-align: center;
-            padding: clamp(20px, 6vw, 40px);
-            border-radius: clamp(24px, 6vw, 48px);
-            background: rgba(5, 10, 30, 0.85);
-            backdrop-filter: blur(12px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(0, 255, 255, 0.2);
-            max-width: 95%;
-            width: 100%;
-            margin: 0 auto;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-        }
-        .home-page h1 {
-            font-size: clamp(1.4rem, 6vw, 2.5rem);
-            background: linear-gradient(135deg, #00ffff, #ff44cc);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 12px;
-        }
-        .home-page p {
-            margin: 10px 0;
-            color: #bbd4ff;
-            font-size: clamp(0.8rem, 3.5vw, 1rem);
-        }
-        .home-btn {
-            background: linear-gradient(135deg, #ff3366, #ff6633);
-            border: none;
-            font-weight: bold;
-            font-size: clamp(0.9rem, 4vw, 1.1rem);
-            padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 30px);
-            border-radius: 60px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 8px 20px rgba(255, 51, 102, 0.4);
-            margin: 8px 5px;
-        }
-        .home-btn:active { transform: scale(0.96); }
-        @media (hover: hover) {
-            .home-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(255, 51, 102, 0.6); }
-        }
+    /* 首页面板 */
+    .home-page {
+      text-align: center;
+      padding: clamp(20px, 6vw, 40px);
+      border-radius: clamp(24px, 6vw, 48px);
+      background: rgba(5, 10, 30, 0.85);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(0, 255, 255, 0.2);
+      max-width: 95%;
+      width: 100%;
+      margin: 0 auto;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+    }
 
-        /* 游戏容器 - 自适应向上延展，手机端占据更多竖向空间 */
-        .game-container {
-            background: rgba(2, 8, 20, 0.7);
-            backdrop-filter: blur(8px);
-            border-radius: clamp(20px, 4vw, 48px);
-            padding: 12px;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.7), 0 0 0 1px rgba(0, 255, 255, 0.2);
-            display: none;
-            width: 100%;
-            max-width: 1300px;
-            position: relative;
-            margin: 0 auto;
-            /* 手机端增加纵向占位，允许内容向上延展 */
-            flex-shrink: 0;
-        }
+    .home-page h1 {
+      font-size: clamp(1.4rem, 6vw, 2.5rem);
+      background: linear-gradient(135deg, #00ffff, #ff44cc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 12px;
+    }
 
-        canvas {
-            display: block;
-            margin: 0 auto;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background: #01040f;
-            width: 100% !important;
-            height: auto !important;
-            cursor: crosshair;
-        }
+    .home-page p {
+      margin: 10px 0;
+      color: #bbd4ff;
+      font-size: clamp(0.8rem, 3.5vw, 1rem);
+    }
 
-        /* 信息面板 */
-        .info-panel {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 12px;
-            gap: 10px;
-            flex-wrap: wrap;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            padding: 8px 16px;
-            border-radius: 60px;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-        }
+    .home-btn {
+      background: linear-gradient(135deg, #ff3366, #ff6633);
+      border: none;
+      font-weight: bold;
+      font-size: clamp(0.9rem, 4vw, 1.1rem);
+      padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 30px);
+      border-radius: 60px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 20px rgba(255, 51, 102, 0.4);
+      margin: 8px 5px;
+    }
 
-        .stats {
-            background: rgba(0, 20, 40, 0.8);
-            padding: 6px 16px;
-            border-radius: 40px;
-            display: flex;
-            gap: 18px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            font-family: 'Orbitron', monospace;
-            color: #0ff;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .stats span span { color: #ffaa44; }
+    .home-btn:active {
+      transform: scale(0.96);
+    }
 
-        .level-box {
-            background: linear-gradient(135deg, #ffaa33, #ff6633);
-            color: #0a0a1a;
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
+    @media (hover: hover) {
+      .home-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(255, 51, 102, 0.6);
+      }
+    }
 
-        .game-btn {
-            background: linear-gradient(135deg, #1e2a4a, #0a1a2a);
-            border: 1px solid rgba(0, 255, 255, 0.4);
-            font-weight: bold;
-            font-size: 0.8rem;
-            padding: 6px 16px;
-            border-radius: 40px;
-            color: #ccf;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .game-btn:active { transform: scale(0.96); }
-        @media (hover: hover) {
-            .game-btn:hover { background: linear-gradient(135deg, #2a3a5a, #1a2a3a); border-color: #0ff; color: #fff; box-shadow: 0 0 8px rgba(0,255,255,0.3); }
-        }
-        .pause-btn-active {
-            background: linear-gradient(135deg, #ffaa33, #ff6633);
-            border-color: #ffcc88;
-            color: #1a1a2a;
-        }
+    /* 游戏主容器 — 上下拉伸，弹性布局 */
+    .game-container {
+      background: rgba(2, 8, 20, 0.7);
+      backdrop-filter: blur(8px);
+      border-radius: clamp(20px, 4vw, 48px);
+      padding: 12px;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.7), 0 0 0 1px rgba(0, 255, 255, 0.2);
+      display: none;
+      width: 100%;
+      max-width: 1400px;
+      position: relative;
+      margin: 0 auto;
+      flex-direction: column;
+    }
 
-        /* 手机底部控制栏 - 优化位置，随页面滚动而固定在底部（实际使用fixed） */
-        .mobile-controls {
-            display: none;
-            position: fixed;
-            bottom: calc(15px + var(--safe-area-inset-bottom));
-            left: 0;
-            right: 0;
-            z-index: 50;
-            pointer-events: none;
-        }
-        .ctrl-left-group {
-            position: absolute;
-            left: 15px;
-            bottom: 0;
-            display: flex;
-            gap: 12px;
-            pointer-events: auto;
-        }
-        .ctrl-right-group {
-            position: absolute;
-            right: 15px;
-            bottom: 0;
-            pointer-events: auto;
-        }
-        .ctrl-btn {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #1e2a4a, #0a1a2a);
-            border: 2px solid rgba(0, 255, 255, 0.6);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-            text-align: center;
-            line-height: 61px;
-            cursor: pointer;
-            transition: all 0.05s linear;
-            touch-action: manipulation;
-            backdrop-filter: blur(4px);
-        }
-        .ctrl-btn:active {
-            transform: scale(0.92);
-            background: linear-gradient(135deg, #2a3a5a, #1a2a3a);
-            border-color: #0ff;
-        }
-        .ctrl-left, .ctrl-right { font-size: 32px; }
-        .ctrl-shoot {
-            background: linear-gradient(135deg, #ff3366, #ff6633);
-            border-color: rgba(255, 255, 255, 0.6);
-            font-size: 28px;
-            box-shadow: 0 0 20px rgba(255, 51, 102, 0.5);
-        }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      background: #01040f;
+      width: 100% !important;
+      height: auto !important;
+      cursor: crosshair;
+    }
 
-        .instruction {
-            font-size: 0.7rem;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 6px 12px;
-            border-radius: 30px;
-            margin-top: 10px;
-            text-align: center;
-            color: #aaf;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-        }
+    /* 信息面板 — 紧凑且直观 */
+    .info-panel {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 14px;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(8px);
+      padding: 8px 18px;
+      border-radius: 60px;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+    }
 
-        /* 弹窗 */
-        .game-over-modal, .custom-confirm-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-        .modal-content, .confirm-content {
-            background: rgba(8, 12, 28, 0.96);
-            backdrop-filter: blur(20px);
-            padding: 24px 32px;
-            border-radius: 32px;
-            text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 0 2px rgba(0, 255, 255, 0.5);
-            min-width: 280px;
-            max-width: 85vw;
-            border: 1px solid rgba(255, 100, 100, 0.6);
-        }
-        .modal-content h2 { color: #ff5577; font-size: 1.8rem; margin-bottom: 12px; }
-        .modal-content p, .confirm-content p { font-size: 1rem; margin: 8px 0; }
-        .drag-handle {
-            position: absolute;
-            top: 8px;
-            right: 12px;
-            font-size: 10px;
-            color: #0ff;
-            background: rgba(0,0,0,0.5);
-            padding: 2px 10px;
-            border-radius: 30px;
-            cursor: grab;
-        }
-        .drag-handle:active { cursor: grabbing; }
+    .stats {
+      background: rgba(0, 20, 40, 0.8);
+      padding: 6px 16px;
+      border-radius: 40px;
+      display: flex;
+      gap: 22px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      font-family: 'Orbitron', monospace;
+      color: #0ff;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
-        /* ========= 手机竖屏样式（核心优化：向上延展，内容铺满高度） ========= */
-        @media (max-width: 768px) and (orientation: portrait) {
-            body {
-                padding: 12px 8px 20px 8px;
-                justify-content: flex-start;  /* 让内容从顶部开始，支持向上延展 */
-            }
-            .game-container {
-                margin: 0 auto;
-                padding: 10px;
-                /* 移除max-height限制，让内容自然伸展 */
-            }
-            .mobile-controls { display: block; }
-            .ctrl-btn { width: 55px; height: 55px; line-height: 51px; font-size: 24px; }
-            .ctrl-left, .ctrl-right { font-size: 28px; }
-            .ctrl-left-group { left: 12px; gap: 10px; }
-            .ctrl-right-group { right: 12px; }
-            .info-panel { padding: 6px 12px; gap: 6px; flex-wrap: wrap; }
-            .stats { font-size: 0.7rem; gap: 10px; padding: 4px 12px; }
-            .level-box { font-size: 0.7rem; padding: 4px 12px; white-space: nowrap; }
-            .game-btn { font-size: 0.65rem; padding: 4px 10px; }
-            .instruction { font-size: 0.6rem; margin-top: 8px; }
-            canvas {
-                border-radius: 16px;
-            }
-        }
+    .stats span span {
+      color: #ffaa44;
+    }
 
-        /* 手机横屏样式 - 保证游戏区域占据大部分可视区，底部控件紧凑 */
-        @media (max-width: 900px) and (orientation: landscape) {
-            body {
-                padding: 6px 8px;
-                justify-content: center;
-            }
-            .game-container { padding: 8px; }
-            .mobile-controls { display: block; }
-            .ctrl-btn { width: 48px; height: 48px; line-height: 44px; font-size: 22px; }
-            .ctrl-left, .ctrl-right { font-size: 26px; }
-            .ctrl-left-group { left: 10px; gap: 8px; bottom: 5px; }
-            .ctrl-right-group { right: 10px; bottom: 5px; }
-            .info-panel { margin-top: 6px; padding: 4px 10px; gap: 5px; }
-            .stats { font-size: 0.6rem; gap: 8px; padding: 3px 8px; }
-            .level-box { font-size: 0.6rem; padding: 3px 8px; }
-            .game-btn { font-size: 0.55rem; padding: 3px 8px; }
-            .instruction { font-size: 0.55rem; margin-top: 6px; padding: 3px 8px; }
-        }
+    .level-box {
+      background: linear-gradient(135deg, #ffaa33, #ff6633);
+      color: #0a0a1a;
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
 
-        /* 电脑端隐藏移动控制栏 */
-        @media (min-width: 901px) {
-            .mobile-controls {
-                display: none !important;
-            }
-        }
+    .game-btn {
+      background: linear-gradient(135deg, #1e2a4a, #0a1a2a);
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      font-weight: bold;
+      font-size: 0.8rem;
+      padding: 6px 16px;
+      border-radius: 40px;
+      color: #ccf;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
 
-        /* 增强手机滚动/延展能力：游戏容器内容自动撑开，body可滚动 */
-        body {
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        /* 确保canvas自身比例不失真，并且手机竖屏下高度自动适应，允许向上延展更多内容 */
-        .game-container canvas {
-            max-height: none;
-        }
-    </style>
+    .game-btn:active {
+      transform: scale(0.96);
+    }
+
+    @media (hover: hover) {
+      .game-btn:hover {
+        background: linear-gradient(135deg, #2a3a5a, #1a2a3a);
+        border-color: #0ff;
+        color: #fff;
+      }
+    }
+
+    .pause-btn-active {
+      background: linear-gradient(135deg, #ffaa33, #ff6633);
+      border-color: #ffcc88;
+      color: #1a1a2a;
+    }
+
+    /* 手机专用底部控件 — 现代化大按钮，指向明确 */
+    .mobile-controls {
+      display: none;
+      position: fixed;
+      bottom: calc(18px + var(--safe-area-inset-bottom));
+      left: 0;
+      right: 0;
+      z-index: 60;
+      pointer-events: none;
+    }
+
+    .ctrl-left-group {
+      position: absolute;
+      left: 20px;
+      bottom: 0;
+      display: flex;
+      gap: 20px;
+      pointer-events: auto;
+    }
+
+    .ctrl-right-group {
+      position: absolute;
+      right: 20px;
+      bottom: 0;
+      pointer-events: auto;
+    }
+
+    .ctrl-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1f2c4a, #0c142c);
+      border: 2px solid rgba(0, 255, 255, 0.7);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 12px rgba(0, 255, 255, 0.4);
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      line-height: 66px;
+      cursor: pointer;
+      transition: all 0.05s linear;
+      touch-action: manipulation;
+      backdrop-filter: blur(6px);
+    }
+
+    .ctrl-btn:active {
+      transform: scale(0.92);
+      background: linear-gradient(135deg, #2e4070, #182040);
+      border-color: #0ff;
+    }
+
+    .ctrl-shoot {
+      background: linear-gradient(135deg, #ff3366, #ff6633);
+      border-color: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 0 22px rgba(255, 51, 102, 0.7);
+      font-size: 34px;
+    }
+
+    .instruction {
+      font-size: 0.7rem;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px 12px;
+      border-radius: 30px;
+      margin-top: 12px;
+      text-align: center;
+      color: #aaf;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+    }
+
+    /* 弹窗 */
+    .game-over-modal, .custom-confirm-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-content, .confirm-content {
+      background: rgba(8, 12, 28, 0.96);
+      backdrop-filter: blur(20px);
+      padding: 24px 32px;
+      border-radius: 36px;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 0 2px rgba(0, 255, 255, 0.5);
+      min-width: 280px;
+      max-width: 85vw;
+      border: 1px solid rgba(255, 100, 100, 0.6);
+    }
+
+    .drag-handle {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 12px;
+      color: #0ff;
+      background: rgba(0,0,0,0.5);
+      padding: 4px 12px;
+      border-radius: 30px;
+      cursor: grab;
+    }
+
+    /* ========= 手机竖屏优化（核心：上下拉伸，控件增强） ========= */
+    @media (max-width: 768px) and (orientation: portrait) {
+      body {
+        padding: 8px 6px 20px 6px;
+        justify-content: flex-start;
+      }
+
+      .game-container {
+        margin: 0 auto;
+        padding: 12px 8px 16px 8px;
+        /* 确保可以占满可用高度弹性 */
+      }
+
+      .mobile-controls {
+        display: block;
+      }
+
+      .ctrl-btn {
+        width: 68px;
+        height: 68px;
+        line-height: 64px;
+        font-size: 32px;
+      }
+
+      .ctrl-left-group {
+        gap: 18px;
+        left: 12px;
+      }
+
+      .ctrl-right-group {
+        right: 12px;
+      }
+
+      .info-panel {
+        padding: 8px 12px;
+        gap: 8px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+
+      .stats {
+        font-size: 0.75rem;
+        gap: 14px;
+        padding: 5px 12px;
+      }
+
+      .level-box {
+        font-size: 0.75rem;
+        padding: 5px 14px;
+      }
+
+      .game-btn {
+        font-size: 0.7rem;
+        padding: 5px 12px;
+      }
+
+      .instruction {
+        font-size: 0.65rem;
+        margin-top: 12px;
+        padding: 5px 12px;
+      }
+
+      canvas {
+        border-radius: 20px;
+        /* 确保canvas区域在竖屏有更好的视觉拉伸 — 宽度100%，高度等比延伸，让弹道区更明显 */
+        width: 100% !important;
+        height: auto !important;
+      }
+    }
+
+    /* 手机横屏样式 — 保持信息紧凑，按钮合理 */
+    @media (max-width: 900px) and (orientation: landscape) {
+      body {
+        padding: 8px 12px;
+        justify-content: center;
+      }
+
+      .mobile-controls {
+        display: block;
+      }
+
+      .ctrl-btn {
+        width: 55px;
+        height: 55px;
+        line-height: 51px;
+        font-size: 26px;
+      }
+
+      .ctrl-left-group {
+        gap: 12px;
+        left: 12px;
+        bottom: 8px;
+      }
+
+      .ctrl-right-group {
+        right: 12px;
+        bottom: 8px;
+      }
+
+      .info-panel {
+        margin-top: 8px;
+        padding: 5px 12px;
+        gap: 6px;
+      }
+
+      .stats {
+        font-size: 0.65rem;
+        gap: 10px;
+        padding: 3px 10px;
+      }
+
+      .level-box {
+        font-size: 0.65rem;
+        padding: 3px 10px;
+      }
+
+      .game-btn {
+        font-size: 0.6rem;
+        padding: 4px 10px;
+      }
+    }
+
+    /* 平板竖屏优化：控件不遮挡核心区域 */
+    @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+      .mobile-controls {
+        display: block;
+      }
+
+      .ctrl-btn {
+        width: 80px;
+        height: 80px;
+        line-height: 76px;
+        font-size: 36px;
+      }
+    }
+
+    /* 电脑端隐藏触控栏 */
+    @media (min-width: 901px) {
+      .mobile-controls {
+        display: none !important;
+      }
+    }
+
+    body {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  </style>
 </head>
 <body>
-    <div class="home-page" id="homePage">
-        <h1>⚡ 天穹防线 · 导弹发射车 ⚡</h1>
-        <p>操控战车，拦截随机来袭的高爆炸弹！</p>
-        <p>🖱️ 鼠标/手指滑动 → 战车机动 | 🚀 点击/空格/发射按钮 → 拦截导弹</p>
-        <p>⏸️ 按【P】随时暂停 | 每波炸弹数量随机 | 全平台完美适配</p>
-        <button class="home-btn" id="startGameBtn">▶ 开始防御</button>
-        <button class="home-btn" id="fullscreenBtn">⛶ 全屏作战</button>
-    </div>
+<div class="home-page" id="homePage">
+  <h1>⚡ 天穹防线 · 导弹发射车 ⚡</h1>
+  <p>操控战车，拦截随机来袭的高爆炸弹！</p>
+  <p>🖱️ 鼠标/手指滑动 → 战车机动 | 🚀 点击/空格/发射按钮 → 拦截导弹</p>
+  <p>⏸️ 按【P】随时暂停 | 每波炸弹数量随机 | 全平台完美适配</p>
+  <button class="home-btn" id="startGameBtn">▶ 开始防御</button>
+  <button class="home-btn" id="fullscreenBtn">⛶ 全屏作战</button>
+</div>
 
-    <div class="game-container" id="gameContainer">
-        <canvas id="gameCanvas" width="1000" height="700"></canvas>
-        <div class="info-panel">
-            <div class="stats">
-                <span>🎯 拦截: <span id="scoreValue">0</span></span>
-                <span>💣 残余: <span id="bombsLeft">0</span></span>
-                <span>⭐ 警戒: <span id="levelNum">1</span></span>
-            </div>
-            <div class="level-box">⏳ 下一波: <span id="refillTimer">--</span> s</div>
-            <button class="game-btn" id="pauseGameBtn">⏸️ 暂停</button>
-            <button class="game-btn" id="resetGameBtn">🔄 重来</button>
-            <button class="game-btn" id="backHomeBtn">🏠 主页</button>
-            <button class="game-btn" id="gameFullscreenBtn">⛶ 全屏</button>
-        </div>
-        <div class="instruction">
-            🖱️ 鼠标/手指滑动控制战车 | 点击画面/空格/发射按钮拦截 | 💥 炸弹触碰禁区即失败
-        </div>
+<div class="game-container" id="gameContainer">
+  <canvas id="gameCanvas" width="1000" height="700"></canvas>
+  <div class="info-panel">
+    <div class="stats">
+      <span>🎯 拦截: <span id="scoreValue">0</span></span>
+      <span>💣 残余: <span id="bombsLeft">0</span></span>
+      <span>⭐ 警戒: <span id="levelNum">1</span></span>
     </div>
+    <div class="level-box">⏳ 下一波: <span id="refillTimer">--</span> s</div>
+    <button class="game-btn" id="pauseGameBtn">⏸️ 暂停</button>
+    <button class="game-btn" id="resetGameBtn">🔄 重来</button>
+    <button class="game-btn" id="backHomeBtn">🏠 主页</button>
+    <button class="game-btn" id="gameFullscreenBtn">⛶ 全屏</button>
+  </div>
+  <div class="instruction">
+    🖱️ 鼠标/手指滑动控制战车 | 点击画面/空格/发射按钮拦截 | 💥 炸弹触碰禁区即失败
+  </div>
+</div>
 
-    <!-- 手机专用控制栏 -->
-    <div class="mobile-controls" id="mobileControls">
-        <div class="ctrl-left-group">
-            <div class="ctrl-btn ctrl-left" id="btnLeft">◀</div>
-            <div class="ctrl-btn ctrl-right" id="btnRight">▶</div>
-        </div>
-        <div class="ctrl-right-group">
-            <div class="ctrl-btn ctrl-shoot" id="btnShoot">🚀</div>
-        </div>
-    </div>
+<div class="mobile-controls" id="mobileControls">
+  <div class="ctrl-left-group">
+    <div class="ctrl-btn ctrl-left" id="btnLeft">◀</div>
+    <div class="ctrl-btn ctrl-right" id="btnRight">▶</div>
+  </div>
+  <div class="ctrl-right-group">
+    <div class="ctrl-btn ctrl-shoot" id="btnShoot">🚀</div>
+  </div>
+</div>
 
-    <!-- 失败弹窗 -->
-    <div class="game-over-modal" id="gameOverModal">
-        <div class="modal-content" id="draggableModal">
-            <div class="drag-handle" id="dragHandle">⋮⋮ 拖动</div>
-            <h2>💀 防线崩溃</h2>
-            <p>炸弹侵入居民区，任务失败</p>
-            <p>🎯 最终拦截: <span id="finalScore">0</span></p>
-            <p>⚡ 最高警戒: <span id="finalLevel">1</span></p>
-            <div>
-                <button class="home-btn" id="restartBtn">🔄 重新挑战</button>
-                <button class="home-btn" id="backHomeFromOverBtn">🏠 返回主页</button>
-            </div>
-        </div>
+<div class="game-over-modal" id="gameOverModal">
+  <div class="modal-content" id="draggableModal">
+    <div class="drag-handle" id="dragHandle">⋮⋮ 拖动</div>
+    <h2>💀 防线崩溃</h2>
+    <p>炸弹侵入居民区，任务失败</p>
+    <p>🎯 最终拦截: <span id="finalScore">0</span></p>
+    <p>⚡ 最高警戒: <span id="finalLevel">1</span></p>
+    <div>
+      <button class="home-btn" id="restartBtn">🔄 重新挑战</button>
+      <button class="home-btn" id="backHomeFromOverBtn">🏠 返回主页</button>
     </div>
+  </div>
+</div>
 
-    <!-- 返回确认弹窗 -->
-    <div class="custom-confirm-modal" id="customConfirmModal">
-        <div class="confirm-content">
-            <h3>⚠️ 终止任务</h3>
-            <p>返回主页将丢失当前战局，确定撤离吗？</p>
-            <div class="confirm-buttons">
-                <button class="confirm-btn" id="confirmYesBtn" style="background: linear-gradient(135deg, #ff3366, #ff6633); border: none; color: white; padding: 8px 20px; border-radius: 40px; margin: 5px;">✅ 确认撤离</button>
-                <button class="confirm-btn" id="confirmNoBtn" style="background: linear-gradient(135deg, #1e2a4a, #0a1a2a); border: 1px solid #0ff; color: #ccf; padding: 8px 20px; border-radius: 40px; margin: 5px;">❌ 继续战斗</button>
-            </div>
-        </div>
+<div class="custom-confirm-modal" id="customConfirmModal">
+  <div class="confirm-content">
+    <h3>⚠️ 终止任务</h3>
+    <p>返回主页将丢失当前战局，确定撤离吗？</p>
+    <div>
+      <button class="home-btn" id="confirmYesBtn" style="background: linear-gradient(135deg, #ff3366, #ff6633); margin:5px;">✅ 确认撤离</button>
+      <button class="home-btn" id="confirmNoBtn" style="background: linear-gradient(135deg, #1e2a4a, #0a1a2a); border:1px solid #0ff; margin:5px;">❌ 继续战斗</button>
     </div>
+  </div>
+</div>
 
 <script>
-    (function(){
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const homePage = document.getElementById('homePage');
-        const gameContainer = document.getElementById('gameContainer');
-        const gameOverModal = document.getElementById('gameOverModal');
-        const customConfirmModal = document.getElementById('customConfirmModal');
-        const pauseBtn = document.getElementById('pauseGameBtn');
-        const btnLeft = document.getElementById('btnLeft');
-        const btnRight = document.getElementById('btnRight');
-        const btnShoot = document.getElementById('btnShoot');
-        
-        // 逻辑分辨率
-        const BASE_WIDTH = 1000;
-        const BASE_HEIGHT = 700;
-        const BOMB_START_Y = 40;
-        const AIR_DEFENSE_Y = 580;
-        const RESIDENTIAL_LINE_Y = 620;
-        const GROUND_Y = 680;
-        const AIR_MIN_X = 45;
-        const AIR_MAX_X = BASE_WIDTH - 45;
-        
-        let score = 0;
-        let currentLevel = 1;
-        let bombs = [];
-        let interceptors = [];
-        let gameActive = false;
-        let gameOverFlag = false;
-        let paused = false;
-        let levelUpPending = false;
-        
-        let airDefenseX = BASE_WIDTH/2;
-        let lastAirDefenseX = airDefenseX;
-        let airDefenseVelocity = 0;
-        let canShoot = true;
-        let shootCooldownFrames = 0;
-        
-        let bombWidth = 0;
-        let bombHeight = 32;
-        const MAX_BOMBS_PER_ROW = 10;
-        
-        let refillTimer = 0;
-        let refillInterval = 4.0;
-        
-        let scaleRatio = 1, offsetX = 0, offsetY = 0;
-        let animationId = null;
-        let wasPausedBeforeConfirm = false;
-        
-        // 手动控制移动定时器
-        let leftPressTimer = null;
-        let rightPressTimer = null;
-        const MOVE_STEP = 12;
-        
-        function moveLeft() {
-            if(!gameActive || gameOverFlag || paused) return;
-            airDefenseX = Math.max(AIR_MIN_X, airDefenseX - MOVE_STEP);
+  (function(){
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const homePage = document.getElementById('homePage');
+    const gameContainer = document.getElementById('gameContainer');
+    const gameOverModal = document.getElementById('gameOverModal');
+    const customConfirmModal = document.getElementById('customConfirmModal');
+    const pauseBtn = document.getElementById('pauseGameBtn');
+    const btnLeft = document.getElementById('btnLeft');
+    const btnRight = document.getElementById('btnRight');
+    const btnShoot = document.getElementById('btnShoot');
+
+    // 固定逻辑分辨率 1000x700，弹道区域上下延展感觉更好
+    const BASE_WIDTH = 1000;
+    const BASE_HEIGHT = 700;
+    const BOMB_START_Y = 40;
+    const AIR_DEFENSE_Y = 580;
+    const RESIDENTIAL_LINE_Y = 620;
+    const GROUND_Y = 680;
+    const AIR_MIN_X = 45;
+    const AIR_MAX_X = BASE_WIDTH - 45;
+
+    let score = 0, currentLevel = 1;
+    let bombs = [], interceptors = [];
+    let gameActive = false, gameOverFlag = false, paused = false, levelUpPending = false;
+    let airDefenseX = BASE_WIDTH/2, lastAirDefenseX = airDefenseX, airDefenseVelocity = 0;
+    let canShoot = true, shootCooldownFrames = 0;
+    let bombWidth = 0, bombHeight = 32;
+    const MAX_BOMBS_PER_ROW = 10;
+    let refillTimer = 0, refillInterval = 4.0;
+    let scaleRatio = 1, offsetX = 0, offsetY = 0;
+    let animationId = null, wasPausedBeforeConfirm = false;
+    let leftPressTimer = null, rightPressTimer = null;
+    const MOVE_STEP = 12;
+
+    // 移动端连续移动
+    function moveLeft() { if(gameActive && !gameOverFlag && !paused) airDefenseX = Math.max(AIR_MIN_X, airDefenseX - MOVE_STEP); }
+    function moveRight() { if(gameActive && !gameOverFlag && !paused) airDefenseX = Math.min(AIR_MAX_X, airDefenseX + MOVE_STEP); }
+    function startLeftMove() { if(gameActive && !gameOverFlag && !paused) { if(leftPressTimer) clearInterval(leftPressTimer); leftPressTimer = setInterval(moveLeft, 28); } }
+    function stopLeftMove() { if(leftPressTimer) { clearInterval(leftPressTimer); leftPressTimer = null; } }
+    function startRightMove() { if(gameActive && !gameOverFlag && !paused) { if(rightPressTimer) clearInterval(rightPressTimer); rightPressTimer = setInterval(moveRight, 28); } }
+    function stopRightMove() { if(rightPressTimer) { clearInterval(rightPressTimer); rightPressTimer = null; } }
+
+    function bindMobileControls() {
+      if(btnLeft) {
+        btnLeft.addEventListener('mousedown', startLeftMove); btnLeft.addEventListener('mouseup', stopLeftMove); btnLeft.addEventListener('mouseleave', stopLeftMove);
+        btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); startLeftMove(); });
+        btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); stopLeftMove(); });
+      }
+      if(btnRight) {
+        btnRight.addEventListener('mousedown', startRightMove); btnRight.addEventListener('mouseup', stopRightMove); btnRight.addEventListener('mouseleave', stopRightMove);
+        btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); startRightMove(); });
+        btnRight.addEventListener('touchend', (e) => { e.preventDefault(); stopRightMove(); });
+      }
+      if(btnShoot) {
+        btnShoot.addEventListener('click', (e) => { e.preventDefault(); shootProjectile(); });
+        btnShoot.addEventListener('touchstart', (e) => { e.preventDefault(); shootProjectile(); });
+      }
+    }
+
+    function updateCanvasScale() {
+      if(!gameContainer) return;
+      const containerWidth = gameContainer.clientWidth - 20;
+      let maxHeight = window.innerHeight * 0.7;
+      if(window.innerWidth > window.innerHeight) maxHeight = window.innerHeight * 0.82;
+      else maxHeight = window.innerHeight * 0.68;
+      const ratioW = containerWidth / BASE_WIDTH;
+      const ratioH = maxHeight / BASE_HEIGHT;
+      scaleRatio = Math.min(ratioW, ratioH, 1.25);
+      const displayWidth = BASE_WIDTH * scaleRatio;
+      const displayHeight = BASE_HEIGHT * scaleRatio;
+      canvas.style.width = `${displayWidth}px`;
+      canvas.style.height = `${displayHeight}px`;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      offsetX = (canvas.clientWidth - displayWidth) / 2;
+      offsetY = (canvas.clientHeight - displayHeight) / 2;
+    }
+
+    function getCanvasCoords(clientX, clientY) {
+      const rect = canvas.getBoundingClientRect();
+      let x = (clientX - rect.left - offsetX) / scaleRatio;
+      let y = (clientY - rect.top - offsetY) / scaleRatio;
+      return { x: Math.min(BASE_WIDTH, Math.max(0, x)), y: Math.min(BASE_HEIGHT, Math.max(0, y)) };
+    }
+
+    function handleMove(clientX, clientY) {
+      if(!gameActive || gameOverFlag || paused) return;
+      const pos = getCanvasCoords(clientX, clientY);
+      airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, pos.x));
+    }
+
+    function onPointerMove(e) {
+      e.preventDefault();
+      let cx, cy;
+      if(e.touches) { cx = e.touches[0].clientX; cy = e.touches[0].clientY; }
+      else { cx = e.clientX; cy = e.clientY; }
+      if(cx && cy) handleMove(cx, cy);
+    }
+
+    function shootProjectile() {
+      if(!gameActive || gameOverFlag || paused || !canShoot) return;
+      let speedX = Math.min(14, Math.max(-14, airDefenseVelocity));
+      let vx = speedX * 1.02 + (Math.random() - 0.5) * 0.9;
+      let vy = -12.8 + (Math.random() - 0.5) * 0.6;
+      interceptors.push({ x: airDefenseX, y: AIR_DEFENSE_Y - 18, vx, vy, active: true });
+      canShoot = false;
+      shootCooldownFrames = 8;
+      if(navigator.vibrate) navigator.vibrate(20);
+    }
+
+    function updateUI() {
+      document.getElementById('scoreValue').innerText = score;
+      document.getElementById('levelNum').innerText = currentLevel;
+      const activeCount = bombs.filter(b => b.active).length;
+      document.getElementById('bombsLeft').innerText = activeCount;
+    }
+
+    function resetRefillTimerDynamic() {
+      let base = Math.max(2.2, 5.0 - (currentLevel-1) * 0.55);
+      base = Math.min(base, 5.2);
+      refillInterval = base;
+      refillTimer = refillInterval;
+    }
+
+    function generateRandomBombRow(yPos) {
+      const bombCount = Math.floor(Math.random() * (MAX_BOMBS_PER_ROW - 2)) + 3;
+      const startX = 40;
+      bombWidth = (BASE_WIDTH - 80) / MAX_BOMBS_PER_ROW;
+      let fallSpeed = 0.85 + (currentLevel - 1) * 0.18;
+      fallSpeed = Math.min(fallSpeed, 3.3);
+      const columns = new Array(MAX_BOMBS_PER_ROW).fill(false);
+      let placed = 0;
+      while(placed < bombCount) { const col = Math.floor(Math.random() * MAX_BOMBS_PER_ROW); if(!columns[col]) { columns[col]=true; placed++; } }
+      const bombsRow = [];
+      for(let col=0; col<MAX_BOMBS_PER_ROW; col++) {
+        if(columns[col]) {
+          let x = startX + col * bombWidth;
+          bombsRow.push({ x, y: yPos, w: bombWidth-3, h: bombHeight-2, active: true, speedY: fallSpeed, falling: true, glowPhase: Math.random() * Math.PI*2 });
         }
-        function moveRight() {
-            if(!gameActive || gameOverFlag || paused) return;
-            airDefenseX = Math.min(AIR_MAX_X, airDefenseX + MOVE_STEP);
-        }
-        
-        function startLeftMove() { if(gameActive && !gameOverFlag && !paused) { leftPressTimer = setInterval(moveLeft, 30); } }
-        function stopLeftMove() { if(leftPressTimer) { clearInterval(leftPressTimer); leftPressTimer = null; } }
-        function startRightMove() { if(gameActive && !gameOverFlag && !paused) { rightPressTimer = setInterval(moveRight, 30); } }
-        function stopRightMove() { if(rightPressTimer) { clearInterval(rightPressTimer); rightPressTimer = null; } }
-        
-        function bindMobileControls() {
-            if(!btnLeft || !btnRight || !btnShoot) return;
-            btnLeft.addEventListener('mousedown', startLeftMove);
-            btnLeft.addEventListener('mouseup', stopLeftMove);
-            btnLeft.addEventListener('mouseleave', stopLeftMove);
-            btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); startLeftMove(); });
-            btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); stopLeftMove(); });
-            
-            btnRight.addEventListener('mousedown', startRightMove);
-            btnRight.addEventListener('mouseup', stopRightMove);
-            btnRight.addEventListener('mouseleave', stopRightMove);
-            btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); startRightMove(); });
-            btnRight.addEventListener('touchend', (e) => { e.preventDefault(); stopRightMove(); });
-            
-            btnShoot.addEventListener('click', (e) => { e.preventDefault(); shootProjectile(); });
-            btnShoot.addEventListener('touchstart', (e) => { e.preventDefault(); shootProjectile(); });
-        }
-        
-        // 横竖屏自适应缩放，并保持canvas显示区域尽可能延展
-        function updateCanvasScale() {
-            if(!gameContainer) return;
-            const containerWidth = gameContainer.clientWidth - 20;
-            let maxHeight = window.innerHeight * 0.72;
-            // 横屏时给予更大高度占比
-            if (window.innerWidth > window.innerHeight) {
-                maxHeight = window.innerHeight * 0.82;
-            } else {
-                // 手机竖屏模式，允许canvas高度更具延展性，占屏幕更多比例
-                maxHeight = window.innerHeight * 0.68;
-            }
-            const widthRatio = containerWidth / BASE_WIDTH;
-            const heightRatio = maxHeight / BASE_HEIGHT;
-            scaleRatio = Math.min(widthRatio, heightRatio, 1.2); // 稍放宽容许
-            const displayWidth = BASE_WIDTH * scaleRatio;
-            const displayHeight = BASE_HEIGHT * scaleRatio;
-            canvas.style.width = `${displayWidth}px`;
-            canvas.style.height = `${displayHeight}px`;
-            offsetX = (canvas.clientWidth - displayWidth) / 2;
-            offsetY = (canvas.clientHeight - displayHeight) / 2;
-        }
-        
-        function getCanvasCoords(clientX, clientY) {
-            const rect = canvas.getBoundingClientRect();
-            const x = (clientX - rect.left - offsetX) / scaleRatio;
-            const y = (clientY - rect.top - offsetY) / scaleRatio;
-            return { x: Math.max(0, Math.min(BASE_WIDTH, x)), y: Math.max(0, Math.min(BASE_HEIGHT, y)) };
-        }
-        
-        function handleMove(clientX, clientY) {
-            if(!gameActive || gameOverFlag || paused) return;
-            const pos = getCanvasCoords(clientX, clientY);
-            airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, pos.x));
-        }
-        
-        function onPointerMove(e) {
-            e.preventDefault();
-            let clientX, clientY;
-            if(e.touches) {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
-            if(clientX && clientY) handleMove(clientX, clientY);
-        }
-        
-        function shootProjectile() {
-            if(!gameActive || gameOverFlag || paused || !canShoot) return;
-            let speedX = Math.min(14, Math.max(-14, airDefenseVelocity));
-            const startX = airDefenseX, startY = AIR_DEFENSE_Y - 18;
-            let vx = speedX * 1.02 + (Math.random() - 0.5) * 0.9;
-            let vy = -12.5 + (Math.random() - 0.5) * 0.7;
-            interceptors.push({ x: startX, y: startY, vx, vy, active: true });
-            canShoot = false;
-            shootCooldownFrames = 8;
-            if(navigator.vibrate) navigator.vibrate(20);
-        }
-        
-        function updateUI() {
-            document.getElementById('scoreValue').innerText = score;
-            document.getElementById('levelNum').innerText = currentLevel;
-            const activeCount = bombs.filter(b => b.active).length;
-            document.getElementById('bombsLeft').innerText = activeCount;
-        }
-        
-        function resetRefillTimerDynamic() {
-            let base = Math.max(2.2, 5.0 - (currentLevel-1) * 0.55);
-            base = Math.min(base, 5.0);
-            refillInterval = base;
-            refillTimer = refillInterval;
-        }
-        
-        function generateRandomBombRow(yPos) {
-            const bombCount = Math.floor(Math.random() * (MAX_BOMBS_PER_ROW - 2)) + 3;
-            const startX = 40;
-            bombWidth = (BASE_WIDTH - 80) / MAX_BOMBS_PER_ROW;
-            let fallSpeed = 0.85 + (currentLevel - 1) * 0.18;
-            fallSpeed = Math.min(fallSpeed, 3.3);
-            const columns = new Array(MAX_BOMBS_PER_ROW).fill(false);
-            let placed = 0;
-            while(placed < bombCount) {
-                const col = Math.floor(Math.random() * MAX_BOMBS_PER_ROW);
-                if(!columns[col]) { columns[col] = true; placed++; }
-            }
-            const bombsRow = [];
-            for(let col = 0; col < MAX_BOMBS_PER_ROW; col++) {
-                if(columns[col]) {
-                    let x = startX + col * bombWidth;
-                    bombsRow.push({
-                        x, y: yPos, w: bombWidth - 3, h: bombHeight - 2,
-                        active: true, speedY: fallSpeed, falling: true,
-                        glowPhase: Math.random() * Math.PI * 2
-                    });
-                }
-            }
-            return bombsRow;
-        }
-        
-        function initBombsWave() {
-            bombs = [];
-            const rowGap = bombHeight + 8;
-            for(let row = 0; row < 3; row++) {
-                bombs.push(...generateRandomBombRow(BOMB_START_Y + row * rowGap));
-            }
-            updateUI();
-        }
-        
-        function addRandomTopRow() {
-            if(gameOverFlag || !gameActive) return;
-            const shiftY = bombHeight + 8;
-            for(let bomb of bombs) bomb.y += shiftY;
-            bombs = bombs.filter(b => b.y + b.h < BASE_HEIGHT + 120);
-            bombs.push(...generateRandomBombRow(BOMB_START_Y));
-            updateUI();
-        }
-        
-        function performRefill() {
-            if(gameOverFlag || !gameActive || paused) return;
-            addRandomTopRow();
-            resetRefillTimerDynamic();
-        }
-        
-        function ensureAllFalling() { for(let b of bombs) if(b.active) b.falling = true; }
-        
-        function advanceToNextLevel() {
-            if(gameOverFlag) return;
-            currentLevel++;
-            updateUI();
-            interceptors = [];
-            airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, BASE_WIDTH/2));
-            lastAirDefenseX = airDefenseX;
-            airDefenseVelocity = 0;
-            bombs = [];
-            initBombsWave();
-            ensureAllFalling();
-            resetRefillTimerDynamic();
-            canShoot = true;
-            shootCooldownFrames = 0;
-            levelUpPending = false;
-            updateUI();
-        }
-        
-        function checkClearAndLevelUp() {
-            if(levelUpPending || gameOverFlag) return;
-            if(!bombs.some(b => b.active) && bombs.length > 0) {
-                levelUpPending = true;
-                advanceToNextLevel();
-            }
-        }
-        
-        function handleInterceptorHit(inter, idx) {
-            const bomb = bombs[idx];
-            if(!bomb.active) return false;
-            bomb.active = false;
-            score += 10;
-            updateUI();
-            inter.active = false;
+      }
+      return bombsRow;
+    }
+
+    function initBombsWave() {
+      bombs = [];
+      const rowGap = bombHeight + 8;
+      for(let row=0; row<3; row++) bombs.push(...generateRandomBombRow(BOMB_START_Y + row * rowGap));
+      updateUI();
+    }
+
+    function addRandomTopRow() {
+      if(gameOverFlag || !gameActive) return;
+      const shiftY = bombHeight + 8;
+      for(let bomb of bombs) bomb.y += shiftY;
+      bombs = bombs.filter(b => b.y + b.h < BASE_HEIGHT + 120);
+      bombs.push(...generateRandomBombRow(BOMB_START_Y));
+      updateUI();
+    }
+
+    function performRefill() { if(!gameOverFlag && gameActive && !paused) { addRandomTopRow(); resetRefillTimerDynamic(); } }
+
+    function advanceToNextLevel() {
+      if(gameOverFlag) return;
+      currentLevel++;
+      updateUI();
+      interceptors = [];
+      airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, BASE_WIDTH/2));
+      lastAirDefenseX = airDefenseX;
+      bombs = [];
+      initBombsWave();
+      for(let b of bombs) b.falling = true;
+      resetRefillTimerDynamic();
+      canShoot = true; shootCooldownFrames = 0;
+      levelUpPending = false;
+      updateUI();
+    }
+
+    function checkClearAndLevelUp() {
+      if(levelUpPending || gameOverFlag) return;
+      if(!bombs.some(b => b.active) && bombs.length > 0) { levelUpPending = true; advanceToNextLevel(); }
+    }
+
+    function updateInterceptors() {
+      for(let i=0; i<interceptors.length; i++) {
+        const inter = interceptors[i];
+        if(!inter.active) { interceptors.splice(i,1); i--; continue; }
+        inter.x += inter.vx; inter.y += inter.vy;
+        if(inter.y+10 < -80 || inter.y-10 > BASE_HEIGHT+150 || inter.x < -100 || inter.x > BASE_WIDTH+100) { inter.active=false; interceptors.splice(i,1); i--; continue; }
+        let hit = false;
+        for(let idx=0; idx<bombs.length; idx++) {
+          const b = bombs[idx];
+          if(!b.active) continue;
+          if(inter.x+8 > b.x && inter.x-8 < b.x+b.w && inter.y+8 > b.y && inter.y-8 < b.y+b.h) {
+            b.active = false; score += 10; updateUI(); inter.active = false; hit = true;
             checkClearAndLevelUp();
-            return true;
+            break;
+          }
         }
-        
-        function updateInterceptors() {
-            for(let i=0; i<interceptors.length; i++) {
-                const inter = interceptors[i];
-                if(!inter.active) { interceptors.splice(i,1); i--; continue; }
-                inter.x += inter.vx;
-                inter.y += inter.vy;
-                if(inter.y + 10 < -80 || inter.y - 10 > BASE_HEIGHT+150 || inter.x < -100 || inter.x > BASE_WIDTH+100) {
-                    inter.active = false;
-                    interceptors.splice(i,1); i--;
-                    continue;
-                }
-                let hit = false;
-                for(let idx=0; idx<bombs.length; idx++) {
-                    const b = bombs[idx];
-                    if(!b.active) continue;
-                    if(inter.x + 8 > b.x && inter.x - 8 < b.x + b.w && inter.y + 8 > b.y && inter.y - 8 < b.y + b.h) {
-                        handleInterceptorHit(inter, idx);
-                        hit = true;
-                        break;
-                    }
-                }
-                if(hit) { interceptors.splice(i,1); i--; }
-            }
+        if(hit) { interceptors.splice(i,1); i--; }
+      }
+    }
+
+    function updateBombsMovement(deltaSec) {
+      if(gameOverFlag) return;
+      for(let bomb of bombs) if(bomb.active && bomb.falling) bomb.y += bomb.speedY * deltaSec * 60;
+      for(let bomb of bombs) {
+        if(bomb.active && bomb.falling && (bomb.y + bomb.h) >= RESIDENTIAL_LINE_Y) {
+          gameOverFlag = true; gameActive = false;
+          document.getElementById('finalScore').innerText = score;
+          document.getElementById('finalLevel').innerText = currentLevel;
+          gameOverModal.style.display = 'flex';
+          return;
         }
-        
-        function updateBombsMovement(deltaSec) {
-            if(gameOverFlag) return;
-            for(let bomb of bombs) {
-                if(!bomb.active || !bomb.falling) continue;
-                bomb.y += bomb.speedY * deltaSec * 60;
-                if(bomb.y > BASE_HEIGHT + 200) bomb.active = false;
-            }
-            for(let bomb of bombs) {
-                if(bomb.active && bomb.falling && (bomb.y + bomb.h) >= RESIDENTIAL_LINE_Y) {
-                    gameOverFlag = true; gameActive = false;
-                    document.getElementById('finalScore').innerText = score;
-                    document.getElementById('finalLevel').innerText = currentLevel;
-                    gameOverModal.style.display = 'flex';
-                    return;
-                }
-            }
-            updateUI();
-        }
-        
-        function updateLogic(deltaSec) {
-            if(!gameActive || gameOverFlag || paused) return;
-            airDefenseVelocity = airDefenseX - lastAirDefenseX;
-            lastAirDefenseX = airDefenseX;
-            if(Math.abs(airDefenseVelocity) > 20) airDefenseVelocity *= 0.9;
-            if(shootCooldownFrames > 0 && --shootCooldownFrames === 0) canShoot = true;
-            if(refillTimer > 0) {
-                refillTimer -= deltaSec;
-                if(refillTimer <= 0) { refillTimer = 0; performRefill(); }
-            }
-            document.getElementById('refillTimer').innerText = refillTimer > 0 ? refillTimer.toFixed(1) : "0.0";
-            updateBombsMovement(deltaSec);
-            updateInterceptors();
-            airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, airDefenseX));
-        }
-        
-        // 渲染函数精简保留原有图形
-        function drawBombShape(bomb) {
-            const cx = bomb.x + bomb.w/2, cy = bomb.y + bomb.h/2, rx = bomb.w/2, ry = bomb.h/2;
-            ctx.save();
-            ctx.shadowBlur = 6; ctx.shadowColor = "#ff5500";
-            const grad = ctx.createLinearGradient(bomb.x, bomb.y, bomb.x+bomb.w, bomb.y+bomb.h);
-            grad.addColorStop(0, "#4a2a1a"); grad.addColorStop(1, "#8a3a1a");
-            ctx.fillStyle = grad;
-            ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = "#dd8844";
-            ctx.beginPath(); ctx.rect(cx-4, cy-ry-4, 8, 8); ctx.fill();
-            const flicker = (Date.now() * 0.012 + bomb.glowPhase) % (Math.PI*2);
-            ctx.fillStyle = `rgba(255, 80, 30, ${0.8 + Math.sin(flicker)*0.2})`;
-            ctx.beginPath(); ctx.ellipse(cx, cy-ry-6, 4, 6, 0, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = "#ffcc88";
-            ctx.font = `${Math.floor(bomb.h*0.5)}px "Segoe UI"`;
-            ctx.fillText("💣", cx-10, cy+6);
-            ctx.restore();
-        }
-        function drawMissileLauncher() { /* 原样保留 */ 
-            const x = airDefenseX, y = AIR_DEFENSE_Y;
-            ctx.save(); ctx.shadowBlur = 0;
-            ctx.fillStyle = "#2a6a4a"; ctx.beginPath(); ctx.ellipse(x, y+6, 22, 12, 0, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = "#1e4a2e"; ctx.beginPath(); ctx.ellipse(x, y+4, 20, 10, 0, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = "#3a8a5a"; ctx.fillRect(x-18, y-8, 36, 14);
-            ctx.fillStyle = "#5aaa7a"; ctx.fillRect(x-10, y-14, 20, 10);
-            ctx.fillStyle = "#88cc88"; ctx.fillRect(x-7, y-12, 14, 6);
-            ctx.fillStyle = "#4a6e3a";
-            ctx.beginPath(); ctx.moveTo(x-8, y-18); ctx.lineTo(x, y-32); ctx.lineTo(x+8, y-18); ctx.fill();
-            ctx.fillStyle = "#d0d0e0";
-            ctx.beginPath(); ctx.moveTo(x-4, y-32); ctx.quadraticCurveTo(x, y-52, x+4, y-32); ctx.fill();
-            ctx.fillStyle = "#ff5555";
-            ctx.beginPath(); ctx.moveTo(x-3, y-48); ctx.lineTo(x, y-58); ctx.lineTo(x+3, y-48); ctx.fill();
-            for(let i=-2;i<=2;i++) { ctx.fillStyle = "#2a2a2a"; ctx.beginPath(); ctx.arc(x+i*8, y+10, 4, 0, Math.PI*2); ctx.fill(); }
-            ctx.fillStyle = "#88aaff"; ctx.beginPath(); ctx.arc(x+14, y-10, 4, 0, Math.PI*2); ctx.fill();
-            if(Math.abs(airDefenseVelocity) > 0.5) {
-                ctx.beginPath(); let arrowX = x + (airDefenseVelocity > 0 ? 32 : -32);
-                ctx.moveTo(x, y-20); ctx.lineTo(arrowX, y-12);
-                ctx.lineWidth = 2.5; ctx.strokeStyle = "#ffaa55"; ctx.stroke();
-            }
-            ctx.font = "bold 10px 'Orbitron'"; ctx.fillStyle = "#0ff";
-            ctx.fillText(`⚡ ${Math.abs(airDefenseVelocity).toFixed(1)}`, x-45, y-22);
-            ctx.restore();
-        }
-        function drawInterceptorMissile(inter) { /* 保留 */ 
-            ctx.save(); ctx.shadowBlur = 6; ctx.shadowColor = "#0ff";
-            ctx.beginPath(); ctx.moveTo(inter.x, inter.y-5); ctx.lineTo(inter.x+3, inter.y); ctx.lineTo(inter.x+2, inter.y+3);
-            ctx.lineTo(inter.x, inter.y+4); ctx.lineTo(inter.x-2, inter.y+3); ctx.lineTo(inter.x-3, inter.y);
-            ctx.fillStyle = "#4fc3f7"; ctx.fill();
-            ctx.fillStyle = "#ffaa44";
-            ctx.beginPath(); ctx.moveTo(inter.x, inter.y-6); ctx.lineTo(inter.x+2, inter.y-3); ctx.lineTo(inter.x-2, inter.y-3); ctx.fill();
-            ctx.restore();
-        }
-        function drawResidential() {
-            ctx.fillStyle = "rgba(220, 60, 50, 0.5)";
-            ctx.fillRect(0, RESIDENTIAL_LINE_Y, BASE_WIDTH, GROUND_Y - RESIDENTIAL_LINE_Y + 12);
-            ctx.fillStyle = "#ff8877"; ctx.font = "bold 16px 'Orbitron'"; ctx.textAlign = "center";
-            ctx.fillText("⚠️ 绝对禁区", BASE_WIDTH/2, RESIDENTIAL_LINE_Y + 24);
-            ctx.textAlign = "left";
-        }
-        function drawStars() {
-            for(let i=0;i<140;i++) { const starX = (i*131)%BASE_WIDTH, starY = (i*253)%(RESIDENTIAL_LINE_Y-50);
-                ctx.fillStyle = `rgba(255, 255, 200, ${0.2 + Math.sin(Date.now()*0.001 + i)*0.1})`;
-                ctx.beginPath(); ctx.arc(starX, starY, 1, 0, Math.PI*2); ctx.fill(); }
-        }
-        function draw() {
-            ctx.clearRect(0,0,BASE_WIDTH,BASE_HEIGHT);
-            ctx.fillStyle = "#03061a"; ctx.fillRect(0,0,BASE_WIDTH,BASE_HEIGHT);
-            drawStars();
-            for(let b of bombs) if(b.active) drawBombShape(b);
-            for(let i of interceptors) drawInterceptorMissile(i);
-            drawMissileLauncher(); drawResidential();
-            if(levelUpPending && !gameOverFlag){ ctx.font="bold 28px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.textAlign="center"; ctx.fillText("⚡ 等级提升 ⚡", BASE_WIDTH/2, 120); }
-            if(paused && gameActive && !gameOverFlag){ ctx.font="bold 36px 'Orbitron'"; ctx.fillStyle="#ffe5aa"; ctx.textAlign="center"; ctx.fillText("⏸ 暂停", BASE_WIDTH/2, BASE_HEIGHT/2); }
-            if(!gameActive && !gameOverFlag && gameContainer.style.display === 'block') { ctx.font="bold 28px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.textAlign="center"; ctx.fillText("⚡ 点击「开始防御」", BASE_WIDTH/2, BASE_HEIGHT/2); }
-            ctx.textAlign="left";
-        }
-        
-        function togglePause(){
-            if(!gameActive || gameOverFlag) return;
-            paused=!paused;
-            pauseBtn.innerHTML=paused?"▶️ 继续":"⏸️ 暂停";
-            if(paused) pauseBtn.classList.add("pause-btn-active");
-            else pauseBtn.classList.remove("pause-btn-active");
-            if(!paused) lastTimestamp=0;
-        }
-        function resetGame(){
-            gameActive = true; gameOverFlag = false; paused = false; levelUpPending = false;
-            score = 0; currentLevel = 1; interceptors = []; bombs = [];
-            canShoot = true; shootCooldownFrames = 0;
-            airDefenseX = BASE_WIDTH/2; lastAirDefenseX = airDefenseX; airDefenseVelocity = 0;
-            initBombsWave(); ensureAllFalling(); resetRefillTimerDynamic();
-            updateUI(); gameOverModal.style.display = 'none';
-            pauseBtn.innerHTML = "⏸️ 暂停"; pauseBtn.classList.remove("pause-btn-active");
-            lastTimestamp = 0;
-        }
-        function showGame(){
-            homePage.style.display = 'none';
-            gameContainer.style.display = 'block';
-            updateCanvasScale();
-            resetGame();
-            draw();
-        }
-        function backHomeWithConfirm(){
-            if(gameOverFlag){
-                if(animationId) cancelAnimationFrame(animationId);
-                window.location.href='index.html'; return;
-            }
-            wasPausedBeforeConfirm=paused;
-            if(!paused && gameActive) togglePause();
-            customConfirmModal.style.display='flex';
-            const yesBtn=document.getElementById('confirmYesBtn'), noBtn=document.getElementById('confirmNoBtn');
-            yesBtn.onclick=()=>{ customConfirmModal.style.display='none'; if(animationId) cancelAnimationFrame(animationId); window.location.href='index.html'; };
-            noBtn.onclick=()=>{ customConfirmModal.style.display='none'; if(!wasPausedBeforeConfirm && paused && gameActive) togglePause(); lastTimestamp=0; };
-        }
-        function toggleFullscreen(){
-            if(!document.fullscreenElement) document.documentElement.requestFullscreen();
-            else document.exitFullscreen();
-        }
-        function bindEvents(){
-            document.getElementById('startGameBtn')?.addEventListener('click', showGame);
-            document.getElementById('fullscreenBtn')?.addEventListener('click', toggleFullscreen);
-            document.getElementById('resetGameBtn')?.addEventListener('click', () => { if(gameContainer.style.display === 'block') resetGame(); });
-            document.getElementById('backHomeBtn')?.addEventListener('click', backHomeWithConfirm);
-            document.getElementById('gameFullscreenBtn')?.addEventListener('click', toggleFullscreen);
-            document.getElementById('restartBtn')?.addEventListener('click', () => { resetGame(); gameOverModal.style.display = 'none'; });
-            document.getElementById('backHomeFromOverBtn')?.addEventListener('click', backHomeWithConfirm);
-            pauseBtn?.addEventListener('click', togglePause);
-            bindMobileControls();
-            canvas.addEventListener('mousemove', onPointerMove);
-            canvas.addEventListener('touchmove', onPointerMove, { passive: false });
-            canvas.addEventListener('touchstart', (e) => { e.preventDefault(); if(e.touches.length) handleMove(e.touches[0].clientX, e.touches[0].clientY); });
-            canvas.addEventListener('click', (e)=>{ e.preventDefault(); shootProjectile(); });
-            window.addEventListener('keydown',(e)=>{
-                if((e.code==='Space'||e.code==='Enter') && gameContainer.style.display === 'block'){ e.preventDefault(); shootProjectile(); }
-                if(e.code==='KeyP' && gameContainer.style.display === 'block'){ e.preventDefault(); togglePause(); }
-                if(e.code==='ArrowLeft' && gameContainer.style.display === 'block'){ e.preventDefault(); moveLeft(); }
-                if(e.code==='ArrowRight' && gameContainer.style.display === 'block'){ e.preventDefault(); moveRight(); }
-            });
-            window.addEventListener('resize', () => { if(gameContainer.style.display === 'block') { updateCanvasScale(); draw(); } });
-            window.addEventListener('orientationchange', () => { setTimeout(() => { if(gameContainer.style.display === 'block') { updateCanvasScale(); draw(); } }, 50); });
-            initDragModal();
-        }
-        function initDragModal(){
-            const modal=document.getElementById('draggableModal'), handle=document.getElementById('dragHandle');
-            let drag=false,sX,sY,iL,iT;
-            handle.addEventListener('mousedown',(e)=>{ e.preventDefault(); drag=true; sX=e.clientX; sY=e.clientY;
-                const rect=modal.getBoundingClientRect(),pr=modal.parentElement.getBoundingClientRect();
-                iL=rect.left-pr.left; iT=rect.top-pr.top;
-                modal.style.position='absolute'; modal.style.left=iL+'px'; modal.style.top=iT+'px';
-                document.body.style.userSelect='none';
-            });
-            window.addEventListener('mousemove',(e)=>{ if(!drag) return; let nl=iL+(e.clientX-sX), nt=iT+(e.clientY-sY);
-                const pr=modal.parentElement.getBoundingClientRect(), mr=modal.getBoundingClientRect();
-                nl=Math.min(Math.max(nl,8),pr.width-mr.width-8); nt=Math.min(Math.max(nt,8),pr.height-mr.height-8);
-                modal.style.left=nl+'px'; modal.style.top=nt+'px';
-            });
-            window.addEventListener('mouseup',()=>{ drag=false; document.body.style.userSelect=''; });
-        }
-        let lastTimestamp=0;
-        function gameLoop(now){
-            if(!lastTimestamp) lastTimestamp=now;
-            let delta=Math.min(0.033,(now-lastTimestamp)/1000);
-            if(delta<=0.001) delta=0.016;
-            lastTimestamp=now;
-            updateLogic(delta);
-            draw();
-            animationId=requestAnimationFrame(gameLoop);
-        }
-        function init(){
-            bindEvents();
-            updateCanvasScale();
-            animationId=requestAnimationFrame(gameLoop);
-            // 动态修复视口高度 (解决移动端地址栏问题)
-            const setVH = () => { let vh = window.innerHeight * 0.01; document.documentElement.style.setProperty('--vh', `${vh}px`); };
-            setVH(); window.addEventListener('resize', setVH);
-        }
-        init();
-    })();
+      }
+      updateUI();
+    }
+
+    let lastTimestamp = 0;
+    function updateLogic(deltaSec) {
+      if(!gameActive || gameOverFlag || paused) return;
+      airDefenseVelocity = airDefenseX - lastAirDefenseX;
+      lastAirDefenseX = airDefenseX;
+      if(shootCooldownFrames > 0 && --shootCooldownFrames === 0) canShoot = true;
+      if(refillTimer > 0) { refillTimer -= deltaSec; if(refillTimer <= 0) { refillTimer = 0; performRefill(); } }
+      document.getElementById('refillTimer').innerText = refillTimer > 0 ? refillTimer.toFixed(1) : "0.0";
+      updateBombsMovement(deltaSec);
+      updateInterceptors();
+      airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, airDefenseX));
+    }
+
+    // 绘图函数精简保持风格
+    function drawBombShape(bomb) {
+      ctx.save(); ctx.shadowBlur=6; ctx.shadowColor="#ff5500";
+      const grad = ctx.createLinearGradient(bomb.x,bomb.y,bomb.x+bomb.w,bomb.y+bomb.h);
+      grad.addColorStop(0,"#4a2a1a"); grad.addColorStop(1,"#8a3a1a");
+      ctx.fillStyle=grad; ctx.beginPath(); ctx.ellipse(bomb.x+bomb.w/2,bomb.y+bomb.h/2,bomb.w/2,bomb.h/2,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#dd8844"; ctx.fillRect(bomb.x+bomb.w/2-4,bomb.y+bomb.h/2-bomb.h/2-4,8,8);
+      ctx.fillStyle=`rgba(255,80,30,0.9)`; ctx.beginPath(); ctx.ellipse(bomb.x+bomb.w/2,bomb.y+bomb.h/2-bomb.h/2-6,4,6,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#ffcc88"; ctx.font=`${Math.floor(bomb.h*0.5)}px "Segoe UI"`; ctx.fillText("💣",bomb.x+bomb.w/2-10,bomb.y+bomb.h/2+6);
+      ctx.restore();
+    }
+    function drawMissileLauncher() {
+      const x=airDefenseX, y=AIR_DEFENSE_Y;
+      ctx.save(); ctx.fillStyle="#2a6a4a"; ctx.beginPath(); ctx.ellipse(x,y+6,22,12,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#1e4a2e"; ctx.beginPath(); ctx.ellipse(x,y+4,20,10,0,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#3a8a5a"; ctx.fillRect(x-18,y-8,36,14);
+      ctx.fillStyle="#88cc88"; ctx.fillRect(x-7,y-12,14,6);
+      ctx.fillStyle="#4a6e3a"; ctx.beginPath(); ctx.moveTo(x-8,y-18); ctx.lineTo(x,y-32); ctx.lineTo(x+8,y-18); ctx.fill();
+      ctx.fillStyle="#ff5555"; ctx.beginPath(); ctx.moveTo(x-3,y-48); ctx.lineTo(x,y-58); ctx.lineTo(x+3,y-48); ctx.fill();
+      ctx.fillStyle="#88aaff"; ctx.beginPath(); ctx.arc(x+14,y-10,4,0,Math.PI*2); ctx.fill();
+      ctx.font="bold 10px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.fillText(`⚡ ${Math.abs(airDefenseVelocity).toFixed(1)}`, x-45, y-22);
+      ctx.restore();
+    }
+    function drawInterceptorMissile(inter) {
+      ctx.save(); ctx.shadowBlur=5; ctx.shadowColor="#0ff";
+      ctx.beginPath(); ctx.moveTo(inter.x,inter.y-5); ctx.lineTo(inter.x+3,inter.y); ctx.lineTo(inter.x+2,inter.y+3); ctx.lineTo(inter.x,inter.y+4); ctx.lineTo(inter.x-2,inter.y+3); ctx.lineTo(inter.x-3,inter.y); ctx.fillStyle="#4fc3f7"; ctx.fill();
+      ctx.fillStyle="#ffaa44"; ctx.beginPath(); ctx.moveTo(inter.x,inter.y-6); ctx.lineTo(inter.x+2,inter.y-3); ctx.lineTo(inter.x-2,inter.y-3); ctx.fill();
+      ctx.restore();
+    }
+    function drawResidential() { ctx.fillStyle="rgba(220,60,50,0.45)"; ctx.fillRect(0,RESIDENTIAL_LINE_Y,BASE_WIDTH,GROUND_Y-RESIDENTIAL_LINE_Y+12); ctx.fillStyle="#ff8877"; ctx.font="bold 16px 'Orbitron'"; ctx.textAlign="center"; ctx.fillText("⚠️ 绝对禁区",BASE_WIDTH/2,RESIDENTIAL_LINE_Y+24); ctx.textAlign="left"; }
+    function drawStars() { for(let i=0;i<140;i++) { const starX=(i*131)%BASE_WIDTH, starY=(i*253)%(RESIDENTIAL_LINE_Y-50); ctx.fillStyle=`rgba(255,255,200,${0.2+Math.sin(Date.now()*0.001+i)*0.1})`; ctx.beginPath(); ctx.arc(starX,starY,1,0,Math.PI*2); ctx.fill(); } }
+    function draw() {
+      ctx.clearRect(0,0,BASE_WIDTH,BASE_HEIGHT); ctx.fillStyle="#03061a"; ctx.fillRect(0,0,BASE_WIDTH,BASE_HEIGHT);
+      drawStars();
+      for(let b of bombs) if(b.active) drawBombShape(b);
+      for(let i of interceptors) drawInterceptorMissile(i);
+      drawMissileLauncher(); drawResidential();
+      if(levelUpPending && !gameOverFlag){ ctx.font="bold 28px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.textAlign="center"; ctx.fillText("⚡ 等级提升 ⚡", BASE_WIDTH/2, 120); }
+      if(paused && gameActive && !gameOverFlag){ ctx.font="bold 36px 'Orbitron'"; ctx.fillStyle="#ffe5aa"; ctx.textAlign="center"; ctx.fillText("⏸ 暂停", BASE_WIDTH/2, BASE_HEIGHT/2); }
+      ctx.textAlign="left";
+    }
+
+    function togglePause(){
+      if(!gameActive || gameOverFlag) return;
+      paused=!paused;
+      pauseBtn.innerHTML=paused?"▶️ 继续":"⏸️ 暂停";
+      if(paused) pauseBtn.classList.add("pause-btn-active");
+      else pauseBtn.classList.remove("pause-btn-active");
+      if(!paused) lastTimestamp=0;
+    }
+    function resetGame(){
+      gameActive=true; gameOverFlag=false; paused=false; levelUpPending=false;
+      score=0; currentLevel=1; interceptors=[]; bombs=[];
+      canShoot=true; shootCooldownFrames=0;
+      airDefenseX=BASE_WIDTH/2; lastAirDefenseX=airDefenseX; airDefenseVelocity=0;
+      initBombsWave(); for(let b of bombs) b.falling=true;
+      resetRefillTimerDynamic();
+      updateUI(); gameOverModal.style.display='none';
+      pauseBtn.innerHTML="⏸️ 暂停"; pauseBtn.classList.remove("pause-btn-active");
+      lastTimestamp=0;
+    }
+    function showGame(){ homePage.style.display='none'; gameContainer.style.display='flex'; updateCanvasScale(); resetGame(); draw(); }
+    function backHomeWithConfirm(){
+      if(gameOverFlag){ if(animationId) cancelAnimationFrame(animationId); window.location.href='index.html'; return; }
+      wasPausedBeforeConfirm=paused;
+      if(!paused && gameActive) togglePause();
+      customConfirmModal.style.display='flex';
+      document.getElementById('confirmYesBtn').onclick=()=>{ customConfirmModal.style.display='none'; if(animationId) cancelAnimationFrame(animationId); window.location.href='index.html'; };
+      document.getElementById('confirmNoBtn').onclick=()=>{ customConfirmModal.style.display='none'; if(!wasPausedBeforeConfirm && paused && gameActive) togglePause(); lastTimestamp=0; };
+    }
+    function toggleFullscreen(){ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+
+    function bindEvents(){
+      document.getElementById('startGameBtn')?.addEventListener('click', showGame);
+      document.getElementById('fullscreenBtn')?.addEventListener('click', toggleFullscreen);
+      document.getElementById('resetGameBtn')?.addEventListener('click', ()=>{ if(gameContainer.style.display === 'flex') resetGame(); });
+      document.getElementById('backHomeBtn')?.addEventListener('click', backHomeWithConfirm);
+      document.getElementById('gameFullscreenBtn')?.addEventListener('click', toggleFullscreen);
+      document.getElementById('restartBtn')?.addEventListener('click', ()=>{ resetGame(); gameOverModal.style.display='none'; });
+      document.getElementById('backHomeFromOverBtn')?.addEventListener('click', backHomeWithConfirm);
+      pauseBtn?.addEventListener('click', togglePause);
+      bindMobileControls();
+      canvas.addEventListener('mousemove', onPointerMove);
+      canvas.addEventListener('touchmove', onPointerMove, { passive: false });
+      canvas.addEventListener('touchstart', (e)=>{ e.preventDefault(); if(e.touches.length) handleMove(e.touches[0].clientX, e.touches[0].clientY); });
+      canvas.addEventListener('click', (e)=>{ e.preventDefault(); shootProjectile(); });
+      window.addEventListener('keydown',(e)=>{
+        if((e.code==='Space'||e.code==='Enter') && gameContainer.style.display === 'flex'){ e.preventDefault(); shootProjectile(); }
+        if(e.code==='KeyP' && gameContainer.style.display === 'flex'){ e.preventDefault(); togglePause(); }
+        if(e.code==='ArrowLeft' && gameContainer.style.display === 'flex'){ e.preventDefault(); moveLeft(); }
+        if(e.code==='ArrowRight' && gameContainer.style.display === 'flex'){ e.preventDefault(); moveRight(); }
+      });
+      window.addEventListener('resize', () => { if(gameContainer.style.display === 'flex') { updateCanvasScale(); draw(); } });
+      window.addEventListener('orientationchange', () => { setTimeout(() => { if(gameContainer.style.display === 'flex') { updateCanvasScale(); draw(); } }, 50); });
+      const modal=document.getElementById('draggableModal'), handle=document.getElementById('dragHandle');
+      let drag=false,sX,sY,iL,iT;
+      handle.addEventListener('mousedown',(e)=>{ e.preventDefault(); drag=true; sX=e.clientX; sY=e.clientY; const rect=modal.getBoundingClientRect(),pr=modal.parentElement.getBoundingClientRect(); iL=rect.left-pr.left; iT=rect.top-pr.top; modal.style.position='absolute'; modal.style.left=iL+'px'; modal.style.top=iT+'px'; document.body.style.userSelect='none'; });
+      window.addEventListener('mousemove',(e)=>{ if(!drag) return; let nl=iL+(e.clientX-sX), nt=iT+(e.clientY-sY); const pr=modal.parentElement.getBoundingClientRect(), mr=modal.getBoundingClientRect(); nl=Math.min(Math.max(nl,8),pr.width-mr.width-8); nt=Math.min(Math.max(nt,8),pr.height-mr.height-8); modal.style.left=nl+'px'; modal.style.top=nt+'px'; });
+      window.addEventListener('mouseup',()=>{ drag=false; document.body.style.userSelect=''; });
+    }
+
+    function gameLoop(now){
+      if(!lastTimestamp) lastTimestamp=now;
+      let delta=Math.min(0.033,(now-lastTimestamp)/1000);
+      if(delta<=0.001) delta=0.016;
+      lastTimestamp=now;
+      updateLogic(delta);
+      draw();
+      animationId=requestAnimationFrame(gameLoop);
+    }
+    function init(){
+      bindEvents(); updateCanvasScale(); animationId=requestAnimationFrame(gameLoop);
+      const setVH=()=>{ let vh=window.innerHeight*0.01; document.documentElement.style.setProperty('--vh',`${vh}px`); };
+      setVH(); window.addEventListener('resize', setVH);
+    }
+    init();
+  })();
 </script>
 </body>
 </html>
