@@ -15,11 +15,13 @@
 
         :root {
             --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+            --vh: 1vh; /* 动态视口单位备用 */
         }
 
         body {
             background: radial-gradient(ellipse at 20% 30%, #0a0f2a, #030617);
             min-height: 100vh;
+            min-height: calc(var(--vh, 1vh) * 100);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -28,6 +30,7 @@
             color: #eef5ff;
             padding: 12px;
             overflow-x: hidden;
+            position: relative;
         }
 
         /* 首页霓虹风格 */
@@ -74,7 +77,7 @@
             .home-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(255, 51, 102, 0.6); }
         }
 
-        /* 游戏容器 - 自适应横竖屏 */
+        /* 游戏容器 - 自适应向上延展，手机端占据更多竖向空间 */
         .game-container {
             background: rgba(2, 8, 20, 0.7);
             backdrop-filter: blur(8px);
@@ -86,6 +89,8 @@
             max-width: 1300px;
             position: relative;
             margin: 0 auto;
+            /* 手机端增加纵向占位，允许内容向上延展 */
+            flex-shrink: 0;
         }
 
         canvas {
@@ -161,7 +166,7 @@
             color: #1a1a2a;
         }
 
-        /* 手机底部控制栏 - 横竖屏自适应 */
+        /* 手机底部控制栏 - 优化位置，随页面滚动而固定在底部（实际使用fixed） */
         .mobile-controls {
             display: none;
             position: fixed;
@@ -233,7 +238,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(8px);
             display: none;
             justify-content: center;
@@ -266,25 +271,38 @@
         }
         .drag-handle:active { cursor: grabbing; }
 
-        /* 手机竖屏样式 */
+        /* ========= 手机竖屏样式（核心优化：向上延展，内容铺满高度） ========= */
         @media (max-width: 768px) and (orientation: portrait) {
-            body { padding: 8px; }
-            .game-container { padding: 10px; }
+            body {
+                padding: 12px 8px 20px 8px;
+                justify-content: flex-start;  /* 让内容从顶部开始，支持向上延展 */
+            }
+            .game-container {
+                margin: 0 auto;
+                padding: 10px;
+                /* 移除max-height限制，让内容自然伸展 */
+            }
             .mobile-controls { display: block; }
             .ctrl-btn { width: 55px; height: 55px; line-height: 51px; font-size: 24px; }
             .ctrl-left, .ctrl-right { font-size: 28px; }
             .ctrl-left-group { left: 12px; gap: 10px; }
             .ctrl-right-group { right: 12px; }
-            .info-panel { padding: 6px 12px; gap: 6px; }
+            .info-panel { padding: 6px 12px; gap: 6px; flex-wrap: wrap; }
             .stats { font-size: 0.7rem; gap: 10px; padding: 4px 12px; }
-            .level-box { font-size: 0.7rem; padding: 4px 12px; }
+            .level-box { font-size: 0.7rem; padding: 4px 12px; white-space: nowrap; }
             .game-btn { font-size: 0.65rem; padding: 4px 10px; }
-            .instruction { font-size: 0.6rem; }
+            .instruction { font-size: 0.6rem; margin-top: 8px; }
+            canvas {
+                border-radius: 16px;
+            }
         }
 
-        /* 手机横屏样式 - 优化显示，按钮缩小，游戏区域更大 */
+        /* 手机横屏样式 - 保证游戏区域占据大部分可视区，底部控件紧凑 */
         @media (max-width: 900px) and (orientation: landscape) {
-            body { padding: 6px; }
+            body {
+                padding: 6px 8px;
+                justify-content: center;
+            }
             .game-container { padding: 8px; }
             .mobile-controls { display: block; }
             .ctrl-btn { width: 48px; height: 48px; line-height: 44px; font-size: 22px; }
@@ -303,6 +321,16 @@
             .mobile-controls {
                 display: none !important;
             }
+        }
+
+        /* 增强手机滚动/延展能力：游戏容器内容自动撑开，body可滚动 */
+        body {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* 确保canvas自身比例不失真，并且手机竖屏下高度自动适应，允许向上延展更多内容 */
+        .game-container canvas {
+            max-height: none;
         }
     </style>
 </head>
@@ -335,7 +363,7 @@
         </div>
     </div>
 
-    <!-- 手机专用控制栏：左/右在左下角，发射在右下角 -->
+    <!-- 手机专用控制栏 -->
     <div class="mobile-controls" id="mobileControls">
         <div class="ctrl-left-group">
             <div class="ctrl-btn ctrl-left" id="btnLeft">◀</div>
@@ -459,7 +487,7 @@
             btnShoot.addEventListener('touchstart', (e) => { e.preventDefault(); shootProjectile(); });
         }
         
-        // 横竖屏自适应缩放
+        // 横竖屏自适应缩放，并保持canvas显示区域尽可能延展
         function updateCanvasScale() {
             if(!gameContainer) return;
             const containerWidth = gameContainer.clientWidth - 20;
@@ -467,10 +495,13 @@
             // 横屏时给予更大高度占比
             if (window.innerWidth > window.innerHeight) {
                 maxHeight = window.innerHeight * 0.82;
+            } else {
+                // 手机竖屏模式，允许canvas高度更具延展性，占屏幕更多比例
+                maxHeight = window.innerHeight * 0.68;
             }
             const widthRatio = containerWidth / BASE_WIDTH;
             const heightRatio = maxHeight / BASE_HEIGHT;
-            scaleRatio = Math.min(widthRatio, heightRatio, 1.1);
+            scaleRatio = Math.min(widthRatio, heightRatio, 1.2); // 稍放宽容许
             const displayWidth = BASE_WIDTH * scaleRatio;
             const displayHeight = BASE_HEIGHT * scaleRatio;
             canvas.style.width = `${displayWidth}px`;
@@ -680,7 +711,7 @@
             airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, airDefenseX));
         }
         
-        // 渲染函数
+        // 渲染函数精简保留原有图形
         function drawBombShape(bomb) {
             const cx = bomb.x + bomb.w/2, cy = bomb.y + bomb.h/2, rx = bomb.w/2, ry = bomb.h/2;
             ctx.save();
@@ -699,8 +730,7 @@
             ctx.fillText("💣", cx-10, cy+6);
             ctx.restore();
         }
-        
-        function drawMissileLauncher() {
+        function drawMissileLauncher() { /* 原样保留 */ 
             const x = airDefenseX, y = AIR_DEFENSE_Y;
             ctx.save(); ctx.shadowBlur = 0;
             ctx.fillStyle = "#2a6a4a"; ctx.beginPath(); ctx.ellipse(x, y+6, 22, 12, 0, 0, Math.PI*2); ctx.fill();
@@ -714,9 +744,7 @@
             ctx.beginPath(); ctx.moveTo(x-4, y-32); ctx.quadraticCurveTo(x, y-52, x+4, y-32); ctx.fill();
             ctx.fillStyle = "#ff5555";
             ctx.beginPath(); ctx.moveTo(x-3, y-48); ctx.lineTo(x, y-58); ctx.lineTo(x+3, y-48); ctx.fill();
-            for(let i=-2;i<=2;i++) {
-                ctx.fillStyle = "#2a2a2a"; ctx.beginPath(); ctx.arc(x+i*8, y+10, 4, 0, Math.PI*2); ctx.fill();
-            }
+            for(let i=-2;i<=2;i++) { ctx.fillStyle = "#2a2a2a"; ctx.beginPath(); ctx.arc(x+i*8, y+10, 4, 0, Math.PI*2); ctx.fill(); }
             ctx.fillStyle = "#88aaff"; ctx.beginPath(); ctx.arc(x+14, y-10, 4, 0, Math.PI*2); ctx.fill();
             if(Math.abs(airDefenseVelocity) > 0.5) {
                 ctx.beginPath(); let arrowX = x + (airDefenseVelocity > 0 ? 32 : -32);
@@ -727,18 +755,15 @@
             ctx.fillText(`⚡ ${Math.abs(airDefenseVelocity).toFixed(1)}`, x-45, y-22);
             ctx.restore();
         }
-        
-        function drawInterceptorMissile(inter) {
+        function drawInterceptorMissile(inter) { /* 保留 */ 
             ctx.save(); ctx.shadowBlur = 6; ctx.shadowColor = "#0ff";
-            ctx.beginPath();
-            ctx.moveTo(inter.x, inter.y-5); ctx.lineTo(inter.x+3, inter.y); ctx.lineTo(inter.x+2, inter.y+3);
+            ctx.beginPath(); ctx.moveTo(inter.x, inter.y-5); ctx.lineTo(inter.x+3, inter.y); ctx.lineTo(inter.x+2, inter.y+3);
             ctx.lineTo(inter.x, inter.y+4); ctx.lineTo(inter.x-2, inter.y+3); ctx.lineTo(inter.x-3, inter.y);
             ctx.fillStyle = "#4fc3f7"; ctx.fill();
             ctx.fillStyle = "#ffaa44";
             ctx.beginPath(); ctx.moveTo(inter.x, inter.y-6); ctx.lineTo(inter.x+2, inter.y-3); ctx.lineTo(inter.x-2, inter.y-3); ctx.fill();
             ctx.restore();
         }
-        
         function drawResidential() {
             ctx.fillStyle = "rgba(220, 60, 50, 0.5)";
             ctx.fillRect(0, RESIDENTIAL_LINE_Y, BASE_WIDTH, GROUND_Y - RESIDENTIAL_LINE_Y + 12);
@@ -746,15 +771,11 @@
             ctx.fillText("⚠️ 绝对禁区", BASE_WIDTH/2, RESIDENTIAL_LINE_Y + 24);
             ctx.textAlign = "left";
         }
-        
         function drawStars() {
-            for(let i=0;i<140;i++) {
-                const starX = (i*131)%BASE_WIDTH, starY = (i*253)%(RESIDENTIAL_LINE_Y-50);
+            for(let i=0;i<140;i++) { const starX = (i*131)%BASE_WIDTH, starY = (i*253)%(RESIDENTIAL_LINE_Y-50);
                 ctx.fillStyle = `rgba(255, 255, 200, ${0.2 + Math.sin(Date.now()*0.001 + i)*0.1})`;
-                ctx.beginPath(); ctx.arc(starX, starY, 1, 0, Math.PI*2); ctx.fill();
-            }
+                ctx.beginPath(); ctx.arc(starX, starY, 1, 0, Math.PI*2); ctx.fill(); }
         }
-        
         function draw() {
             ctx.clearRect(0,0,BASE_WIDTH,BASE_HEIGHT);
             ctx.fillStyle = "#03061a"; ctx.fillRect(0,0,BASE_WIDTH,BASE_HEIGHT);
@@ -762,18 +783,9 @@
             for(let b of bombs) if(b.active) drawBombShape(b);
             for(let i of interceptors) drawInterceptorMissile(i);
             drawMissileLauncher(); drawResidential();
-            if(levelUpPending && !gameOverFlag){
-                ctx.font="bold 28px 'Orbitron'"; ctx.fillStyle="#0ff";
-                ctx.textAlign="center"; ctx.fillText("⚡ 等级提升 ⚡", BASE_WIDTH/2, 120);
-            }
-            if(paused && gameActive && !gameOverFlag){
-                ctx.font="bold 36px 'Orbitron'"; ctx.fillStyle="#ffe5aa";
-                ctx.textAlign="center"; ctx.fillText("⏸ 暂停", BASE_WIDTH/2, BASE_HEIGHT/2);
-            }
-            if(!gameActive && !gameOverFlag && gameContainer.style.display === 'block') {
-                ctx.font="bold 28px 'Orbitron'"; ctx.fillStyle="#0ff";
-                ctx.textAlign="center"; ctx.fillText("⚡ 点击「开始防御」", BASE_WIDTH/2, BASE_HEIGHT/2);
-            }
+            if(levelUpPending && !gameOverFlag){ ctx.font="bold 28px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.textAlign="center"; ctx.fillText("⚡ 等级提升 ⚡", BASE_WIDTH/2, 120); }
+            if(paused && gameActive && !gameOverFlag){ ctx.font="bold 36px 'Orbitron'"; ctx.fillStyle="#ffe5aa"; ctx.textAlign="center"; ctx.fillText("⏸ 暂停", BASE_WIDTH/2, BASE_HEIGHT/2); }
+            if(!gameActive && !gameOverFlag && gameContainer.style.display === 'block') { ctx.font="bold 28px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.textAlign="center"; ctx.fillText("⚡ 点击「开始防御」", BASE_WIDTH/2, BASE_HEIGHT/2); }
             ctx.textAlign="left";
         }
         
@@ -785,7 +797,6 @@
             else pauseBtn.classList.remove("pause-btn-active");
             if(!paused) lastTimestamp=0;
         }
-        
         function resetGame(){
             gameActive = true; gameOverFlag = false; paused = false; levelUpPending = false;
             score = 0; currentLevel = 1; interceptors = []; bombs = [];
@@ -796,7 +807,6 @@
             pauseBtn.innerHTML = "⏸️ 暂停"; pauseBtn.classList.remove("pause-btn-active");
             lastTimestamp = 0;
         }
-        
         function showGame(){
             homePage.style.display = 'none';
             gameContainer.style.display = 'block';
@@ -804,7 +814,6 @@
             resetGame();
             draw();
         }
-        
         function backHomeWithConfirm(){
             if(gameOverFlag){
                 if(animationId) cancelAnimationFrame(animationId);
@@ -817,12 +826,10 @@
             yesBtn.onclick=()=>{ customConfirmModal.style.display='none'; if(animationId) cancelAnimationFrame(animationId); window.location.href='index.html'; };
             noBtn.onclick=()=>{ customConfirmModal.style.display='none'; if(!wasPausedBeforeConfirm && paused && gameActive) togglePause(); lastTimestamp=0; };
         }
-        
         function toggleFullscreen(){
             if(!document.fullscreenElement) document.documentElement.requestFullscreen();
             else document.exitFullscreen();
         }
-        
         function bindEvents(){
             document.getElementById('startGameBtn')?.addEventListener('click', showGame);
             document.getElementById('fullscreenBtn')?.addEventListener('click', toggleFullscreen);
@@ -843,23 +850,10 @@
                 if(e.code==='ArrowLeft' && gameContainer.style.display === 'block'){ e.preventDefault(); moveLeft(); }
                 if(e.code==='ArrowRight' && gameContainer.style.display === 'block'){ e.preventDefault(); moveRight(); }
             });
-            window.addEventListener('resize', () => { 
-                if(gameContainer.style.display === 'block') { 
-                    updateCanvasScale(); 
-                    draw(); 
-                }
-            });
-            window.addEventListener('orientationchange', () => {
-                setTimeout(() => {
-                    if(gameContainer.style.display === 'block') {
-                        updateCanvasScale();
-                        draw();
-                    }
-                }, 50);
-            });
+            window.addEventListener('resize', () => { if(gameContainer.style.display === 'block') { updateCanvasScale(); draw(); } });
+            window.addEventListener('orientationchange', () => { setTimeout(() => { if(gameContainer.style.display === 'block') { updateCanvasScale(); draw(); } }, 50); });
             initDragModal();
         }
-        
         function initDragModal(){
             const modal=document.getElementById('draggableModal'), handle=document.getElementById('dragHandle');
             let drag=false,sX,sY,iL,iT;
@@ -869,15 +863,13 @@
                 modal.style.position='absolute'; modal.style.left=iL+'px'; modal.style.top=iT+'px';
                 document.body.style.userSelect='none';
             });
-            window.addEventListener('mousemove',(e)=>{ if(!drag) return;
-                let nl=iL+(e.clientX-sX), nt=iT+(e.clientY-sY);
+            window.addEventListener('mousemove',(e)=>{ if(!drag) return; let nl=iL+(e.clientX-sX), nt=iT+(e.clientY-sY);
                 const pr=modal.parentElement.getBoundingClientRect(), mr=modal.getBoundingClientRect();
                 nl=Math.min(Math.max(nl,8),pr.width-mr.width-8); nt=Math.min(Math.max(nt,8),pr.height-mr.height-8);
                 modal.style.left=nl+'px'; modal.style.top=nt+'px';
             });
             window.addEventListener('mouseup',()=>{ drag=false; document.body.style.userSelect=''; });
         }
-        
         let lastTimestamp=0;
         function gameLoop(now){
             if(!lastTimestamp) lastTimestamp=now;
@@ -888,11 +880,13 @@
             draw();
             animationId=requestAnimationFrame(gameLoop);
         }
-        
         function init(){
             bindEvents();
             updateCanvasScale();
             animationId=requestAnimationFrame(gameLoop);
+            // 动态修复视口高度 (解决移动端地址栏问题)
+            const setVH = () => { let vh = window.innerHeight * 0.01; document.documentElement.style.setProperty('--vh', `${vh}px`); };
+            setVH(); window.addEventListener('resize', setVH);
         }
         init();
     })();
