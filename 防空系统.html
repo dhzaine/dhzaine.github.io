@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>天穹防线 - 导弹发射车 | 全平台适配</title>
+    <title>天穹防线 - 导弹发射车 | 手机完美适配</title>
     <style>
         * {
             user-select: none;
@@ -13,9 +13,8 @@
             box-sizing: border-box;
         }
 
-        /* 全局响应式变量 */
         :root {
-            --base-scale: 1;
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         body {
@@ -25,10 +24,10 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', 'Orbitron', 'Poppins', system-ui, -apple-system, 'Courier New', monospace;
+            font-family: 'Segoe UI', 'Orbitron', 'Poppins', system-ui, -apple-system, monospace;
             color: #eef5ff;
+            padding: 12px;
             overflow-x: hidden;
-            padding: 16px;
         }
 
         /* 首页霓虹风格 - 响应式 */
@@ -36,110 +35,93 @@
             text-align: center;
             padding: clamp(20px, 6vw, 40px);
             border-radius: clamp(24px, 6vw, 48px);
-            background: rgba(5, 10, 30, 0.75);
+            background: rgba(5, 10, 30, 0.85);
             backdrop-filter: blur(12px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(0, 255, 255, 0.2), 0 0 30px rgba(0, 200, 255, 0.1);
-            max-width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(0, 255, 255, 0.2);
+            max-width: 95%;
             width: 100%;
             margin: 0 auto;
             border: 1px solid rgba(0, 255, 255, 0.3);
         }
         .home-page h1 {
-            font-size: clamp(1.5rem, 6vw, 2.5rem);
+            font-size: clamp(1.4rem, 6vw, 2.2rem);
             background: linear-gradient(135deg, #00ffff, #ff44cc);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-            margin-bottom: 16px;
-            letter-spacing: 2px;
+            margin-bottom: 12px;
         }
         .home-page p {
-            margin: 12px 0;
+            margin: 10px 0;
             color: #bbd4ff;
-            font-size: clamp(0.8rem, 3.5vw, 1.1rem);
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            font-size: clamp(0.8rem, 3.5vw, 1rem);
         }
         .home-btn {
             background: linear-gradient(135deg, #ff3366, #ff6633);
             border: none;
             font-weight: bold;
-            font-size: clamp(0.9rem, 4vw, 1.2rem);
-            padding: clamp(8px, 3vw, 12px) clamp(20px, 5vw, 30px);
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
+            padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 30px);
             border-radius: 60px;
             color: white;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             box-shadow: 0 8px 20px rgba(255, 51, 102, 0.4);
             margin: 8px 5px;
-            letter-spacing: 1px;
         }
         .home-btn:active {
             transform: scale(0.96);
         }
-        @media (hover: hover) {
-            .home-btn:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 12px 25px rgba(255, 51, 102, 0.6);
-                background: linear-gradient(135deg, #ff4466, #ff7744);
-            }
-        }
 
-        /* 游戏容器 - 完全响应式 */
+        /* 游戏容器 - 全宽适配 */
         .game-container {
             background: rgba(2, 8, 20, 0.7);
             backdrop-filter: blur(8px);
-            border-radius: clamp(24px, 5vw, 48px);
-            padding: clamp(12px, 3vw, 20px);
-            box-shadow: 0 25px 45px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.1), 0 0 0 1px rgba(0, 255, 255, 0.2);
-            max-width: 100vw;
-            max-height: 95vh;
+            border-radius: clamp(20px, 4vw, 48px);
+            padding: clamp(10px, 2vw, 20px);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.7), 0 0 0 1px rgba(0, 255, 255, 0.2);
             display: none;
+            width: 100%;
+            max-width: 100vw;
             position: relative;
-            width: fit-content;
-            margin: 0 auto;
         }
 
         canvas {
             display: block;
             margin: 0 auto;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(0, 255, 255, 0.3);
-            cursor: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             background: #01040f;
             width: 100%;
             height: auto;
-            max-width: 100%;
-            object-fit: contain;
+            cursor: crosshair;
         }
 
-        /* 信息面板 - 响应式 */
+        /* 信息面板 - 手机优化 */
         .info-panel {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: clamp(10px, 3vw, 18px);
-            gap: clamp(8px, 2vw, 15px);
+            margin-top: 12px;
+            gap: 8px;
             flex-wrap: wrap;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(8px);
-            padding: clamp(6px, 2vw, 10px) clamp(12px, 3vw, 20px);
-            border-radius: 60px;
+            padding: 8px 12px;
+            border-radius: 50px;
             border: 1px solid rgba(0, 255, 255, 0.3);
         }
 
         .stats {
             background: rgba(0, 20, 40, 0.8);
-            backdrop-filter: blur(4px);
-            padding: clamp(4px, 2vw, 8px) clamp(12px, 3vw, 20px);
-            border-radius: 60px;
+            padding: 5px 12px;
+            border-radius: 40px;
             display: flex;
-            gap: clamp(10px, 3vw, 25px);
-            font-size: clamp(0.65rem, 3vw, 1rem);
+            gap: 12px;
+            font-size: 0.75rem;
             font-weight: bold;
             font-family: 'Orbitron', monospace;
             color: #0ff;
-            text-shadow: 0 0 5px #0ff;
             flex-wrap: wrap;
             justify-content: center;
         }
@@ -148,19 +130,15 @@
         }
         .stats span span {
             color: #ffaa44;
-            font-size: 1.1em;
         }
 
         .level-box {
             background: linear-gradient(135deg, #ffaa33, #ff6633);
             color: #0a0a1a;
-            padding: clamp(4px, 2vw, 6px) clamp(12px, 3vw, 22px);
+            padding: 5px 14px;
             border-radius: 40px;
             font-weight: bold;
-            letter-spacing: 1px;
-            font-family: 'Orbitron', monospace;
-            box-shadow: 0 0 10px rgba(255, 102, 51, 0.5);
-            font-size: clamp(0.7rem, 3vw, 0.9rem);
+            font-size: 0.75rem;
             white-space: nowrap;
         }
 
@@ -168,95 +146,100 @@
             background: linear-gradient(135deg, #1e2a4a, #0a1a2a);
             border: 1px solid rgba(0, 255, 255, 0.4);
             font-weight: bold;
-            font-size: clamp(0.65rem, 2.5vw, 0.85rem);
-            padding: clamp(4px, 1.5vw, 6px) clamp(10px, 3vw, 18px);
+            font-size: 0.7rem;
+            padding: 5px 12px;
             border-radius: 40px;
             color: #ccf;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            font-family: 'Segoe UI', monospace;
             white-space: nowrap;
         }
         .game-btn:active {
             transform: scale(0.95);
         }
-        @media (hover: hover) {
-            .game-btn:hover {
-                background: linear-gradient(135deg, #2a3a5a, #1a2a3a);
-                border-color: #0ff;
-                color: #fff;
-                transform: scale(0.96);
-                box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
-            }
-        }
         .pause-btn-active {
             background: linear-gradient(135deg, #ffaa33, #ff6633);
             border-color: #ffcc88;
             color: #1a1a2a;
-            text-shadow: none;
+        }
+
+        /* 手机专用发射按钮 - 大而醒目 */
+        .mobile-shoot-btn {
+            display: none;
+            position: fixed;
+            bottom: calc(20px + var(--safe-area-inset-bottom));
+            right: 20px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff3366, #ff6633);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 20px rgba(255, 51, 102, 0.6), 0 4px 15px rgba(0,0,0,0.3);
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 66px;
+            cursor: pointer;
+            z-index: 50;
+            backdrop-filter: blur(4px);
+            transition: all 0.1s ease;
+            touch-action: manipulation;
+        }
+        .mobile-shoot-btn:active {
+            transform: scale(0.92);
+            background: linear-gradient(135deg, #ff4466, #ff7744);
+            box-shadow: 0 0 25px rgba(255, 51, 102, 0.8);
         }
 
         .instruction {
-            font-size: clamp(0.6rem, 2.5vw, 0.75rem);
+            font-size: 0.65rem;
             background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            padding: clamp(4px, 2vw, 6px) clamp(10px, 3vw, 16px);
+            padding: 5px 10px;
             border-radius: 30px;
-            margin-top: clamp(8px, 2vw, 12px);
+            margin-top: 10px;
             text-align: center;
             color: #aaf;
             border: 1px solid rgba(0, 255, 255, 0.3);
-            line-height: 1.4;
         }
 
-        /* 弹窗响应式 */
+        /* 弹窗样式 */
         .game-over-modal, .custom-confirm-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(8px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            pointer-events: auto;
         }
         .modal-content, .confirm-content {
-            position: relative;
-            background: rgba(8, 12, 28, 0.95);
+            background: rgba(8, 12, 28, 0.96);
             backdrop-filter: blur(20px);
-            padding: clamp(20px, 5vw, 28px) clamp(20px, 6vw, 38px);
-            border-radius: clamp(28px, 5vw, 40px);
+            padding: 20px 24px;
+            border-radius: 32px;
             text-align: center;
             box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 0 2px rgba(0, 255, 255, 0.5);
-            min-width: clamp(260px, 50vw, 340px);
-            max-width: 90vw;
+            min-width: 260px;
+            max-width: 85vw;
             border: 1px solid rgba(255, 100, 100, 0.6);
-            cursor: grab;
         }
-        .modal-content:active, .confirm-content:active { cursor: grabbing; }
         .modal-content h2 {
             color: #ff5577;
-            font-size: clamp(1.4rem, 6vw, 2rem);
-            margin-bottom: 16px;
+            font-size: 1.6rem;
+            margin-bottom: 12px;
         }
         .modal-content p, .confirm-content p {
-            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
-            margin: 10px 0;
-            color: #ccddff;
-        }
-        .modal-content .home-btn, .confirm-btn {
-            font-size: clamp(0.8rem, 3vw, 1rem);
-            padding: clamp(6px, 2vw, 8px) clamp(16px, 4vw, 24px);
-            margin: 6px;
+            font-size: 0.95rem;
+            margin: 8px 0;
         }
         .drag-handle {
             position: absolute;
-            top: 10px;
+            top: 8px;
             right: 12px;
             font-size: 10px;
             color: #0ff;
@@ -265,57 +248,46 @@
             border-radius: 30px;
         }
 
-        /* 手机横屏优化 */
+        /* 手机横屏特殊处理 */
         @media (max-width: 768px) and (orientation: landscape) {
             body {
-                padding: 8px;
+                padding: 6px;
             }
             .game-container {
-                padding: 8px;
+                padding: 6px;
             }
             .info-panel {
-                gap: 6px;
-                padding: 6px 12px;
+                padding: 5px 8px;
+                gap: 5px;
             }
             .stats {
-                gap: 8px;
-                padding: 4px 10px;
-            }
-            .level-box {
-                padding: 3px 10px;
-            }
-            .game-btn {
+                font-size: 0.65rem;
+                gap: 6px;
                 padding: 3px 8px;
             }
-            .instruction {
-                font-size: 0.55rem;
-                margin-top: 6px;
+            .game-btn {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
+            .mobile-shoot-btn {
+                width: 55px;
+                height: 55px;
+                font-size: 26px;
+                line-height: 51px;
+                bottom: 12px;
+                right: 12px;
             }
         }
 
-        /* 手机竖屏 - 按钮换行优化 */
-        @media (max-width: 600px) {
-            .info-panel {
-                gap: 8px;
-            }
-            .stats {
-                width: 100%;
-                justify-content: center;
-                gap: 12px;
-            }
-            .level-box {
-                order: -1;
-            }
-        }
-
-        /* 触摸优化 */
+        /* 手机竖屏显示专用按钮 */
         @media (max-width: 768px) {
-            .game-btn, .home-btn {
-                cursor: pointer;
-                -webkit-tap-highlight-color: transparent;
+            .mobile-shoot-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
-            canvas {
-                cursor: crosshair;
+            .game-btn {
+                padding: 4px 10px;
             }
         }
     </style>
@@ -323,9 +295,9 @@
 <body>
     <div class="home-page" id="homePage">
         <h1>⚡ 天穹防线 · 导弹发射车 ⚡</h1>
-        <p>操控尖端导弹发射车，拦截随机来袭的高爆炸弹！</p>
-        <p>🖱️ 鼠标/手指移动 → 战车左右机动</p>
-        <p>🚀 点击屏幕 / 空格/Enter → 发射拦截导弹</p>
+        <p>操控战车，拦截随机来袭的高爆炸弹！</p>
+        <p>👉 手指滑动 → 战车左右机动</p>
+        <p>🚀 点击屏幕 / 点击右下角按钮 → 发射导弹</p>
         <p>⏸️ 按【P】随时暂停 | 每波炸弹数量随机</p>
         <button class="home-btn" id="startGameBtn">▶ 开始防御</button>
         <button class="home-btn" id="fullscreenBtn">⛶ 全屏作战</button>
@@ -348,9 +320,12 @@
             <button class="game-btn" id="gameFullscreenBtn">⛶ 全屏</button>
         </div>
         <div class="instruction">
-            🖱️ 鼠标/手指滑动控制战车 | 点击发射导弹 | 战车速度影响弹道 | 💥 炸弹触碰红色禁区即失败
+            🖱️ 手指滑动控制战车 | 点击画面/右下角按钮发射导弹 | 💥 炸弹触碰红色禁区即失败
         </div>
     </div>
+
+    <!-- 手机专用浮动发射按钮 -->
+    <div class="mobile-shoot-btn" id="mobileShootBtn">🚀</div>
 
     <!-- 失败弹窗 -->
     <div class="game-over-modal" id="gameOverModal">
@@ -373,8 +348,8 @@
             <h3>⚠️ 终止任务</h3>
             <p>返回主页将丢失当前战局，确定撤离吗？</p>
             <div class="confirm-buttons">
-                <button class="confirm-btn confirm-btn-yes" id="confirmYesBtn">✅ 确认撤离</button>
-                <button class="confirm-btn confirm-btn-no" id="confirmNoBtn">❌ 继续战斗</button>
+                <button class="confirm-btn" id="confirmYesBtn" style="background: linear-gradient(135deg, #ff3366, #ff6633); border: none; color: white; padding: 8px 20px; border-radius: 40px; margin: 5px;">✅ 确认撤离</button>
+                <button class="confirm-btn" id="confirmNoBtn" style="background: linear-gradient(135deg, #1e2a4a, #0a1a2a); border: 1px solid #0ff; color: #ccf; padding: 8px 20px; border-radius: 40px; margin: 5px;">❌ 继续战斗</button>
             </div>
         </div>
     </div>
@@ -388,8 +363,9 @@
         const gameOverModal = document.getElementById('gameOverModal');
         const customConfirmModal = document.getElementById('customConfirmModal');
         const pauseBtn = document.getElementById('pauseGameBtn');
+        const mobileShootBtn = document.getElementById('mobileShootBtn');
         
-        // 逻辑分辨率固定，通过缩放适配
+        // 逻辑分辨率固定
         const BASE_WIDTH = 1000;
         const BASE_HEIGHT = 700;
         const BOMB_START_Y = 40;
@@ -425,19 +401,20 @@
         let animationId = null;
         let wasPausedBeforeConfirm = false;
         
-        // 触摸/鼠标 坐标转换
+        // 画布缩放计算 - 手机全宽适配
         function updateCanvasScale() {
             if(!gameContainer) return;
-            const containerRect = gameContainer.getBoundingClientRect();
-            const availableWidth = containerRect.width - 40;
-            const availableHeight = window.innerHeight * 0.8;
-            const widthRatio = availableWidth / BASE_WIDTH;
-            const heightRatio = availableHeight / BASE_HEIGHT;
-            scaleRatio = Math.min(widthRatio, heightRatio, 1);
-            canvas.style.width = `${BASE_WIDTH * scaleRatio}px`;
-            canvas.style.height = `${BASE_HEIGHT * scaleRatio}px`;
-            offsetX = (canvas.clientWidth - BASE_WIDTH * scaleRatio) / 2;
-            offsetY = (canvas.clientHeight - BASE_HEIGHT * scaleRatio) / 2;
+            const containerWidth = gameContainer.clientWidth - 20;
+            const maxHeight = window.innerHeight * 0.7;
+            const widthRatio = containerWidth / BASE_WIDTH;
+            const heightRatio = maxHeight / BASE_HEIGHT;
+            scaleRatio = Math.min(widthRatio, heightRatio, 1.2);
+            const displayWidth = BASE_WIDTH * scaleRatio;
+            const displayHeight = BASE_HEIGHT * scaleRatio;
+            canvas.style.width = `${displayWidth}px`;
+            canvas.style.height = `${displayHeight}px`;
+            offsetX = (canvas.clientWidth - displayWidth) / 2;
+            offsetY = (canvas.clientHeight - displayHeight) / 2;
         }
         
         function getCanvasCoords(clientX, clientY) {
@@ -447,7 +424,7 @@
             return { x: Math.max(0, Math.min(BASE_WIDTH, x)), y: Math.max(0, Math.min(BASE_HEIGHT, y)) };
         }
         
-        // 触摸/鼠标移动处理（兼容移动端）
+        // 触摸/鼠标移动处理
         function handleMove(clientX, clientY) {
             if(!gameActive || gameOverFlag || paused) return;
             const pos = getCanvasCoords(clientX, clientY);
@@ -456,9 +433,29 @@
         
         function onPointerMove(e) {
             e.preventDefault();
-            const clientX = e.clientX ?? (e.touches ? e.touches[0].clientX : 0);
-            const clientY = e.clientY ?? (e.touches ? e.touches[0].clientY : 0);
+            let clientX, clientY;
+            if(e.touches) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
             if(clientX && clientY) handleMove(clientX, clientY);
+        }
+        
+        // 发射导弹函数（供各种方式调用）
+        function shootProjectile() {
+            if(!gameActive || gameOverFlag || paused || !canShoot) return;
+            let speedX = Math.min(14, Math.max(-14, airDefenseVelocity));
+            const startX = airDefenseX, startY = AIR_DEFENSE_Y - 18;
+            let vx = speedX * 1.02 + (Math.random() - 0.5) * 0.9;
+            let vy = -12.5 + (Math.random() - 0.5) * 0.7;
+            interceptors.push({ x: startX, y: startY, vx, vy, active: true });
+            canShoot = false;
+            shootCooldownFrames = 8;
+            // 触感反馈（如果支持）
+            if(navigator.vibrate) navigator.vibrate(20);
         }
         
         function updateUI() {
@@ -608,17 +605,6 @@
             updateUI();
         }
         
-        function shootProjectile() {
-            if(!gameActive || gameOverFlag || paused || !canShoot) return;
-            let speedX = Math.min(14, Math.max(-14, airDefenseVelocity));
-            const startX = airDefenseX, startY = AIR_DEFENSE_Y - 18;
-            let vx = speedX * 1.02 + (Math.random() - 0.5) * 0.9;
-            let vy = -12.5 + (Math.random() - 0.5) * 0.7;
-            interceptors.push({ x: startX, y: startY, vx, vy, active: true });
-            canShoot = false;
-            shootCooldownFrames = 8;
-        }
-        
         function updateLogic(deltaSec) {
             if(!gameActive || gameOverFlag || paused) return;
             airDefenseVelocity = airDefenseX - lastAirDefenseX;
@@ -635,11 +621,11 @@
             airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, airDefenseX));
         }
         
-        // 渲染函数保持原有华丽效果，省略部分重复代码（保留核心）
+        // 精简渲染（保留核心视觉）
         function drawBombShape(bomb) {
             const cx = bomb.x + bomb.w/2, cy = bomb.y + bomb.h/2, rx = bomb.w/2, ry = bomb.h/2;
             ctx.save();
-            ctx.shadowBlur = 8; ctx.shadowColor = "#ff5500";
+            ctx.shadowBlur = 6; ctx.shadowColor = "#ff5500";
             const grad = ctx.createLinearGradient(bomb.x, bomb.y, bomb.x+bomb.w, bomb.y+bomb.h);
             grad.addColorStop(0, "#4a2a1a"); grad.addColorStop(1, "#8a3a1a");
             ctx.fillStyle = grad;
@@ -669,18 +655,10 @@
             ctx.beginPath(); ctx.moveTo(x-4, y-32); ctx.quadraticCurveTo(x, y-52, x+4, y-32); ctx.fill();
             ctx.fillStyle = "#ff5555";
             ctx.beginPath(); ctx.moveTo(x-3, y-48); ctx.lineTo(x, y-58); ctx.lineTo(x+3, y-48); ctx.fill();
-            ctx.fillStyle = "#b0b0c0";
-            ctx.beginPath(); ctx.moveTo(x-8, y-36); ctx.lineTo(x-12, y-32); ctx.lineTo(x-6, y-34); ctx.fill();
-            ctx.beginPath(); ctx.moveTo(x+8, y-36); ctx.lineTo(x+12, y-32); ctx.lineTo(x+6, y-34); ctx.fill();
-            const flame = Date.now() * 0.02;
-            ctx.fillStyle = `rgba(255, 100, 30, ${0.7 + Math.sin(flame)*0.3})`;
-            ctx.beginPath(); ctx.moveTo(x-3, y-30); ctx.lineTo(x, y-22); ctx.lineTo(x+3, y-30); ctx.fill();
             for(let i=-2;i<=2;i++) {
                 ctx.fillStyle = "#2a2a2a"; ctx.beginPath(); ctx.arc(x+i*8, y+10, 4, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = "#5a5a5a"; ctx.beginPath(); ctx.arc(x+i*8, y+10, 2, 0, Math.PI*2); ctx.fill();
             }
             ctx.fillStyle = "#88aaff"; ctx.beginPath(); ctx.arc(x+14, y-10, 4, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = "#aaccff"; ctx.beginPath(); ctx.arc(x+14, y-10, 2, 0, Math.PI*2); ctx.fill();
             if(Math.abs(airDefenseVelocity) > 0.5) {
                 ctx.beginPath(); let arrowX = x + (airDefenseVelocity > 0 ? 32 : -32);
                 ctx.moveTo(x, y-20); ctx.lineTo(arrowX, y-12);
@@ -688,70 +666,58 @@
             }
             ctx.font = "bold 10px 'Orbitron'"; ctx.fillStyle = "#0ff";
             ctx.fillText(`⚡ ${Math.abs(airDefenseVelocity).toFixed(1)}`, x-45, y-22);
-            ctx.fillStyle = "#aaffaa"; ctx.font = "bold 9px monospace";
-            ctx.fillText("MIM-104", x-15, y-6);
             ctx.restore();
         }
         
         function drawInterceptorMissile(inter) {
-            ctx.save(); ctx.shadowBlur = 8; ctx.shadowColor = "#0ff";
+            ctx.save(); ctx.shadowBlur = 6; ctx.shadowColor = "#0ff";
             ctx.beginPath();
-            ctx.moveTo(inter.x, inter.y-6); ctx.lineTo(inter.x+3, inter.y); ctx.lineTo(inter.x+2, inter.y+4);
-            ctx.lineTo(inter.x, inter.y+5); ctx.lineTo(inter.x-2, inter.y+4); ctx.lineTo(inter.x-3, inter.y);
-            ctx.closePath(); ctx.fillStyle = "#4fc3f7"; ctx.fill();
+            ctx.moveTo(inter.x, inter.y-5); ctx.lineTo(inter.x+3, inter.y); ctx.lineTo(inter.x+2, inter.y+3);
+            ctx.lineTo(inter.x, inter.y+4); ctx.lineTo(inter.x-2, inter.y+3); ctx.lineTo(inter.x-3, inter.y);
+            ctx.fillStyle = "#4fc3f7"; ctx.fill();
             ctx.fillStyle = "#ffaa44";
-            ctx.beginPath(); ctx.moveTo(inter.x, inter.y-8); ctx.lineTo(inter.x+2, inter.y-4); ctx.lineTo(inter.x-2, inter.y-4); ctx.fill();
-            ctx.beginPath(); ctx.moveTo(inter.x, inter.y+5); ctx.lineTo(inter.x-2, inter.y+10); ctx.lineTo(inter.x+2, inter.y+10);
-            ctx.fillStyle = `rgba(255, 160, 50, 0.9)`; ctx.fill();
+            ctx.beginPath(); ctx.moveTo(inter.x, inter.y-6); ctx.lineTo(inter.x+2, inter.y-3); ctx.lineTo(inter.x-2, inter.y-3); ctx.fill();
             ctx.restore();
         }
         
         function drawResidential() {
             ctx.fillStyle = "rgba(220, 60, 50, 0.5)";
             ctx.fillRect(0, RESIDENTIAL_LINE_Y, BASE_WIDTH, GROUND_Y - RESIDENTIAL_LINE_Y + 12);
-            ctx.fillStyle = "#ff8877"; ctx.font = "bold 18px 'Orbitron'"; ctx.textAlign = "center";
-            ctx.fillText("⚠️ 绝对禁区 — 炸弹触碰即任务失败 ⚠️", BASE_WIDTH/2, RESIDENTIAL_LINE_Y + 24);
-            ctx.textAlign = "left"; ctx.font = "italic 11px monospace"; ctx.fillStyle = "#ffaa99";
-            ctx.fillText("任何飞行物越过红线 → 防线崩溃", 35, RESIDENTIAL_LINE_Y + 52);
+            ctx.fillStyle = "#ff8877"; ctx.font = "bold 16px 'Orbitron'"; ctx.textAlign = "center";
+            ctx.fillText("⚠️ 绝对禁区", BASE_WIDTH/2, RESIDENTIAL_LINE_Y + 24);
+            ctx.textAlign = "left";
         }
         
         function drawStars() {
-            for(let i=0;i<180;i++) {
+            for(let i=0;i<120;i++) {
                 const starX = (i*131)%BASE_WIDTH, starY = (i*253)%(RESIDENTIAL_LINE_Y-50);
-                ctx.fillStyle = `rgba(255, 255, 200, ${0.2 + Math.sin(Date.now()*0.0008 + i)*0.1})`;
-                ctx.beginPath(); ctx.arc(starX, starY, 1.2, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = `rgba(255, 255, 200, ${0.2 + Math.sin(Date.now()*0.001 + i)*0.1})`;
+                ctx.beginPath(); ctx.arc(starX, starY, 1, 0, Math.PI*2); ctx.fill();
             }
         }
         
         function draw() {
             ctx.clearRect(0,0,BASE_WIDTH,BASE_HEIGHT);
-            const grad = ctx.createLinearGradient(0,0,0,BASE_HEIGHT);
-            grad.addColorStop(0,"#02061a"); grad.addColorStop(1,"#0c1535");
-            ctx.fillStyle=grad; ctx.fillRect(0,0,BASE_WIDTH,BASE_HEIGHT);
+            ctx.fillStyle = "#03061a"; ctx.fillRect(0,0,BASE_WIDTH,BASE_HEIGHT);
             drawStars();
             for(let b of bombs) if(b.active) drawBombShape(b);
             for(let i of interceptors) drawInterceptorMissile(i);
             drawMissileLauncher(); drawResidential();
             if(levelUpPending && !gameOverFlag){
-                ctx.font="bold 36px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.shadowBlur=12;
+                ctx.font="bold 28px 'Orbitron'"; ctx.fillStyle="#0ff";
                 ctx.textAlign="center"; ctx.fillText("⚡ 等级提升 ⚡", BASE_WIDTH/2, 130);
-                ctx.textAlign="left"; ctx.shadowBlur=0;
             }
             if(paused && gameActive && !gameOverFlag){
-                ctx.font="bold 48px 'Orbitron'"; ctx.fillStyle="#ffe5aa"; ctx.shadowBlur=12;
-                ctx.textAlign="center"; ctx.fillText("⏸ 战术暂停", BASE_WIDTH/2, BASE_HEIGHT/2-30);
-                ctx.font="18px monospace"; ctx.fillStyle="#c5e0ff";
-                ctx.fillText("按 P 键或点击「继续」恢复作战", BASE_WIDTH/2, BASE_HEIGHT/2+40);
-                ctx.textAlign="left";
+                ctx.font="bold 36px 'Orbitron'"; ctx.fillStyle="#ffe5aa";
+                ctx.textAlign="center"; ctx.fillText("⏸ 暂停", BASE_WIDTH/2, BASE_HEIGHT/2);
             }
             if(!gameActive && !gameOverFlag && gameContainer.style.display === 'block') {
-                ctx.font="bold 32px 'Orbitron'"; ctx.fillStyle="#0ff"; ctx.shadowBlur=12;
-                ctx.textAlign="center"; ctx.fillText("⚡ 点击「开始防御」⚡", BASE_WIDTH/2, BASE_HEIGHT/2);
-                ctx.textAlign="left";
+                ctx.font="bold 28px 'Orbitron'"; ctx.fillStyle="#0ff";
+                ctx.textAlign="center"; ctx.fillText("⚡ 点击「开始防御」", BASE_WIDTH/2, BASE_HEIGHT/2);
             }
+            ctx.textAlign="left";
         }
         
-        // 控制逻辑
         function togglePause(){
             if(!gameActive || gameOverFlag) return;
             paused=!paused;
@@ -783,39 +749,19 @@
         function backHomeWithConfirm(){
             if(gameOverFlag){
                 if(animationId) cancelAnimationFrame(animationId);
-                gameActive=false; gameContainer.style.display='none'; gameOverModal.style.display='none';
                 window.location.href='index.html'; return;
             }
             wasPausedBeforeConfirm=paused;
             if(!paused && gameActive) togglePause();
             customConfirmModal.style.display='flex';
             const yesBtn=document.getElementById('confirmYesBtn'), noBtn=document.getElementById('confirmNoBtn');
-            const handleYes=()=>{ customConfirmModal.style.display='none'; if(animationId) cancelAnimationFrame(animationId); window.location.href='index.html'; };
-            const handleNo=()=>{ customConfirmModal.style.display='none'; if(!wasPausedBeforeConfirm && paused && gameActive) togglePause(); lastTimestamp=0; };
-            yesBtn.onclick=handleYes; noBtn.onclick=handleNo;
+            yesBtn.onclick=()=>{ customConfirmModal.style.display='none'; if(animationId) cancelAnimationFrame(animationId); window.location.href='index.html'; };
+            noBtn.onclick=()=>{ customConfirmModal.style.display='none'; if(!wasPausedBeforeConfirm && paused && gameActive) togglePause(); lastTimestamp=0; };
         }
         
         function toggleFullscreen(){
             if(!document.fullscreenElement) document.documentElement.requestFullscreen();
             else document.exitFullscreen();
-        }
-        
-        function initDragModal(){
-            const modal=document.getElementById('draggableModal'), handle=document.getElementById('dragHandle');
-            let drag=false,sX,sY,iL,iT;
-            handle.addEventListener('mousedown',(e)=>{ e.preventDefault(); drag=true; sX=e.clientX; sY=e.clientY;
-                const rect=modal.getBoundingClientRect(),pr=modal.parentElement.getBoundingClientRect();
-                iL=rect.left-pr.left; iT=rect.top-pr.top;
-                modal.style.position='absolute'; modal.style.left=iL+'px'; modal.style.top=iT+'px'; modal.style.margin='0';
-                document.body.style.userSelect='none';
-            });
-            window.addEventListener('mousemove',(e)=>{ if(!drag) return;
-                let nl=iL+(e.clientX-sX), nt=iT+(e.clientY-sY);
-                const pr=modal.parentElement.getBoundingClientRect(), mr=modal.getBoundingClientRect();
-                nl=Math.min(Math.max(nl,8),pr.width-mr.width-8); nt=Math.min(Math.max(nt,8),pr.height-mr.height-8);
-                modal.style.left=nl+'px'; modal.style.top=nt+'px';
-            });
-            window.addEventListener('mouseup',()=>{ drag=false; document.body.style.userSelect=''; });
         }
         
         function bindEvents(){
@@ -827,20 +773,35 @@
             document.getElementById('restartBtn')?.addEventListener('click', () => { resetGame(); gameOverModal.style.display = 'none'; });
             document.getElementById('backHomeFromOverBtn')?.addEventListener('click', backHomeWithConfirm);
             pauseBtn?.addEventListener('click', togglePause);
-            
+            mobileShootBtn?.addEventListener('click', (e) => { e.preventDefault(); shootProjectile(); });
             canvas.addEventListener('mousemove', onPointerMove);
             canvas.addEventListener('touchmove', onPointerMove, { passive: false });
             canvas.addEventListener('touchstart', (e) => { e.preventDefault(); if(e.touches.length) handleMove(e.touches[0].clientX, e.touches[0].clientY); });
             canvas.addEventListener('click', (e)=>{ e.preventDefault(); shootProjectile(); });
             window.addEventListener('keydown',(e)=>{
-                if((e.code==='Space'||e.code==='Enter'||e.code==='ArrowUp') && gameContainer.style.display === 'block'){ 
-                    e.preventDefault(); shootProjectile(); 
-                }
+                if((e.code==='Space'||e.code==='Enter') && gameContainer.style.display === 'block'){ e.preventDefault(); shootProjectile(); }
                 if(e.code==='KeyP' && gameContainer.style.display === 'block'){ e.preventDefault(); togglePause(); }
             });
             window.addEventListener('resize',()=>{ if(gameContainer.style.display==='block'){ updateCanvasScale(); draw(); } });
-            document.addEventListener('fullscreenchange',()=>{ if(gameContainer.style.display==='block'){ updateCanvasScale(); draw(); } });
             initDragModal();
+        }
+        
+        function initDragModal(){
+            const modal=document.getElementById('draggableModal'), handle=document.getElementById('dragHandle');
+            let drag=false,sX,sY,iL,iT;
+            handle.addEventListener('mousedown',(e)=>{ e.preventDefault(); drag=true; sX=e.clientX; sY=e.clientY;
+                const rect=modal.getBoundingClientRect(),pr=modal.parentElement.getBoundingClientRect();
+                iL=rect.left-pr.left; iT=rect.top-pr.top;
+                modal.style.position='absolute'; modal.style.left=iL+'px'; modal.style.top=iT+'px';
+                document.body.style.userSelect='none';
+            });
+            window.addEventListener('mousemove',(e)=>{ if(!drag) return;
+                let nl=iL+(e.clientX-sX), nt=iT+(e.clientY-sY);
+                const pr=modal.parentElement.getBoundingClientRect(), mr=modal.getBoundingClientRect();
+                nl=Math.min(Math.max(nl,8),pr.width-mr.width-8); nt=Math.min(Math.max(nt,8),pr.height-mr.height-8);
+                modal.style.left=nl+'px'; modal.style.top=nt+'px';
+            });
+            window.addEventListener('mouseup',()=>{ drag=false; document.body.style.userSelect=''; });
         }
         
         let lastTimestamp=0;
