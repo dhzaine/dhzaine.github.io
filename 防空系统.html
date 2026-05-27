@@ -26,7 +26,7 @@
             align-items: center;
             font-family: 'Segoe UI', 'Orbitron', 'Poppins', system-ui, -apple-system, monospace;
             color: #eef5ff;
-            padding: 16px;
+            padding: 12px;
             overflow-x: hidden;
         }
 
@@ -74,16 +74,16 @@
             .home-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(255, 51, 102, 0.6); }
         }
 
-        /* 游戏容器 - 自适应 */
+        /* 游戏容器 - 自适应横竖屏 */
         .game-container {
             background: rgba(2, 8, 20, 0.7);
             backdrop-filter: blur(8px);
             border-radius: clamp(20px, 4vw, 48px);
-            padding: 16px;
+            padding: 12px;
             box-shadow: 0 25px 45px rgba(0,0,0,0.7), 0 0 0 1px rgba(0, 255, 255, 0.2);
             display: none;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1300px;
             position: relative;
             margin: 0 auto;
         }
@@ -161,11 +161,11 @@
             color: #1a1a2a;
         }
 
-        /* 手机底部控制栏 - 左/右在左下角，发射在右下角 */
+        /* 手机底部控制栏 - 横竖屏自适应 */
         .mobile-controls {
             display: none;
             position: fixed;
-            bottom: calc(20px + var(--safe-area-inset-bottom));
+            bottom: calc(15px + var(--safe-area-inset-bottom));
             left: 0;
             right: 0;
             z-index: 50;
@@ -173,15 +173,15 @@
         }
         .ctrl-left-group {
             position: absolute;
-            left: 20px;
+            left: 15px;
             bottom: 0;
             display: flex;
-            gap: 15px;
+            gap: 12px;
             pointer-events: auto;
         }
         .ctrl-right-group {
             position: absolute;
-            right: 20px;
+            right: 15px;
             bottom: 0;
             pointer-events: auto;
         }
@@ -207,17 +207,12 @@
             background: linear-gradient(135deg, #2a3a5a, #1a2a3a);
             border-color: #0ff;
         }
-        .ctrl-left, .ctrl-right {
-            font-size: 32px;
-        }
+        .ctrl-left, .ctrl-right { font-size: 32px; }
         .ctrl-shoot {
             background: linear-gradient(135deg, #ff3366, #ff6633);
             border-color: rgba(255, 255, 255, 0.6);
             font-size: 28px;
             box-shadow: 0 0 20px rgba(255, 51, 102, 0.5);
-        }
-        .ctrl-shoot:active {
-            background: linear-gradient(135deg, #ff4466, #ff7744);
         }
 
         .instruction {
@@ -271,15 +266,15 @@
         }
         .drag-handle:active { cursor: grabbing; }
 
-        /* 手机专用样式 */
-        @media (max-width: 768px) {
+        /* 手机竖屏样式 */
+        @media (max-width: 768px) and (orientation: portrait) {
             body { padding: 8px; }
             .game-container { padding: 10px; }
             .mobile-controls { display: block; }
             .ctrl-btn { width: 55px; height: 55px; line-height: 51px; font-size: 24px; }
             .ctrl-left, .ctrl-right { font-size: 28px; }
-            .ctrl-left-group { left: 15px; gap: 12px; }
-            .ctrl-right-group { right: 15px; }
+            .ctrl-left-group { left: 12px; gap: 10px; }
+            .ctrl-right-group { right: 12px; }
             .info-panel { padding: 6px 12px; gap: 6px; }
             .stats { font-size: 0.7rem; gap: 10px; padding: 4px 12px; }
             .level-box { font-size: 0.7rem; padding: 4px 12px; }
@@ -287,16 +282,24 @@
             .instruction { font-size: 0.6rem; }
         }
 
-        /* 横屏手机优化 */
-        @media (max-width: 768px) and (orientation: landscape) {
+        /* 手机横屏样式 - 优化显示，按钮缩小，游戏区域更大 */
+        @media (max-width: 900px) and (orientation: landscape) {
+            body { padding: 6px; }
+            .game-container { padding: 8px; }
+            .mobile-controls { display: block; }
             .ctrl-btn { width: 48px; height: 48px; line-height: 44px; font-size: 22px; }
             .ctrl-left, .ctrl-right { font-size: 26px; }
-            .ctrl-left-group { left: 12px; gap: 10px; bottom: 5px; }
-            .ctrl-right-group { right: 12px; bottom: 5px; }
+            .ctrl-left-group { left: 10px; gap: 8px; bottom: 5px; }
+            .ctrl-right-group { right: 10px; bottom: 5px; }
+            .info-panel { margin-top: 6px; padding: 4px 10px; gap: 5px; }
+            .stats { font-size: 0.6rem; gap: 8px; padding: 3px 8px; }
+            .level-box { font-size: 0.6rem; padding: 3px 8px; }
+            .game-btn { font-size: 0.55rem; padding: 3px 8px; }
+            .instruction { font-size: 0.55rem; margin-top: 6px; padding: 3px 8px; }
         }
 
         /* 电脑端隐藏移动控制栏 */
-        @media (min-width: 769px) {
+        @media (min-width: 901px) {
             .mobile-controls {
                 display: none !important;
             }
@@ -308,7 +311,7 @@
         <h1>⚡ 天穹防线 · 导弹发射车 ⚡</h1>
         <p>操控战车，拦截随机来袭的高爆炸弹！</p>
         <p>🖱️ 鼠标/手指滑动 → 战车机动 | 🚀 点击/空格/发射按钮 → 拦截导弹</p>
-        <p>⏸️ 按【P】随时暂停 | 每波炸弹数量随机 | 全平台适配</p>
+        <p>⏸️ 按【P】随时暂停 | 每波炸弹数量随机 | 全平台完美适配</p>
         <button class="home-btn" id="startGameBtn">▶ 开始防御</button>
         <button class="home-btn" id="fullscreenBtn">⛶ 全屏作战</button>
     </div>
@@ -456,10 +459,15 @@
             btnShoot.addEventListener('touchstart', (e) => { e.preventDefault(); shootProjectile(); });
         }
         
+        // 横竖屏自适应缩放
         function updateCanvasScale() {
             if(!gameContainer) return;
             const containerWidth = gameContainer.clientWidth - 20;
-            const maxHeight = window.innerHeight * 0.72;
+            let maxHeight = window.innerHeight * 0.72;
+            // 横屏时给予更大高度占比
+            if (window.innerWidth > window.innerHeight) {
+                maxHeight = window.innerHeight * 0.82;
+            }
             const widthRatio = containerWidth / BASE_WIDTH;
             const heightRatio = maxHeight / BASE_HEIGHT;
             scaleRatio = Math.min(widthRatio, heightRatio, 1.1);
@@ -672,7 +680,7 @@
             airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, airDefenseX));
         }
         
-        // 渲染函数（保留完整视觉）
+        // 渲染函数
         function drawBombShape(bomb) {
             const cx = bomb.x + bomb.w/2, cy = bomb.y + bomb.h/2, rx = bomb.w/2, ry = bomb.h/2;
             ctx.save();
@@ -835,7 +843,20 @@
                 if(e.code==='ArrowLeft' && gameContainer.style.display === 'block'){ e.preventDefault(); moveLeft(); }
                 if(e.code==='ArrowRight' && gameContainer.style.display === 'block'){ e.preventDefault(); moveRight(); }
             });
-            window.addEventListener('resize',()=>{ if(gameContainer.style.display==='block'){ updateCanvasScale(); draw(); } });
+            window.addEventListener('resize', () => { 
+                if(gameContainer.style.display === 'block') { 
+                    updateCanvasScale(); 
+                    draw(); 
+                }
+            });
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    if(gameContainer.style.display === 'block') {
+                        updateCanvasScale();
+                        draw();
+                    }
+                }, 50);
+            });
             initDragModal();
         }
         
