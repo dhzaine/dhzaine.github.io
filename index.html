@@ -2,91 +2,366 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <!-- 关键：自适应手机/电脑 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我在呢</title>
+  <title>⚡ 我在呢 </title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Arial', sans-serif;
     }
 
     body {
-      background: #121212;
-      color: white;
+      font-family: 'Segoe UI', 'Poppins', 'Orbitron', 'Microsoft Yahei', sans-serif;
+      background: radial-gradient(ellipse at 30% 40%, #0a0a2a, #020210);
       min-height: 100vh;
+      color: #eef5ff;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 40px 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 动态光晕背景 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(0, 255, 255, 0.08) 0%, rgba(123, 97, 255, 0.05) 50%, transparent 70%);
+      animation: rotateGlow 20s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes rotateGlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .header {
       text-align: center;
+      margin-bottom: 55px;
+      position: relative;
+      z-index: 2;
     }
 
-    /* 标题样式 */
-    .title {
-      font-size: 42px;
-      margin-bottom: 10px;
-      color: #ffcc00;
+    .header h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      background: linear-gradient(135deg, #00ffff, #7b61ff, #ff44cc);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+      text-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+      animation: titlePulse 3s ease-in-out infinite;
     }
 
-    .subtitle {
-      font-size: 18px;
-      color: #ccc;
-      margin-bottom: 40px;
+    @keyframes titlePulse {
+      0%, 100% { opacity: 1; text-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
+      50% { opacity: 0.95; text-shadow: 0 0 40px rgba(123, 97, 255, 0.6); }
     }
 
-    /* 游戏按钮区域（自适应布局） */
-    .game-buttons {
+    .header p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: #aac8ff;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(0, 200, 255, 0.3);
+    }
+
+    /* 游戏网格 */
+    .game-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
       width: 100%;
-      max-width: 900px;
+      max-width: 1200px;
+      margin-bottom: 55px;
+      position: relative;
+      z-index: 2;
     }
 
-    /* 游戏按钮 */
-    .game-btn {
-      background: #222;
-      border: 2px solid #ffcc00;
-      color: white;
-      padding: 20px;
-      border-radius: 12px;
-      font-size: 18px;
+    /* 游戏卡片 - 霓虹科技风 */
+    .game-card {
+      background: rgba(12, 18, 40, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 255, 255, 0.35);
+      border-radius: 28px;
+      padding: 40px 24px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-decoration: none;
-      transition: 0.3s;
+      color: #e0e6ff;
+      transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
     }
 
-    .game-btn:hover {
-      background: #ffcc00;
-      color: #121212;
-      transform: scale(1.05);
+    /* 卡片光效边框 */
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(135deg, #00ffff, #7b61ff, #ff44cc, #00ffff);
+      border-radius: 30px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: -1;
     }
 
-    /* 手机小屏优化 */
-    @media (max-width: 600px) {
-      .title {
-        font-size: 32px;
+    .game-card:hover::before {
+      opacity: 0.5;
+    }
+
+    .game-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: rgba(0, 255, 255, 0.8);
+      box-shadow: 0 20px 35px rgba(0, 255, 255, 0.25), 0 0 30px rgba(123, 97, 255, 0.3);
+      background: rgba(20, 28, 55, 0.8);
+    }
+
+    /* 卡片图标装饰 */
+    .game-icon {
+      font-size: 3.2rem;
+      margin-bottom: 18px;
+      filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.6));
+      transition: transform 0.3s ease;
+    }
+
+    .game-card:hover .game-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .game-card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #ffffff, #88ccff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .game-card p {
+      font-size: 0.9rem;
+      color: #b8c7ff;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+
+    /* 标签徽章 */
+    .game-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: linear-gradient(135deg, #ff3366, #ff6633);
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 2px 8px rgba(255, 51, 102, 0.4);
+      letter-spacing: 1px;
+    }
+
+    /* 页脚 */
+    .footer {
+      font-size: 0.85rem;
+      color: #5a6e9e;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      padding: 20px;
+      border-top: 1px solid rgba(0, 255, 255, 0.2);
+      width: 100%;
+      max-width: 800px;
+      margin-top: 20px;
+    }
+
+    .footer p {
+      letter-spacing: 1px;
+    }
+
+    /* 浮动粒子效果 */
+    .particle {
+      position: fixed;
+      background: rgba(0, 255, 255, 0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      animation: floatParticle 8s infinite ease-in-out;
+    }
+
+    @keyframes floatParticle {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+    }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .game-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+      .game-card {
+        padding: 28px 16px;
+        min-height: 180px;
+      }
+      .game-card h3 {
+        font-size: 1.3rem;
+      }
+      .game-icon {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .game-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+      .header {
+        margin-bottom: 32px;
+      }
+      .game-card {
+        padding: 24px 20px;
+      }
+      .game-badge {
+        top: 10px;
+        right: 10px;
+        font-size: 0.65rem;
+        padding: 3px 10px;
+      }
+    }
+
+    @media (min-width: 1400px) {
+      .game-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 1300px;
       }
     }
   </style>
 </head>
-
 <body>
-  <!-- 标题 -->
-  <h1 class="title">我在呢</h1>
-  <p class="subtitle">选择你所想</p>
 
-  <!-- 游戏链接按钮（可自己改名字+链接） -->
-  <div class="game-buttons">
-    <a href="dazhuankuai/index.html" class="game-btn">打砖块</a>
-    <a href="https://你的游戏2链接" class="game-btn">游戏 2</a>
-    <a href="https://你的游戏3链接" class="game-btn">游戏 3</a>
-    <a href="https://你的游戏4链接" class="game-btn">游戏 4</a>
-    <a href="https://你的游戏5链接" class="game-btn">游戏 5</a>
-    <a href="https://你的游戏6链接" class="game-btn">游戏 6</a>
+  <!-- 动态粒子背景 -->
+  <div id="particlesContainer"></div>
+
+  <div class="header">
+    <h1>✨ 我在呢 ✨</h1>
+    <p>| 自制游戏一起玩 |</p>
   </div>
+
+  <div class="game-grid">
+    <a href="防空系统.html" class="game-card">
+      <div class="game-badge">🔥 热门推荐</div>
+      <div class="game-icon">🚀</div>
+      <h3>天穹防线</h3>
+      <p>导弹发射车 · 动态空袭防御</p>
+      <p style="font-size:0.75rem; margin-top:12px; color:#88aaff;">⚡ 智能拦截 | 随机波次 | 霓虹战场</p>
+    </a>
+    <!-- 预留更多游戏卡片，保持扩展性 -->
+    <a href="#" class="game-card" style="opacity:0.7; cursor:not-allowed;">
+      <div class="game-badge">🎮 开发中</div>
+      <div class="game-icon">🔮</div>
+      <h3>星际巡航</h3>
+      <p>即将解锁 · 敬请期待</p>
+    </a>
+    <a href="#" class="game-card" style="opacity:0.7; cursor:not-allowed;">
+      <div class="game-badge">🎮 开发中</div>
+      <div class="game-icon">⚔️</div>
+      <h3>虚空入侵</h3>
+      <p>即将解锁 · 敬请期待</p>
+    </a>
+  </div>
+
+  <div class="footer">
+    <p>© 2026 我在呢 </p>
+  </div>
+
+  <script>
+    // 动态粒子生成 - 增强科技感
+    (function createParticles() {
+      const container = document.getElementById('particlesContainer');
+      if (!container) return;
+      const particleCount = 45;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        const size = Math.random() * 6 + 2;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.background = `radial-gradient(circle, rgba(0, 255, 255, ${Math.random() * 0.6 + 0.2}), rgba(123, 97, 255, 0.3))`;
+        particle.style.animationDelay = Math.random() * 12 + 's';
+        particle.style.animationDuration = Math.random() * 10 + 6 + 's';
+        container.appendChild(particle);
+      }
+    })();
+
+    // 鼠标跟随光晕效果（可选增强交互）
+    (function addMouseGlow() {
+      const cards = document.querySelectorAll('.game-card');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty('--mouse-x', x + 'px');
+          card.style.setProperty('--mouse-y', y + 'px');
+        });
+      });
+    })();
+  </script>
+  
+  <style>
+    /* 鼠标跟随光晕增强卡片质感 */
+    .game-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .game-card::after {
+      content: '';
+      position: absolute;
+      top: var(--mouse-y, 50%);
+      left: var(--mouse-x, 50%);
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(0, 255, 255, 0.25), transparent 70%);
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    .game-card:hover::after {
+      opacity: 1;
+    }
+    .game-card h3, .game-card p, .game-icon {
+      position: relative;
+      z-index: 2;
+    }
+    .game-badge {
+      z-index: 3;
+    }
+  </style>
 </body>
 </html>
