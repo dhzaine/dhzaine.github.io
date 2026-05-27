@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>天穹防线 · 弹道战车 | 全平台制霸</title>
+  <title>天穹防线 · 纵深弹道 | 全平台制霸</title>
   <style>
     * {
       user-select: none;
@@ -87,12 +87,12 @@
       }
     }
 
-    /* 游戏主容器 — 上下拉伸，弹性布局 */
+    /* 游戏主容器 — 提供弹道视觉延伸，内部画布占满宽度 */
     .game-container {
       background: rgba(2, 8, 20, 0.7);
       backdrop-filter: blur(8px);
       border-radius: clamp(20px, 4vw, 48px);
-      padding: 12px;
+      padding: 12px 12px 18px 12px;
       box-shadow: 0 25px 45px rgba(0,0,0,0.7), 0 0 0 1px rgba(0, 255, 255, 0.2);
       display: none;
       width: 100%;
@@ -113,28 +113,29 @@
       cursor: crosshair;
     }
 
-    /* 信息面板 — 紧凑且直观 */
+    /* 信息面板 — 视觉上下移至战车区域下方，但实际布局中下移靠margin控制 */
     .info-panel {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 14px;
+      margin-top: 20px;
+      margin-bottom: 8px;
       gap: 12px;
       flex-wrap: wrap;
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(8px);
-      padding: 8px 18px;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(12px);
+      padding: 10px 20px;
       border-radius: 60px;
-      border: 1px solid rgba(0, 255, 255, 0.3);
+      border: 1px solid rgba(0, 255, 255, 0.45);
     }
 
     .stats {
-      background: rgba(0, 20, 40, 0.8);
-      padding: 6px 16px;
+      background: rgba(0, 20, 40, 0.9);
+      padding: 6px 18px;
       border-radius: 40px;
       display: flex;
-      gap: 22px;
-      font-size: 0.85rem;
+      gap: 24px;
+      font-size: 0.9rem;
       font-weight: bold;
       font-family: 'Orbitron', monospace;
       color: #0ff;
@@ -149,19 +150,19 @@
     .level-box {
       background: linear-gradient(135deg, #ffaa33, #ff6633);
       color: #0a0a1a;
-      padding: 6px 18px;
+      padding: 6px 20px;
       border-radius: 40px;
       font-weight: bold;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       white-space: nowrap;
     }
 
     .game-btn {
       background: linear-gradient(135deg, #1e2a4a, #0a1a2a);
-      border: 1px solid rgba(0, 255, 255, 0.4);
+      border: 1px solid rgba(0, 255, 255, 0.5);
       font-weight: bold;
-      font-size: 0.8rem;
-      padding: 6px 16px;
+      font-size: 0.85rem;
+      padding: 6px 18px;
       border-radius: 40px;
       color: #ccf;
       cursor: pointer;
@@ -187,11 +188,11 @@
       color: #1a1a2a;
     }
 
-    /* 手机专用底部控件 — 现代化大按钮，指向明确 */
+    /* 手机专用底部控制区 — 超大触控，战车和所有操控都在屏幕偏下区域，为弹道让出天空 */
     .mobile-controls {
       display: none;
       position: fixed;
-      bottom: calc(18px + var(--safe-area-inset-bottom));
+      bottom: calc(20px + var(--safe-area-inset-bottom));
       left: 0;
       right: 0;
       z-index: 60;
@@ -203,7 +204,7 @@
       left: 20px;
       bottom: 0;
       display: flex;
-      gap: 20px;
+      gap: 28px;
       pointer-events: auto;
     }
 
@@ -215,17 +216,17 @@
     }
 
     .ctrl-btn {
-      width: 70px;
-      height: 70px;
+      width: 78px;
+      height: 78px;
       border-radius: 50%;
       background: linear-gradient(145deg, #1f2c4a, #0c142c);
-      border: 2px solid rgba(0, 255, 255, 0.7);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 12px rgba(0, 255, 255, 0.4);
+      border: 2px solid rgba(0, 255, 255, 0.9);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 16px rgba(0, 255, 255, 0.5);
       color: white;
-      font-size: 32px;
+      font-size: 36px;
       font-weight: bold;
       text-align: center;
-      line-height: 66px;
+      line-height: 74px;
       cursor: pointer;
       transition: all 0.05s linear;
       touch-action: manipulation;
@@ -240,20 +241,20 @@
 
     .ctrl-shoot {
       background: linear-gradient(135deg, #ff3366, #ff6633);
-      border-color: rgba(255, 255, 255, 0.7);
-      box-shadow: 0 0 22px rgba(255, 51, 102, 0.7);
-      font-size: 34px;
+      border-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 28px rgba(255, 51, 102, 0.8);
+      font-size: 38px;
     }
 
     .instruction {
-      font-size: 0.7rem;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 6px 12px;
-      border-radius: 30px;
-      margin-top: 12px;
+      font-size: 0.72rem;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 7px 14px;
+      border-radius: 36px;
+      margin-top: 14px;
       text-align: center;
-      color: #aaf;
-      border: 1px solid rgba(0, 255, 255, 0.3);
+      color: #cceeff;
+      border: 1px solid rgba(0, 255, 255, 0.4);
     }
 
     /* 弹窗 */
@@ -263,8 +264,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
       display: none;
       justify-content: center;
       align-items: center;
@@ -295,32 +296,32 @@
       cursor: grab;
     }
 
-    /* ========= 手机竖屏优化（核心：上下拉伸，控件增强） ========= */
+    /* ========= 手机竖屏核心优化：战车、信息区、控制区整体下移，弹道区域上下拉伸 ========= */
     @media (max-width: 768px) and (orientation: portrait) {
       body {
-        padding: 8px 6px 20px 6px;
+        padding: 8px 6px 0 6px;
         justify-content: flex-start;
       }
 
       .game-container {
         margin: 0 auto;
-        padding: 12px 8px 16px 8px;
-        /* 确保可以占满可用高度弹性 */
+        padding: 10px 8px 28px 8px;
       }
 
       .mobile-controls {
         display: block;
       }
 
+      /* 大触控区，操作更精准 */
       .ctrl-btn {
-        width: 68px;
-        height: 68px;
-        line-height: 64px;
-        font-size: 32px;
+        width: 74px;
+        height: 74px;
+        line-height: 70px;
+        font-size: 36px;
       }
 
       .ctrl-left-group {
-        gap: 18px;
+        gap: 24px;
         left: 12px;
       }
 
@@ -328,44 +329,45 @@
         right: 12px;
       }
 
+      /* 信息面板下移更多，让上方画布天空区域增加，弹道纵深 */
       .info-panel {
-        padding: 8px 12px;
-        gap: 8px;
-        margin-top: 16px;
-        flex-wrap: wrap;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        padding: 12px 16px;
+        gap: 14px;
       }
 
       .stats {
-        font-size: 0.75rem;
-        gap: 14px;
-        padding: 5px 12px;
+        font-size: 0.85rem;
+        gap: 20px;
+        padding: 6px 16px;
       }
 
       .level-box {
-        font-size: 0.75rem;
-        padding: 5px 14px;
+        font-size: 0.85rem;
+        padding: 6px 18px;
       }
 
       .game-btn {
-        font-size: 0.7rem;
-        padding: 5px 12px;
+        font-size: 0.75rem;
+        padding: 6px 14px;
       }
 
       .instruction {
-        font-size: 0.65rem;
+        font-size: 0.7rem;
         margin-top: 12px;
-        padding: 5px 12px;
+        padding: 7px 12px;
       }
 
       canvas {
         border-radius: 20px;
-        /* 确保canvas区域在竖屏有更好的视觉拉伸 — 宽度100%，高度等比延伸，让弹道区更明显 */
         width: 100% !important;
         height: auto !important;
+        /* 画布本身比例不变，但周围空隙让弹道视觉向上延伸 */
       }
     }
 
-    /* 手机横屏样式 — 保持信息紧凑，按钮合理 */
+    /* 手机横屏优化 — 控件精巧，信息区适当下移 */
     @media (max-width: 900px) and (orientation: landscape) {
       body {
         padding: 8px 12px;
@@ -377,61 +379,58 @@
       }
 
       .ctrl-btn {
-        width: 55px;
-        height: 55px;
-        line-height: 51px;
-        font-size: 26px;
+        width: 60px;
+        height: 60px;
+        line-height: 56px;
+        font-size: 30px;
       }
 
       .ctrl-left-group {
-        gap: 12px;
+        gap: 16px;
         left: 12px;
-        bottom: 8px;
+        bottom: 6px;
       }
 
       .ctrl-right-group {
         right: 12px;
-        bottom: 8px;
+        bottom: 6px;
       }
 
       .info-panel {
-        margin-top: 8px;
-        padding: 5px 12px;
-        gap: 6px;
+        margin-top: 16px;
+        padding: 6px 14px;
+        gap: 10px;
       }
 
       .stats {
-        font-size: 0.65rem;
-        gap: 10px;
-        padding: 3px 10px;
+        font-size: 0.7rem;
+        gap: 14px;
+        padding: 4px 12px;
       }
 
       .level-box {
-        font-size: 0.65rem;
-        padding: 3px 10px;
-      }
-
-      .game-btn {
-        font-size: 0.6rem;
-        padding: 4px 10px;
+        font-size: 0.7rem;
+        padding: 4px 12px;
       }
     }
 
-    /* 平板竖屏优化：控件不遮挡核心区域 */
+    /* 平板竖屏 */
     @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
       .mobile-controls {
         display: block;
       }
-
       .ctrl-btn {
-        width: 80px;
-        height: 80px;
-        line-height: 76px;
-        font-size: 36px;
+        width: 88px;
+        height: 88px;
+        line-height: 84px;
+        font-size: 40px;
+      }
+      .info-panel {
+        margin-top: 28px;
       }
     }
 
-    /* 电脑端隐藏触控栏 */
+    /* 电脑端隐藏手机控件，保留键盘鼠标体验 */
     @media (min-width: 901px) {
       .mobile-controls {
         display: none !important;
@@ -446,11 +445,11 @@
 </head>
 <body>
 <div class="home-page" id="homePage">
-  <h1>⚡ 天穹防线 · 导弹发射车 ⚡</h1>
-  <p>操控战车，拦截随机来袭的高爆炸弹！</p>
+  <h1>⚡ 天穹防线 · 纵深弹道 ⚡</h1>
+  <p>操控导弹发射车，拦截高空来袭的集群炸弹！</p>
   <p>🖱️ 鼠标/手指滑动 → 战车机动 | 🚀 点击/空格/发射按钮 → 拦截导弹</p>
-  <p>⏸️ 按【P】随时暂停 | 每波炸弹数量随机 | 全平台完美适配</p>
-  <button class="home-btn" id="startGameBtn">▶ 开始防御</button>
+  <p>⏸️ 按【P】暂停 | 每波炸弹动态密度 | 全平台纵横畅玩</p>
+  <button class="home-btn" id="startGameBtn">▶ 进入战位</button>
   <button class="home-btn" id="fullscreenBtn">⛶ 全屏作战</button>
 </div>
 
@@ -469,7 +468,7 @@
     <button class="game-btn" id="gameFullscreenBtn">⛶ 全屏</button>
   </div>
   <div class="instruction">
-    🖱️ 鼠标/手指滑动控制战车 | 点击画面/空格/发射按钮拦截 | 💥 炸弹触碰禁区即失败
+    🖱️ 滑动/手指控制战车水平机动 | 点击任意位置/发射按钮开火 | 炸弹突破禁区即失败
   </div>
 </div>
 
@@ -487,7 +486,7 @@
   <div class="modal-content" id="draggableModal">
     <div class="drag-handle" id="dragHandle">⋮⋮ 拖动</div>
     <h2>💀 防线崩溃</h2>
-    <p>炸弹侵入居民区，任务失败</p>
+    <p>高爆弹侵入居民区，任务失败</p>
     <p>🎯 最终拦截: <span id="finalScore">0</span></p>
     <p>⚡ 最高警戒: <span id="finalLevel">1</span></p>
     <div>
@@ -521,7 +520,7 @@
     const btnRight = document.getElementById('btnRight');
     const btnShoot = document.getElementById('btnShoot');
 
-    // 固定逻辑分辨率 1000x700，弹道区域上下延展感觉更好
+    // 固定逻辑分辨率 1000x700，弹道区上下留白通过画布内部视觉和战车位置凸显纵深
     const BASE_WIDTH = 1000;
     const BASE_HEIGHT = 700;
     const BOMB_START_Y = 40;
@@ -544,7 +543,6 @@
     let leftPressTimer = null, rightPressTimer = null;
     const MOVE_STEP = 12;
 
-    // 移动端连续移动
     function moveLeft() { if(gameActive && !gameOverFlag && !paused) airDefenseX = Math.max(AIR_MIN_X, airDefenseX - MOVE_STEP); }
     function moveRight() { if(gameActive && !gameOverFlag && !paused) airDefenseX = Math.min(AIR_MAX_X, airDefenseX + MOVE_STEP); }
     function startLeftMove() { if(gameActive && !gameOverFlag && !paused) { if(leftPressTimer) clearInterval(leftPressTimer); leftPressTimer = setInterval(moveLeft, 28); } }
@@ -572,17 +570,16 @@
     function updateCanvasScale() {
       if(!gameContainer) return;
       const containerWidth = gameContainer.clientWidth - 20;
-      let maxHeight = window.innerHeight * 0.7;
-      if(window.innerWidth > window.innerHeight) maxHeight = window.innerHeight * 0.82;
-      else maxHeight = window.innerHeight * 0.68;
+      let maxHeight = window.innerHeight * 0.68;
+      if(window.innerWidth > window.innerHeight) maxHeight = window.innerHeight * 0.78;
+      else maxHeight = window.innerHeight * 0.64;
       const ratioW = containerWidth / BASE_WIDTH;
       const ratioH = maxHeight / BASE_HEIGHT;
-      scaleRatio = Math.min(ratioW, ratioH, 1.25);
+      scaleRatio = Math.min(ratioW, ratioH, 1.28);
       const displayWidth = BASE_WIDTH * scaleRatio;
       const displayHeight = BASE_HEIGHT * scaleRatio;
       canvas.style.width = `${displayWidth}px`;
       canvas.style.height = `${displayHeight}px`;
-      const rect = canvas.parentElement.getBoundingClientRect();
       offsetX = (canvas.clientWidth - displayWidth) / 2;
       offsetY = (canvas.clientHeight - displayHeight) / 2;
     }
@@ -739,7 +736,7 @@
       airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, airDefenseX));
     }
 
-    // 绘图函数精简保持风格
+    // 绘图 — 保留所有视觉要素，天空与弹道区延伸感通过星尘和空旷背景体现
     function drawBombShape(bomb) {
       ctx.save(); ctx.shadowBlur=6; ctx.shadowColor="#ff5500";
       const grad = ctx.createLinearGradient(bomb.x,bomb.y,bomb.x+bomb.w,bomb.y+bomb.h);
@@ -754,8 +751,7 @@
       const x=airDefenseX, y=AIR_DEFENSE_Y;
       ctx.save(); ctx.fillStyle="#2a6a4a"; ctx.beginPath(); ctx.ellipse(x,y+6,22,12,0,0,Math.PI*2); ctx.fill();
       ctx.fillStyle="#1e4a2e"; ctx.beginPath(); ctx.ellipse(x,y+4,20,10,0,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle="#3a8a5a"; ctx.fillRect(x-18,y-8,36,14);
-      ctx.fillStyle="#88cc88"; ctx.fillRect(x-7,y-12,14,6);
+      ctx.fillStyle="#3a8a5a"; ctx.fillRect(x-18,y-8,36,14); ctx.fillStyle="#88cc88"; ctx.fillRect(x-7,y-12,14,6);
       ctx.fillStyle="#4a6e3a"; ctx.beginPath(); ctx.moveTo(x-8,y-18); ctx.lineTo(x,y-32); ctx.lineTo(x+8,y-18); ctx.fill();
       ctx.fillStyle="#ff5555"; ctx.beginPath(); ctx.moveTo(x-3,y-48); ctx.lineTo(x,y-58); ctx.lineTo(x+3,y-48); ctx.fill();
       ctx.fillStyle="#88aaff"; ctx.beginPath(); ctx.arc(x+14,y-10,4,0,Math.PI*2); ctx.fill();
@@ -769,7 +765,7 @@
       ctx.restore();
     }
     function drawResidential() { ctx.fillStyle="rgba(220,60,50,0.45)"; ctx.fillRect(0,RESIDENTIAL_LINE_Y,BASE_WIDTH,GROUND_Y-RESIDENTIAL_LINE_Y+12); ctx.fillStyle="#ff8877"; ctx.font="bold 16px 'Orbitron'"; ctx.textAlign="center"; ctx.fillText("⚠️ 绝对禁区",BASE_WIDTH/2,RESIDENTIAL_LINE_Y+24); ctx.textAlign="left"; }
-    function drawStars() { for(let i=0;i<140;i++) { const starX=(i*131)%BASE_WIDTH, starY=(i*253)%(RESIDENTIAL_LINE_Y-50); ctx.fillStyle=`rgba(255,255,200,${0.2+Math.sin(Date.now()*0.001+i)*0.1})`; ctx.beginPath(); ctx.arc(starX,starY,1,0,Math.PI*2); ctx.fill(); } }
+    function drawStars() { for(let i=0;i<160;i++) { const starX=(i*131)%BASE_WIDTH, starY=(i*253)%(RESIDENTIAL_LINE_Y-40); ctx.fillStyle=`rgba(255,255,200,${0.2+Math.sin(Date.now()*0.001+i)*0.1})`; ctx.beginPath(); ctx.arc(starX,starY,1,0,Math.PI*2); ctx.fill(); } }
     function draw() {
       ctx.clearRect(0,0,BASE_WIDTH,BASE_HEIGHT); ctx.fillStyle="#03061a"; ctx.fillRect(0,0,BASE_WIDTH,BASE_HEIGHT);
       drawStars();
