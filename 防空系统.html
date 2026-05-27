@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>天穹防线 · 超维拦截 | 全境防御</title>
+  <title>天穹防线 · 长按连射 | 全境拦截</title>
   <style>
     * {
       user-select: none;
@@ -18,7 +18,6 @@
       --vh: 1vh;
       --neon-cyan: #0ff;
       --neon-pink: #ff44cc;
-      --glow-gold: #ffcc44;
     }
 
     body {
@@ -35,7 +34,7 @@
       position: relative;
     }
 
-    /* 主页卡片 - 科技感爆棚 */
+    /* 主页卡片 */
     .home-page {
       text-align: center;
       padding: clamp(24px, 6vw, 48px);
@@ -47,7 +46,6 @@
       width: 540px;
       margin: 0 auto;
       border: 1px solid rgba(0, 255, 255, 0.5);
-      transition: all 0.3s;
     }
 
     .home-page h1 {
@@ -86,7 +84,7 @@
       .home-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(255, 51, 102, 0.7); background: linear-gradient(135deg, #ff5577, #ff8844); }
     }
 
-    /* 游戏主容器 — 深邃视界 */
+    /* 游戏主容器 */
     .game-container {
       background: rgba(2, 8, 20, 0.75);
       backdrop-filter: blur(10px);
@@ -112,7 +110,7 @@
       cursor: crosshair;
     }
 
-    /* 信息面板 — 均衡紧凑，霓虹点缀 */
+    /* 信息面板 */
     .info-panel {
       display: flex;
       justify-content: center;
@@ -139,7 +137,6 @@
       color: #0ff;
       flex-wrap: wrap;
       justify-content: center;
-      letter-spacing: 1px;
     }
 
     .stats span span { color: #ffaa44; font-size: 1.1em; text-shadow: 0 0 4px #ffaa44; }
@@ -180,7 +177,7 @@
       color: #1a1a2a;
     }
 
-    /* 手机触控区 — 圆形按钮均匀，不抢视觉C位 */
+    /* 手机触控区 — 增强长按连射反馈 */
     .mobile-controls {
       display: none;
       position: fixed;
@@ -231,11 +228,19 @@
       border-color: #0ff;
     }
 
+    /* 发射按钮长按特殊反馈样式（动态脉冲） */
     .ctrl-shoot {
       background: radial-gradient(circle at 40% 30%, #ff4466, #cc3355);
       border-color: #ffccdd;
       box-shadow: 0 0 18px rgba(255, 51, 102, 0.8);
       font-size: 30px;
+      transition: all 0.05s;
+    }
+    .ctrl-shoot.long-press-active {
+      transform: scale(0.94);
+      background: radial-gradient(circle at 40% 30%, #ff6680, #ff3355);
+      box-shadow: 0 0 28px rgba(255, 80, 120, 1);
+      border-color: #fff0aa;
     }
 
     .instruction {
@@ -288,10 +293,9 @@
       padding: 4px 12px;
       border-radius: 40px;
       cursor: grab;
-      font-weight: bold;
     }
 
-    /* ========= 手机竖屏核心：按钮大小舒适，信息区紧凑，canvas占比更合理 ========= */
+    /* 响应式：手机竖屏 & 横屏 按钮舒适 */
     @media (max-width: 768px) and (orientation: portrait) {
       body { padding: 8px 8px 0 8px; }
       .game-container { padding: 10px 8px 16px 8px; border-radius: 32px; }
@@ -305,10 +309,8 @@
       .level-box { font-size: 0.65rem; padding: 2px 12px; }
       .game-btn { font-size: 0.6rem; padding: 4px 12px; }
       .instruction { font-size: 0.55rem; margin-top: 8px; padding: 4px 10px; }
-      canvas { border-radius: 24px; }
     }
 
-    /* 手机横屏布局 — 按钮略小，视觉平衡 */
     @media (max-width: 900px) and (orientation: landscape) {
       body { padding: 6px 12px; }
       .mobile-controls { display: block; }
@@ -321,7 +323,6 @@
       .game-btn { font-size: 0.55rem; padding: 3px 10px; }
     }
 
-    /* 平板竖屏优雅 */
     @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
       .mobile-controls { display: block; }
       .ctrl-btn { width: 72px; height: 72px; line-height: 68px; font-size: 32px; }
@@ -336,9 +337,9 @@
 <body>
 <div class="home-page" id="homePage">
   <h1>⚡ 天穹防线 ⚡</h1>
-  <p>「智能弹道 · 纵深拦截」</p>
-  <p>🖱️ 鼠标/手指滑移 → 战车机动 &nbsp;|&nbsp; 🚀 点击/空格 → 精准拦截</p>
-  <p>🎮 每波集群轰炸，动态难度，无限可能</p>
+  <p>「长按发射键 · 连续拦截」</p>
+  <p>🖱️ 鼠标/手指滑移 → 战车机动 &nbsp;|&nbsp; 🚀 单点/长按 → 高速连射</p>
+  <p>🎮 动态密度递增，挑战极限防空</p>
   <button class="home-btn" id="startGameBtn">▶ 进入战位</button>
   <button class="home-btn" id="fullscreenBtn">⛶ 全屏作战</button>
 </div>
@@ -358,7 +359,7 @@
     <button class="game-btn" id="gameFullscreenBtn">⛶ 全屏</button>
   </div>
   <div class="instruction">
-    🖱️ 滑动控制装甲车 | 开火截击炸弹群 | 突破红色禁区即任务失败
+    🖱️ 滑动控制装甲车 | 点击/长按发射键连续开火 | 突破红色禁区即失败
   </div>
 </div>
 
@@ -430,6 +431,53 @@
     let leftPressTimer = null, rightPressTimer = null;
     const MOVE_STEP = 12;
 
+    // ---------- 长按连射相关 ----------
+    let longPressTimer = null;
+    let isLongPressing = false;
+    const LONG_PRESS_DELAY = 180;        // 初始长按延迟 (ms)
+    const LONG_PRESS_INTERVAL = 110;     // 连发间隔 (ms)
+    
+    function shootProjectile() {
+      if(!gameActive || gameOverFlag || paused || !canShoot) return;
+      let speedX = Math.min(14, Math.max(-14, airDefenseVelocity));
+      let vx = speedX * 1.02 + (Math.random() - 0.5) * 0.9;
+      let vy = -13.2 + (Math.random() - 0.5) * 0.6;
+      interceptors.push({ x: airDefenseX, y: AIR_DEFENSE_Y - 18, vx, vy, active: true });
+      canShoot = false;
+      shootCooldownFrames = 8;
+      if(navigator.vibrate) navigator.vibrate(15);
+    }
+
+    // 长按发射逻辑 (开始长按 -> 立即射一发，然后定时连射)
+    function startLongPressShoot() {
+      if(!gameActive || gameOverFlag || paused) return;
+      if(longPressTimer) clearInterval(longPressTimer);
+      // 立即发射第一发
+      shootProjectile();
+      // 开启定时连射
+      longPressTimer = setInterval(() => {
+        if(gameActive && !gameOverFlag && !paused && canShoot) {
+          shootProjectile();
+        } else if (!gameActive || gameOverFlag || paused) {
+          // 如果游戏状态无效，自动停止长按连射
+          stopLongPressShoot();
+        }
+      }, LONG_PRESS_INTERVAL);
+      isLongPressing = true;
+      // 给发射按钮加视觉反馈
+      if(btnShoot) btnShoot.classList.add('long-press-active');
+    }
+
+    function stopLongPressShoot() {
+      if(longPressTimer) {
+        clearInterval(longPressTimer);
+        longPressTimer = null;
+      }
+      isLongPressing = false;
+      if(btnShoot) btnShoot.classList.remove('long-press-active');
+    }
+
+    // 移动控制函数
     function moveLeft() { if(gameActive && !gameOverFlag && !paused) airDefenseX = Math.max(AIR_MIN_X, airDefenseX - MOVE_STEP); }
     function moveRight() { if(gameActive && !gameOverFlag && !paused) airDefenseX = Math.min(AIR_MAX_X, airDefenseX + MOVE_STEP); }
     function startLeftMove() { if(gameActive && !gameOverFlag && !paused) { if(leftPressTimer) clearInterval(leftPressTimer); leftPressTimer = setInterval(moveLeft, 28); } }
@@ -448,9 +496,64 @@
         btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); startRightMove(); });
         btnRight.addEventListener('touchend', (e) => { e.preventDefault(); stopRightMove(); });
       }
+      // 发射按钮： 同时支持 普通点击（短按） 和 长按连射
       if(btnShoot) {
-        btnShoot.addEventListener('click', (e) => { e.preventDefault(); shootProjectile(); });
-        btnShoot.addEventListener('touchstart', (e) => { e.preventDefault(); shootProjectile(); });
+        // 短按：直接发射一发（不与长按冲突，但长按时会通过计时器额外发射，确保无重复注册）
+        const shootHandler = (e) => {
+          e.preventDefault();
+          if(!gameActive || gameOverFlag || paused) return;
+          // 如果目前没有处于长按激活状态，才额外发射（避免长按期间松开瞬间二次发射）;
+          // 为了体验：长按期间已通过定时器发射，短按独立发射也不影响。
+          if(!isLongPressing) {
+            shootProjectile();
+          }
+        };
+        btnShoot.addEventListener('click', shootHandler);
+        btnShoot.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          // 长按: 延迟后启动连射，并且阻止滚动
+          if(longPressTimer) stopLongPressShoot();
+          // 延迟后启动长按连射（只有触摸按住不放）
+          const timeoutId = setTimeout(() => {
+            if(!gameActive || gameOverFlag || paused) return;
+            startLongPressShoot();
+          }, LONG_PRESS_DELAY);
+          // 存储timeout以便取消
+          btnShoot._longPressTimeout = timeoutId;
+        });
+        btnShoot.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          if(btnShoot._longPressTimeout) {
+            clearTimeout(btnShoot._longPressTimeout);
+            btnShoot._longPressTimeout = null;
+          }
+          stopLongPressShoot();
+        });
+        btnShoot.addEventListener('touchcancel', (e) => {
+          e.preventDefault();
+          if(btnShoot._longPressTimeout) {
+            clearTimeout(btnShoot._longPressTimeout);
+            btnShoot._longPressTimeout = null;
+          }
+          stopLongPressShoot();
+        });
+        // PC端鼠标长按模拟 (为了完整)
+        btnShoot.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          if(btnShoot._longPressTimeout) clearTimeout(btnShoot._longPressTimeout);
+          btnShoot._longPressTimeout = setTimeout(() => {
+            if(gameActive && !gameOverFlag && !paused) startLongPressShoot();
+          }, LONG_PRESS_DELAY);
+        });
+        btnShoot.addEventListener('mouseup', (e) => {
+          e.preventDefault();
+          if(btnShoot._longPressTimeout) { clearTimeout(btnShoot._longPressTimeout); btnShoot._longPressTimeout = null; }
+          stopLongPressShoot();
+        });
+        btnShoot.addEventListener('mouseleave', () => {
+          if(btnShoot._longPressTimeout) { clearTimeout(btnShoot._longPressTimeout); btnShoot._longPressTimeout = null; }
+          stopLongPressShoot();
+        });
       }
     }
 
@@ -492,17 +595,6 @@
       if(cx && cy) handleMove(cx, cy);
     }
 
-    function shootProjectile() {
-      if(!gameActive || gameOverFlag || paused || !canShoot) return;
-      let speedX = Math.min(14, Math.max(-14, airDefenseVelocity));
-      let vx = speedX * 1.02 + (Math.random() - 0.5) * 0.9;
-      let vy = -13.2 + (Math.random() - 0.5) * 0.6;
-      interceptors.push({ x: airDefenseX, y: AIR_DEFENSE_Y - 18, vx, vy, active: true });
-      canShoot = false;
-      shootCooldownFrames = 8;
-      if(navigator.vibrate) navigator.vibrate(20);
-    }
-
     function updateUI() {
       document.getElementById('scoreValue').innerText = score;
       document.getElementById('levelNum').innerText = currentLevel;
@@ -530,7 +622,7 @@
       for(let col=0; col<MAX_BOMBS_PER_ROW; col++) {
         if(columns[col]) {
           let x = startX + col * bombWidth;
-          bombsRow.push({ x, y: yPos, w: bombWidth-3, h: bombHeight-2, active: true, speedY: fallSpeed, falling: true, glowPhase: Math.random() * Math.PI*2 });
+          bombsRow.push({ x, y: yPos, w: bombWidth-3, h: bombHeight-2, active: true, speedY: fallSpeed, falling: true });
         }
       }
       return bombsRow;
@@ -563,7 +655,6 @@
       lastAirDefenseX = airDefenseX;
       bombs = [];
       initBombsWave();
-      for(let b of bombs) b.falling = true;
       resetRefillTimerDynamic();
       canShoot = true; shootCooldownFrames = 0;
       levelUpPending = false;
@@ -604,6 +695,7 @@
           document.getElementById('finalScore').innerText = score;
           document.getElementById('finalLevel').innerText = currentLevel;
           gameOverModal.style.display = 'flex';
+          stopLongPressShoot();  // 游戏结束停止连射
           return;
         }
       }
@@ -623,7 +715,7 @@
       airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, airDefenseX));
     }
 
-    // 华丽绘图
+    // 绘图函数 (华丽风格)
     function drawBombShape(bomb) {
       ctx.save(); ctx.shadowBlur=8; ctx.shadowColor="#ff8844";
       const grad = ctx.createLinearGradient(bomb.x,bomb.y,bomb.x+bomb.w,bomb.y+bomb.h);
@@ -669,13 +761,15 @@
       if(paused) pauseBtn.classList.add("pause-btn-active");
       else pauseBtn.classList.remove("pause-btn-active");
       if(!paused) lastTimestamp=0;
+      if(paused) stopLongPressShoot(); else if(!paused && gameActive) {}
     }
     function resetGame(){
+      stopLongPressShoot();
       gameActive=true; gameOverFlag=false; paused=false; levelUpPending=false;
       score=0; currentLevel=1; interceptors=[]; bombs=[];
       canShoot=true; shootCooldownFrames=0;
       airDefenseX=BASE_WIDTH/2; lastAirDefenseX=airDefenseX; airDefenseVelocity=0;
-      initBombsWave(); for(let b of bombs) b.falling=true;
+      initBombsWave();
       resetRefillTimerDynamic();
       updateUI(); gameOverModal.style.display='none';
       pauseBtn.innerHTML="⏸️ 暂停"; pauseBtn.classList.remove("pause-btn-active");
