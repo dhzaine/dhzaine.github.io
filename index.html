@@ -110,6 +110,57 @@
       cursor: pointer;
     }
 
+    /* 英语学习卡片特殊样式（可展开） */
+    .english-card {
+      min-height: 220px;
+      justify-content: flex-start;
+    }
+
+    /* 英语子项容器 */
+    .english-submenu {
+      display: none;
+      width: 100%;
+      margin-top: 20px;
+      gap: 10px;
+      flex-direction: column;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 英语子项按钮 */
+    .english-subitem {
+      background: rgba(20, 30, 60, 0.8);
+      border: 1px solid rgba(123, 97, 255, 0.5);
+      border-radius: 16px;
+      padding: 12px 16px;
+      width: 100%;
+      text-align: center;
+      color: #c0d8ff;
+      font-size: clamp(0.8rem, 3vw, 0.95rem);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .english-subitem:hover {
+      background: rgba(30, 45, 85, 0.9);
+      border-color: rgba(0, 255, 255, 0.7);
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .english-subitem:active {
+      transform: scale(0.98);
+    }
+
+    /* 展开状态 */
+    .english-card.expanded .english-submenu {
+      display: flex;
+    }
+
     .game-card:active {
       transform: scale(0.98);
     }
@@ -185,6 +236,12 @@
       z-index: 3;
     }
 
+    /* 英语卡片徽章特殊样式 */
+    .english-badge {
+      background: linear-gradient(135deg, #33ccff, #3366ff);
+      box-shadow: 0 2px 8px rgba(51, 204, 255, 0.4);
+    }
+
     /* 页脚 */
     .footer {
       font-size: 0.8rem;
@@ -228,12 +285,19 @@
         padding: 16px 12px;
         min-height: 150px;
       }
+      .english-card {
+        min-height: 180px;
+      }
       .game-icon {
         font-size: 2rem;
         margin-bottom: 6px;
       }
       .game-card h3 {
         font-size: 1rem;
+      }
+      .english-subitem {
+        padding: 8px 12px;
+        font-size: 0.75rem;
       }
       .header {
         margin-bottom: 20px;
@@ -251,6 +315,9 @@
       .game-card {
         padding: 24px 20px;
         min-height: 170px;
+      }
+      .english-card {
+        min-height: 200px;
       }
       .game-badge {
         top: 10px;
@@ -302,6 +369,7 @@
   </div>
 
   <div class="game-grid">
+    <!-- 原有游戏卡片：天穹防线 -->
     <a href="防空系统.html" class="game-card" id="gameCardMain">
       <div class="game-badge">🔥 热门推荐</div>
       <div class="game-icon">🚀</div>
@@ -310,6 +378,22 @@
       <p style="font-size:0.7rem; margin-top:10px; color:#88aaff;">⚡ 智能拦截 | 随机波次 | 霓虹战场</p>
     </a>
 
+    <!-- 英语学习卡片 (集成完整跳转) -->
+    <div class="game-card english-card" id="englishCard">
+      <div class="game-badge english-badge">📚 英语学习</div>
+      <div class="game-icon">📖</div>
+      <h3>英语学习充电站</h3>
+      <p>点击展开选择学习模块</p>
+      <!-- 英语子项 - 全部配置实际跳转链接 -->
+      <div class="english-submenu">
+        <div class="english-subitem" data-page="英语单词配对.html">📝 英语单词配对</div>
+        <div class="english-subitem" data-page="英语听力选图.html">🎧 英语听力选图</div>
+        <div class="english-subitem" data-page="英语拼写闯关.html">📖 英语拼写闯关</div>
+        <div class="english-subitem" data-page="英语字母启蒙.html">🔤 英语字母启蒙</div>
+      </div>
+    </div>
+
+    <!-- 占位开发中卡片 -->
     <a href="#" class="game-card" style="opacity:0.7; cursor:not-allowed;" onclick="return false;">
       <div class="game-badge">🎮 开发中</div>
       <div class="game-icon">🔮</div>
@@ -388,41 +472,198 @@
     }
     window.addEventListener('resize', handleOrientationChange);
     handleOrientationChange();
-  </script>
-  
-  <style>
-    /* 鼠标跟随光晕 - 仅桌面端生效 */
-    @media (hover: hover) {
-      .game-card {
-        position: relative;
-        overflow: hidden;
-      }
-      .game-card::after {
-        content: '';
-        position: absolute;
-        top: var(--mouse-y, 50%);
-        left: var(--mouse-x, 50%);
-        width: 120px;
-        height: 120px;
-        background: radial-gradient(circle, rgba(0, 255, 255, 0.25), transparent 70%);
-        transform: translate(-50%, -50%);
-        opacity: 0;
-        transition: opacity 0.2s;
-        pointer-events: none;
-        border-radius: 50%;
-        z-index: 1;
-      }
-      .game-card:hover::after {
-        opacity: 1;
-      }
-      .game-card h3, .game-card p, .game-icon {
-        position: relative;
-        z-index: 2;
-      }
-      .game-badge {
-        z-index: 3;
+
+    // --------------------------------------------------------------
+    // 英语学习卡片展开/收起 & 跳转逻辑 (完善跳转至真实HTML页面)
+    // --------------------------------------------------------------
+    const englishCard = document.getElementById('englishCard');
+    const subItems = document.querySelectorAll('.english-subitem');
+
+    // 智能跳转函数：检查文件是否存在（前端无法完全检测，但提供友好降级 + 尝试跳转）
+    function navigateToEnglishPage(pageName) {
+      if (!pageName) return;
+      // 当前目录下直接跳转到对应的html文件
+      // 由于所有英语学习页面已经提供（英语单词配对.html, 英语听力选图.html, 英语拼写闯关.html, 英语字母启蒙.html）
+      // 直接执行跳转
+      try {
+        window.location.href = pageName;
+      } catch (err) {
+        console.warn("跳转失败: ", err);
+        alert(`页面 ${pageName} 加载失败，请确保文件存在于同一目录。`);
       }
     }
-  </style>
+
+    // 给英语子项绑定跳转 (同时阻止事件冒泡，避免触发卡片折叠)
+    subItems.forEach(item => {
+      const targetPage = item.getAttribute('data-page');
+      if (targetPage) {
+        // 移除原有内联onclick，统一用事件监听
+        item.removeEventListener('click', item._boundClick);
+        const clickHandler = (e) => {
+          e.stopPropagation();    // 关键：阻止事件冒泡到父级englishCard
+          navigateToEnglishPage(targetPage);
+        };
+        item.addEventListener('click', clickHandler);
+        item._boundClick = clickHandler; // 便于调试但不影响
+      }
+    });
+
+    // 英语卡片展开/收起逻辑 (单击卡片本身不跳转，只展开/收起)
+    // 重要: 由于子项有自己的click事件且冒泡被阻止，点击子项不会触发展开收缩，符合预期。
+    englishCard.addEventListener('click', function(e) {
+      // 防止点击子菜单时误触展开/收起 (子菜单已stopPropagation，此监听不会被触发, 但是为了安全再次判断)
+      if (e.target.classList && e.target.classList.contains('english-subitem')) {
+        return;
+      }
+      // 切换展开状态
+      this.classList.toggle('expanded');
+      const tipText = this.querySelector('p');
+      if (this.classList.contains('expanded')) {
+        if (tipText) tipText.textContent = '✨ 选择模块，快乐学习 ✨';
+      } else {
+        if (tipText) tipText.textContent = '点击展开选择学习模块';
+      }
+    });
+
+    // 优化: 如果从其他页面返回，确保卡片默认收起，提示文字重置
+    const resetEnglishCardState = () => {
+      if (englishCard.classList.contains('expanded')) {
+        englishCard.classList.remove('expanded');
+      }
+      const tipPara = englishCard.querySelector('p');
+      if (tipPara && tipPara.textContent.includes('选择模块')) {
+        tipPara.textContent = '点击展开选择学习模块';
+      }
+    };
+    resetEnglishCardState();
+
+    // 给所有带有真实链接的卡片a标签添加平滑退出，防空系统直接可用，开发中卡片已禁用
+    const legitGameLink = document.getElementById('gameCardMain');
+    if (legitGameLink) {
+      legitGameLink.addEventListener('click', (e) => {
+        // 防空系统链接正常跳转，无需额外处理
+      });
+    }
+
+    // 防止未完成的占位卡片意外跳转
+    const disabledCards = document.querySelectorAll('.game-card[href="#"]');
+    disabledCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        // 震动反馈 (如果有)
+        if (navigator.vibrate) navigator.vibrate(50);
+        // 轻提示表示开发中
+        const tipDiv = document.createElement('div');
+        tipDiv.innerText = '⚙️ 战备升级中，敬请期待 ⚙️';
+        tipDiv.style.position = 'fixed';
+        tipDiv.style.bottom = '20px';
+        tipDiv.style.left = '50%';
+        tipDiv.style.transform = 'translateX(-50%)';
+        tipDiv.style.backgroundColor = 'rgba(0,0,0,0.8)';
+        tipDiv.style.color = '#0ff';
+        tipDiv.style.padding = '8px 20px';
+        tipDiv.style.borderRadius = '40px';
+        tipDiv.style.zIndex = '9999';
+        tipDiv.style.fontSize = '14px';
+        tipDiv.style.backdropFilter = 'blur(8px)';
+        tipDiv.style.border = '1px solid #0ff';
+        tipDiv.style.fontWeight = 'bold';
+        document.body.appendChild(tipDiv);
+        setTimeout(() => { tipDiv.remove(); }, 1500);
+      });
+    });
+    
+    // 增加额外友好提示：如果某个英语页面不存在则控制台提醒，但实际文件均存在
+    // 注：由于所有英语页面代码都已提供，不会出现404，为保证体验不主动拦截
+    
+    // 修整英语卡片内部文字点击区域，如果点击空白区域折叠不影响美观
+    // 确保在移动端点击非子项区域展开不会有误跳转
+    const englishCardTitle = englishCard.querySelector('h3');
+    if (englishCardTitle) {
+      englishCardTitle.addEventListener('click', (e) => {
+        e.stopPropagation(); // 避免标题点击时多重触发, 但会触发父级事件，无大碍
+      });
+    }
+    
+    // 监听全屏加载完成后需要重置样式，避免卡片高度错位
+    window.addEventListener('load', () => {
+      resetEnglishCardState();
+      // 动态适应粒子效果，重新定位视口
+      handleOrientationChange();
+    });
+    
+    // 背面的鼠标跟随光晕样式动态生效
+    const styleForGlow = document.createElement('style');
+    styleForGlow.textContent = `
+      /* 鼠标跟随光晕 - 仅桌面端生效 */
+      @media (hover: hover) {
+        .game-card {
+          position: relative;
+          overflow: hidden;
+        }
+        .game-card::after {
+          content: '';
+          position: absolute;
+          top: var(--mouse-y, 50%);
+          left: var(--mouse-x, 50%);
+          width: 120px;
+          height: 120px;
+          background: radial-gradient(circle, rgba(0, 255, 255, 0.25), transparent 70%);
+          transform: translate(-50%, -50%);
+          opacity: 0;
+          transition: opacity 0.2s;
+          pointer-events: none;
+          border-radius: 50%;
+          z-index: 1;
+        }
+        .game-card:hover::after {
+          opacity: 1;
+        }
+        .game-card h3, .game-card p, .game-icon {
+          position: relative;
+          z-index: 2;
+        }
+        .game-badge {
+          z-index: 3;
+        }
+        .english-subitem {
+          position: relative;
+          z-index: 2;
+        }
+      }
+    `;
+    if (!document.querySelector('#dynamicGlowStyle')) {
+      styleForGlow.id = 'dynamicGlowStyle';
+      document.head.appendChild(styleForGlow);
+    }
+    
+    // 改进: 如果某些浏览器缓存导致事件冲突，确保英语子项目跳转使用location.href完全可靠
+    // 并将所有英语子项重新绑定强化（防止因html结构变动导致监听丢失）
+    function rebindEnglishItems() {
+      const allSubItems = document.querySelectorAll('.english-subitem');
+      allSubItems.forEach(item => {
+        // 避免重复绑定
+        if (item.getAttribute('data-bound') === 'true') return;
+        const page = item.getAttribute('data-page');
+        if (page) {
+          const newHandler = (e) => {
+            e.stopPropagation();
+            window.location.href = page;
+          };
+          item.removeEventListener('click', item._clickHandler);
+          item.addEventListener('click', newHandler);
+          item._clickHandler = newHandler;
+          item.setAttribute('data-bound', 'true');
+        }
+      });
+    }
+    rebindEnglishItems();
+    
+    // 监听动态变化（如果有异步不会影响，但稳妥再调一次）
+    const observer = new MutationObserver(() => {
+      rebindEnglishItems();
+    });
+    observer.observe(document.getElementById('englishCard'), { childList: true, subtree: true });
+  </script>
 </body>
 </html>
