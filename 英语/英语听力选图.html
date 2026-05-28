@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>英语听力选图</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#fff3e0;font-family:"微软雅黑";text-align:center;padding:10px}
+h1{color:#e65100;margin:10px 0}
+.img-options{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;max-width:400px;margin:20px auto}
+.img-btn{width:100%;aspect-ratio:1/1;border-radius:12px;border:3px solid transparent;overflow:hidden}
+.img-btn img{width:100%;height:100%;object-fit:cover}
+.img-btn.active{border-color:#ff9800}
+#tip{font-size:18px;margin:10px;color:#d35400}
+.btn{background:#ff9800;color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:18px;margin:10px}
+</style>
+</head>
+<body>
+<h1>英语听力选图</h1>
+<button class="btn" onclick="playWord()">🔊 听单词</button>
+<div class="img-options" id="imgOptions"></div>
+<div id="tip"></div>
+
+<script>
+// 听力单词库
+const listenWords=[
+ {img:"https://picsum.photos/seed/bird/120/120",en:"bird",cn:"鸟"},
+ {img:"https://picsum.photos/seed/fish/120/120",en:"fish",cn:"鱼"},
+ {img:"https://picsum.photos/seed/red/120/120",en:"red",cn:"红色"},
+ {img:"https://picsum.photos/seed/blue/120/120",en:"blue",cn:"蓝色"}
+];
+let current;
+
+// 随机出题
+function newAudioQuestion(){
+ current=listenWords[Math.floor(Math.random()*listenWords.length)];
+ // 生成选项
+ const opts=document.getElementById("imgOptions");
+ opts.innerHTML="";
+ const allOpts=listenWords.sort(()=>Math.random());
+ allOpts.forEach(opt=>{
+ const btn=document.createElement("button");
+ btn.className="img-btn";
+ btn.innerHTML=`<img src="${opt.img}" alt="${opt.cn}">`;
+ btn.onclick=()=>checkListenAnswer(opt.en);
+ opts.appendChild(btn);
+ });
+ document.getElementById("tip").innerText="";
+}
+
+// 播放单词发音
+function playWord(){
+ if(!current) return;
+ const utterance=new SpeechSynthesisUtterance(current.en);
+ utterance.lang="en-US";
+ speechSynthesis.speak(utterance);
+}
+
+// 检查听力答案
+function checkListenAnswer(ans){
+ if(ans===current.en){
+ document.getElementById("tip").innerText="✅ 答对啦！";
+ setTimeout(newAudioQuestion,1200);
+ }else{
+ document.getElementById("tip").innerText="❌ 再听一遍～";
+ }
+}
+
+newAudioQuestion();
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>英语拼写闯关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#fce4ec;font-family:"微软雅黑";text-align:center;padding:10px}
+h1{color:#c2185b;margin:10px 0}
+.spell-box{background:#fff;border-radius:16px;padding:20px;max-width:400px;margin:20px auto}
+.word-hint{font-size:24px;color:#880e4f;margin:15px}
+.letter-slots{display:flex;justify-content:center;gap:8px;margin:20px}
+.slot{width:50px;height:50px;border:2px solid #f06292;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.letter-bank{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:20px}
+.letter-btn{background:#f48fb1;color:#fff;border:none;border-radius:8px;padding:12px 18px;font-size:18px}
+#tip{font-size:18px;margin:10px}
+</style>
+</head>
+<body>
+<h1>英语拼写闯关</h1>
+<div class="spell-box">
+<div class="word-hint" id="hint">苹果（apple）</div>
+<div class="letter-slots" id="slots"></div>
+<div class="letter-bank" id="letterBank"></div>
+<div id="tip"></div>
+</div>
+
+<script>
+// 拼写单词库
+const spellWords=[
+ {en:"apple",cn:"苹果"},{en:"banana",cn:"香蕉"},
+ {en:"cat",cn:"猫"},{en:"dog",cn:"狗"},
+ {en:"sun",cn:"太阳"},{en:"moon",cn:"月亮"}
+];
+let current,slots,bank;
+
+// 初始化拼写槽和字母库
+function initSpell(){
+ current=spellWords[Math.floor(Math.random()*spellWords.length)];
+ slots=[];bank=[];
+ // 生成空槽
+ const slotContainer=document.getElementById("slots");
+ slotContainer.innerHTML="";
+ for(let i=0;i<current.en.length;i++){
+ const slot=document.createElement("div");
+ slot.className="slot";
+ slot.dataset.index=i;
+ slotContainer.appendChild(slot);
+ slots.push(slot);
+ }
+ // 生成字母库（正确字母+干扰）
+ const letters=current.en.split("");
+ const allLetters="abcdefghijklmnopqrstuvwxyz".split("");
+ const distractors=allLetters.filter(l=>!letters.includes(l)).sort(()=>Math.random()).slice(0,4);
+ bank=[...letters,...distractors].sort(()=>Math.random());
+ // 更新字母库
+ const bankContainer=document.getElementById("letterBank");
+ bankContainer.innerHTML="";
+ bank.forEach(letter=>{
+ const btn=document.createElement("button");
+ btn.className="letter-btn";
+ btn.innerText=letter;
+ btn.onclick=()=>placeLetter(letter);
+ bankContainer.appendChild(btn);
+ });
+ document.getElementById("hint").innerText=`${current.cn}（${current.en.length}个字母）`;
+ document.getElementById("tip").innerText="";
+}
+
+// 放置字母到空槽
+function placeLetter(letter){
+ const emptySlot=slots.find(s=>!s.innerText);
+ if(!emptySlot) return;
+ emptySlot.innerText=letter;
+ // 检查是否拼完
+ checkSpellComplete();
+}
+
+// 检查拼写是否正确
+function checkSpellComplete(){
+ const userWord=slots.map(s=>s.innerText).join("");
+ if(userWord.length===current.en.length){
+ if(userWord===current.en){
+ document.getElementById("tip").innerText="✅ 拼写正确！";
+ setTimeout(initSpell,1500);
+ }else{
+ document.getElementById("tip").innerText="❌ 再拼一次～";
+ // 清空槽
+ slots.forEach(s=>s.innerText="");
+ }
+ }
+}
+
+initSpell();
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>英语字母启蒙</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#e3f2fd;font-family:"微软雅黑";text-align:center;padding:10px}
+h1{color:#1976d2;margin:10px 0}
+.letter-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;max-width:600px;margin:20px auto}
+.letter-btn{background:#2196F3;color:#fff;border:none;border-radius:12px;padding:15px 0;font-size:24px;cursor:touch-manipulation}
+.letter-btn:hover{background:#1976d2}
+#display{font-size:48px;color:#0d47a1;margin:20px;font-weight:bold}
+.btn{background:#4CAF50;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:16px}
+</style>
+</head>
+<body>
+<h1>英语字母启蒙</h1>
+<div id="display">A / eɪ</div>
+<div class="letter-grid" id="letterGrid"></div>
+<button class="btn" onclick="playSound()">播放发音</button>
+
+<script>
+// 26字母+音标+发音（浏览器自带语音）
+const letters = [
+ {l:"A",p:"eɪ"},{l:"B",p:"biː"},{l:"C",p:"siː"},{l:"D",p:"diː"},
+ {l:"E",p:"iː"},{l:"F",p:"ef"},{l:"G",p:"dʒiː"},{l:"H",p:"eɪtʃ"},
+ {l:"I",p:"aɪ"},{l:"J",p:"dʒeɪ"},{l:"K",p:"keɪ"},{l:"L",p:"el"},
+ {l:"M",p:"em"},{l:"N",p:"en"},{l:"O",p:"oʊ"},{l:"P",p:"piː"},
+ {l:"Q",p:"kjuː"},{l:"R",p:"ɑːr"},{l:"S",p:"es"},{l:"T",p:"tiː"},
+ {l:"U",p:"juː"},{l:"V",p:"viː"},{l:"W",p:"ˈdʌbljuː"},{l:"X",p:"eks"},
+ {l:"Y",p:"waɪ"},{l:"Z",p:"ziː"}
+];
+let currentIndex=0;
+
+// 初始化字母按钮
+function initGrid(){
+ const grid=document.getElementById("letterGrid");
+ letters.forEach((item,index)=>{
+ const btn=document.createElement("button");
+ btn.className="letter-btn";
+ btn.innerText=item.l;
+ btn.onclick=()=>selectLetter(index);
+ grid.appendChild(btn);
+ });
+}
+
+// 选择字母
+function selectLetter(index){
+ currentIndex=index;
+ const item=letters[index];
+ document.getElementById("display").innerText=`${item.l} / ${item.p}`;
+}
+
+// 播放发音（浏览器语音合成）
+function playSound(){
+ const item=letters[currentIndex];
+ const utterance=new SpeechSynthesisUtterance(item.l);
+ utterance.lang="en-US";
+ speechSynthesis.speak(utterance);
+}
+
+initGrid();
+</script>
+</body>
+</html>
