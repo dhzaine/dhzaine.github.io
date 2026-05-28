@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>天穹防线 · 长按连射 | 全境拦截</title>
+  <title>天穹防线 · 长按连射 | 动态拦截体验</title>
   <style>
     * {
       user-select: none;
@@ -46,6 +46,7 @@
       width: 540px;
       margin: 0 auto;
       border: 1px solid rgba(0, 255, 255, 0.5);
+      transition: all 0.3s ease;
     }
 
     .home-page h1 {
@@ -177,7 +178,7 @@
       color: #1a1a2a;
     }
 
-    /* 手机触控区 — 增强长按连射反馈 */
+    /* 手机触控区 */
     .mobile-controls {
       display: none;
       position: fixed;
@@ -228,7 +229,6 @@
       border-color: #0ff;
     }
 
-    /* 发射按钮长按特殊反馈样式（动态脉冲） */
     .ctrl-shoot {
       background: radial-gradient(circle at 40% 30%, #ff4466, #cc3355);
       border-color: #ffccdd;
@@ -295,7 +295,7 @@
       cursor: grab;
     }
 
-    /* 响应式：手机竖屏 & 横屏 按钮舒适 */
+    /* 响应式 */
     @media (max-width: 768px) and (orientation: portrait) {
       body { padding: 8px 8px 0 8px; }
       .game-container { padding: 10px 8px 16px 8px; border-radius: 32px; }
@@ -431,40 +431,36 @@
     let leftPressTimer = null, rightPressTimer = null;
     const MOVE_STEP = 12;
 
-    // ---------- 长按连射相关 ----------
+    // ---------- 长按连射 ----------
     let longPressTimer = null;
     let isLongPressing = false;
-    const LONG_PRESS_DELAY = 180;        // 初始长按延迟 (ms)
-    const LONG_PRESS_INTERVAL = 110;     // 连发间隔 (ms)
+    const LONG_PRESS_DELAY = 160;        // 初始长按延迟
+    const LONG_PRESS_INTERVAL = 100;     // 连发间隔
     
     function shootProjectile() {
-      if(!gameActive || gameOverFlag || paused || !canShoot) return;
+      if(!gameActive || gameOverFlag || paused || !canShoot) return false;
       let speedX = Math.min(14, Math.max(-14, airDefenseVelocity));
       let vx = speedX * 1.02 + (Math.random() - 0.5) * 0.9;
       let vy = -13.2 + (Math.random() - 0.5) * 0.6;
       interceptors.push({ x: airDefenseX, y: AIR_DEFENSE_Y - 18, vx, vy, active: true });
       canShoot = false;
       shootCooldownFrames = 8;
-      if(navigator.vibrate) navigator.vibrate(15);
+      if(navigator.vibrate) navigator.vibrate(12);
+      return true;
     }
 
-    // 长按发射逻辑 (开始长按 -> 立即射一发，然后定时连射)
     function startLongPressShoot() {
       if(!gameActive || gameOverFlag || paused) return;
       if(longPressTimer) clearInterval(longPressTimer);
-      // 立即发射第一发
       shootProjectile();
-      // 开启定时连射
       longPressTimer = setInterval(() => {
         if(gameActive && !gameOverFlag && !paused && canShoot) {
           shootProjectile();
         } else if (!gameActive || gameOverFlag || paused) {
-          // 如果游戏状态无效，自动停止长按连射
           stopLongPressShoot();
         }
       }, LONG_PRESS_INTERVAL);
       isLongPressing = true;
-      // 给发射按钮加视觉反馈
       if(btnShoot) btnShoot.classList.add('long-press-active');
     }
 
@@ -477,7 +473,6 @@
       if(btnShoot) btnShoot.classList.remove('long-press-active');
     }
 
-    // 移动控制函数
     function moveLeft() { if(gameActive && !gameOverFlag && !paused) airDefenseX = Math.max(AIR_MIN_X, airDefenseX - MOVE_STEP); }
     function moveRight() { if(gameActive && !gameOverFlag && !paused) airDefenseX = Math.min(AIR_MAX_X, airDefenseX + MOVE_STEP); }
     function startLeftMove() { if(gameActive && !gameOverFlag && !paused) { if(leftPressTimer) clearInterval(leftPressTimer); leftPressTimer = setInterval(moveLeft, 28); } }
@@ -496,62 +491,44 @@
         btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); startRightMove(); });
         btnRight.addEventListener('touchend', (e) => { e.preventDefault(); stopRightMove(); });
       }
-      // 发射按钮： 同时支持 普通点击（短按） 和 长按连射
       if(btnShoot) {
-        // 短按：直接发射一发（不与长按冲突，但长按时会通过计时器额外发射，确保无重复注册）
-        const shootHandler = (e) => {
+        const shootClickHandler = (e) => {
           e.preventDefault();
           if(!gameActive || gameOverFlag || paused) return;
-          // 如果目前没有处于长按激活状态，才额外发射（避免长按期间松开瞬间二次发射）;
-          // 为了体验：长按期间已通过定时器发射，短按独立发射也不影响。
-          if(!isLongPressing) {
-            shootProjectile();
-          }
+          if(!isLongPressing) shootProjectile();
         };
-        btnShoot.addEventListener('click', shootHandler);
-        btnShoot.addEventListener('touchstart', (e) => {
+        btnShoot.addEventListener('click', shootClickHandler);
+        
+        let pressTimeout = null;
+        const onTouchStart = (e) => {
           e.preventDefault();
-          // 长按: 延迟后启动连射，并且阻止滚动
-          if(longPressTimer) stopLongPressShoot();
-          // 延迟后启动长按连射（只有触摸按住不放）
-          const timeoutId = setTimeout(() => {
-            if(!gameActive || gameOverFlag || paused) return;
-            startLongPressShoot();
+          if(pressTimeout) clearTimeout(pressTimeout);
+          pressTimeout = setTimeout(() => {
+            if(gameActive && !gameOverFlag && !paused) startLongPressShoot();
           }, LONG_PRESS_DELAY);
-          // 存储timeout以便取消
-          btnShoot._longPressTimeout = timeoutId;
-        });
-        btnShoot.addEventListener('touchend', (e) => {
-          e.preventDefault();
-          if(btnShoot._longPressTimeout) {
-            clearTimeout(btnShoot._longPressTimeout);
-            btnShoot._longPressTimeout = null;
-          }
+        };
+        const onTouchEnd = () => {
+          if(pressTimeout) { clearTimeout(pressTimeout); pressTimeout = null; }
           stopLongPressShoot();
-        });
-        btnShoot.addEventListener('touchcancel', (e) => {
-          e.preventDefault();
-          if(btnShoot._longPressTimeout) {
-            clearTimeout(btnShoot._longPressTimeout);
-            btnShoot._longPressTimeout = null;
-          }
-          stopLongPressShoot();
-        });
-        // PC端鼠标长按模拟 (为了完整)
+        };
+        btnShoot.addEventListener('touchstart', onTouchStart);
+        btnShoot.addEventListener('touchend', onTouchEnd);
+        btnShoot.addEventListener('touchcancel', onTouchEnd);
+        
+        let mousePressTimeout = null;
         btnShoot.addEventListener('mousedown', (e) => {
           e.preventDefault();
-          if(btnShoot._longPressTimeout) clearTimeout(btnShoot._longPressTimeout);
-          btnShoot._longPressTimeout = setTimeout(() => {
+          if(mousePressTimeout) clearTimeout(mousePressTimeout);
+          mousePressTimeout = setTimeout(() => {
             if(gameActive && !gameOverFlag && !paused) startLongPressShoot();
           }, LONG_PRESS_DELAY);
         });
-        btnShoot.addEventListener('mouseup', (e) => {
-          e.preventDefault();
-          if(btnShoot._longPressTimeout) { clearTimeout(btnShoot._longPressTimeout); btnShoot._longPressTimeout = null; }
+        btnShoot.addEventListener('mouseup', () => {
+          if(mousePressTimeout) { clearTimeout(mousePressTimeout); mousePressTimeout = null; }
           stopLongPressShoot();
         });
         btnShoot.addEventListener('mouseleave', () => {
-          if(btnShoot._longPressTimeout) { clearTimeout(btnShoot._longPressTimeout); btnShoot._longPressTimeout = null; }
+          if(mousePressTimeout) { clearTimeout(mousePressTimeout); mousePressTimeout = null; }
           stopLongPressShoot();
         });
       }
@@ -603,7 +580,7 @@
     }
 
     function resetRefillTimerDynamic() {
-      let base = Math.max(2.2, 5.0 - (currentLevel-1) * 0.55);
+      let base = Math.max(2.0, 5.2 - (currentLevel-1) * 0.58);
       base = Math.min(base, 5.2);
       refillInterval = base;
       refillTimer = refillInterval;
@@ -613,8 +590,8 @@
       const bombCount = Math.floor(Math.random() * (MAX_BOMBS_PER_ROW - 2)) + 3;
       const startX = 40;
       bombWidth = (BASE_WIDTH - 80) / MAX_BOMBS_PER_ROW;
-      let fallSpeed = 0.85 + (currentLevel - 1) * 0.18;
-      fallSpeed = Math.min(fallSpeed, 3.3);
+      let fallSpeed = 0.85 + (currentLevel - 1) * 0.19;
+      fallSpeed = Math.min(fallSpeed, 3.4);
       const columns = new Array(MAX_BOMBS_PER_ROW).fill(false);
       let placed = 0;
       while(placed < bombCount) { const col = Math.floor(Math.random() * MAX_BOMBS_PER_ROW); if(!columns[col]) { columns[col]=true; placed++; } }
@@ -695,7 +672,7 @@
           document.getElementById('finalScore').innerText = score;
           document.getElementById('finalLevel').innerText = currentLevel;
           gameOverModal.style.display = 'flex';
-          stopLongPressShoot();  // 游戏结束停止连射
+          stopLongPressShoot();
           return;
         }
       }
@@ -715,7 +692,7 @@
       airDefenseX = Math.min(AIR_MAX_X, Math.max(AIR_MIN_X, airDefenseX));
     }
 
-    // 绘图函数 (华丽风格)
+    // 绘图优化
     function drawBombShape(bomb) {
       ctx.save(); ctx.shadowBlur=8; ctx.shadowColor="#ff8844";
       const grad = ctx.createLinearGradient(bomb.x,bomb.y,bomb.x+bomb.w,bomb.y+bomb.h);
@@ -761,7 +738,7 @@
       if(paused) pauseBtn.classList.add("pause-btn-active");
       else pauseBtn.classList.remove("pause-btn-active");
       if(!paused) lastTimestamp=0;
-      if(paused) stopLongPressShoot(); else if(!paused && gameActive) {}
+      if(paused) stopLongPressShoot();
     }
     function resetGame(){
       stopLongPressShoot();
@@ -799,9 +776,9 @@
       canvas.addEventListener('mousemove', onPointerMove);
       canvas.addEventListener('touchmove', onPointerMove, { passive: false });
       canvas.addEventListener('touchstart', (e)=>{ e.preventDefault(); if(e.touches.length) handleMove(e.touches[0].clientX, e.touches[0].clientY); });
-      canvas.addEventListener('click', (e)=>{ e.preventDefault(); shootProjectile(); });
+      canvas.addEventListener('click', (e)=>{ e.preventDefault(); if(gameActive && !gameOverFlag && !paused && canShoot) shootProjectile(); });
       window.addEventListener('keydown',(e)=>{
-        if((e.code==='Space'||e.code==='Enter') && gameContainer.style.display === 'flex'){ e.preventDefault(); shootProjectile(); }
+        if((e.code==='Space'||e.code==='Enter') && gameContainer.style.display === 'flex'){ e.preventDefault(); if(gameActive && !gameOverFlag && !paused && canShoot) shootProjectile(); }
         if(e.code==='KeyP' && gameContainer.style.display === 'flex'){ e.preventDefault(); togglePause(); }
         if(e.code==='ArrowLeft' && gameContainer.style.display === 'flex'){ e.preventDefault(); moveLeft(); }
         if(e.code==='ArrowRight' && gameContainer.style.display === 'flex'){ e.preventDefault(); moveRight(); }
