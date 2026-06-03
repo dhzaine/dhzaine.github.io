@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>三年级下册 · 单元目录 | 人教版英语</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Poppins', 'Inter', system-ui, -apple-system, '微软雅黑', sans-serif;
+      background: radial-gradient(circle at 10% 30%, #0a0f2a, #030514);
+      min-height: 100vh;
+      color: #eef5ff;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 动态光晕背景 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(0, 255, 255, 0.08), rgba(80, 60, 200, 0.12));
+      animation: slowRotate 28s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes slowRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* 粒子容器 */
+    #particlesContainer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: radial-gradient(circle, rgba(0, 230, 250, 0.5), rgba(100, 80, 255, 0.2));
+      border-radius: 50%;
+      animation: floatParticle 14s infinite ease-in-out;
+    }
+
+    @keyframes floatParticle {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      20% { opacity: 0.7; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+    }
+
+    .main-wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    /* 顶部导航 */
+    .glass-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 30px;
+      padding: 8px 20px;
+      background: rgba(10, 20, 40, 0.5);
+      backdrop-filter: blur(12px);
+      border-radius: 80px;
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .back-btn {
+      background: rgba(0, 210, 255, 0.12);
+      border: 1px solid rgba(0, 255, 255, 0.6);
+      border-radius: 60px;
+      padding: 10px 24px;
+      color: #ccf5ff;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 200, 255, 0.25);
+      border-color: #0ff;
+      transform: translateX(-3px);
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+    }
+
+    .title-section {
+      text-align: center;
+    }
+
+    .title-section h1 {
+      font-size: clamp(1.6rem, 6vw, 2.2rem);
+      background: linear-gradient(135deg, #00ffff, #a074ff, #ff88c0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .title-section p {
+      color: #9bc0ff;
+      font-size: 0.8rem;
+    }
+
+    /* 单元网格 */
+    .unit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 24px;
+      margin: 30px 0 40px;
+    }
+
+    .unit-card {
+      background: rgba(12, 22, 48, 0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 32px;
+      padding: 24px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(0, 200, 255, 0.4);
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .unit-card:hover {
+      transform: translateY(-6px);
+      border-color: #3efffa;
+      box-shadow: 0 20px 28px -8px rgba(0, 255, 255, 0.25);
+      background: rgba(28, 42, 80, 0.85);
+    }
+
+    .unit-number {
+      font-size: 1.2rem;
+      color: #88ddff;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .unit-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #fff, #bbddff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .unit-theme {
+      font-size: 0.7rem;
+      color: #9bb5e0;
+      margin-top: 6px;
+    }
+
+    /* 学习内容弹窗 (单词/句子/练习) */
+    .learning-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.2s ease;
+    }
+
+    .learning-modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: linear-gradient(145deg, #111b3a, #070e28);
+      border-radius: 56px;
+      max-width: 750px;
+      width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 28px 24px 36px;
+      border: 1px solid rgba(0, 255, 210, 0.6);
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+    }
+
+    .modal-header h2 {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #ffecb3, #ffb88c);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .close-modal-btn {
+      background: rgba(255, 70, 110, 0.25);
+      border: 1px solid #ff6680;
+      border-radius: 60px;
+      padding: 6px 18px;
+      color: #ffb7cc;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+
+    /* 学习区块样式 */
+    .learn-section {
+      margin-bottom: 28px;
+      background: rgba(0, 20, 40, 0.5);
+      border-radius: 32px;
+      padding: 18px 20px;
+      border-left: 4px solid #0ff;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      color: #9eeeff;
+    }
+
+    .word-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .word-card {
+      background: rgba(0, 160, 210, 0.2);
+      border: 1px solid rgba(0, 200, 250, 0.5);
+      border-radius: 60px;
+      padding: 8px 18px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: 0.1s;
+    }
+
+    .sentence-list {
+      list-style: none;
+    }
+
+    .sentence-list li {
+      background: rgba(255, 255, 255, 0.05);
+      margin-bottom: 12px;
+      padding: 12px 16px;
+      border-radius: 28px;
+      font-size: 0.95rem;
+      border-left: 3px solid #ffaa66;
+    }
+
+    .sentence-english {
+      color: #d4f1ff;
+      font-weight: 500;
+    }
+
+    .sentence-chinese {
+      color: #aac9ff;
+      font-size: 0.85rem;
+      margin-top: 6px;
+    }
+
+    .practice-box {
+      background: rgba(0, 255, 200, 0.08);
+      border-radius: 28px;
+      padding: 16px;
+      margin-top: 8px;
+    }
+
+    .practice-question {
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #ffdd99;
+    }
+
+    .practice-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .option-btn {
+      background: rgba(0, 210, 255, 0.2);
+      border: 1px solid #0ff;
+      border-radius: 60px;
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: 0.1s;
+      font-size: 0.85rem;
+    }
+
+    .option-btn:hover {
+      background: #0ff;
+      color: #010a1a;
+    }
+
+    .feedback {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: #ffcc88;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #1a2350;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #0ff;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .unit-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      .unit-title {
+        font-size: 1rem;
+      }
+      .modal-content {
+        padding: 20px 16px;
+      }
+      .section-title {
+        font-size: 1.1rem;
+      }
+      .word-card {
+        padding: 5px 14px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="particlesContainer"></div>
+
+  <div class="main-wrapper">
+    <div class="glass-nav">
+      <a href="javascript:history.back()" class="back-btn">← 返回年级选择</a>
+      <div class="title-section">
+        <h1>📖 三年级下册 · 单元目录</h1>
+        <p>人教版 PEP · 同步学习中心</p>
+      </div>
+      <div style="width: 70px;"></div>
+    </div>
+
+    <div class="unit-grid" id="unitGrid"></div>
+    <div class="footer-credit" style="text-align:center; font-size:0.7rem; color:#6f95c0;">✨ 点击单元卡片，解锁单词/句子/互动练习 ✨</div>
+  </div>
+
+  <!-- 学习内容弹窗 -->
+  <div id="learningModal" class="learning-modal">
+    <div class="modal-content" id="modalContent">
+      <!-- 动态填充 -->
+    </div>
+  </div>
+
+  <script>
+    // 粒子背景
+    (function initParticles() {
+      const container = document.getElementById('particlesContainer');
+      if (!container) return;
+      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const count = isMobile ? 28 : 50;
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.classList.add('particle');
+        const size = Math.random() * 5 + 2;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.background = `radial-gradient(circle, rgba(0, 230, 250, ${Math.random() * 0.6 + 0.2}), rgba(120, 80, 255, 0.2))`;
+        p.style.animationDelay = Math.random() * 12 + 's';
+        p.style.animationDuration = Math.random() * 10 + 12 + 's';
+        container.appendChild(p);
+      }
+    })();
+
+    // ----- 三年级下册单元数据 (单词/句子/趣味练习) -----
+    const unitsData = {
+      1: {
+        title: "Welcome back to school!",
+        theme: "返校 / 介绍新同学",
+        words: ["UK", "Canada", "USA", "China", "student", "teacher", "pupil", "he", "she"],
+        sentences: [
+          { en: "Welcome back to school!", zh: "欢迎回到学校！" },
+          { en: "Where are you from?", zh: "你来自哪里？" },
+          { en: "I'm from the UK.", zh: "我来自英国。" },
+          { en: "This is Amy. She's a new student.", zh: "这是艾米。她是一名新学生。" }
+        ],
+        practice: {
+          question: "— Where are you from? — I'm from ______.",
+          options: ["China", "Student", "Teacher", "School"],
+          correct: "China"
+        }
+      },
+      2: {
+        title: "My family",
+        theme: "家庭 / 家庭成员介绍",
+        words: ["father", "mother", "brother", "sister", "grandma", "grandpa", "family", "man", "woman"],
+        sentences: [
+          { en: "This is my family.", zh: "这是我的家庭。" },
+          { en: "Who's that man?", zh: "那位男士是谁？" },
+          { en: "He's my father.", zh: "他是我的爸爸。" },
+          { en: "I love my family.", zh: "我爱我的家庭。" }
+        ],
+        practice: {
+          question: "Who's that woman? — ______ is my mother.",
+          options: ["He", "She", "It", "They"],
+          correct: "She"
+        }
+      },
+      3: {
+        title: "At the zoo",
+        theme: "在动物园 / 动物特征",
+        words: ["big", "small", "tall", "short", "fat", "thin", "giraffe", "elephant", "monkey"],
+        sentences: [
+          { en: "Look at the elephant.", zh: "看那头大象。" },
+          { en: "It has a long nose.", zh: "它有长鼻子。" },
+          { en: "The giraffe is tall.", zh: "长颈鹿很高。" },
+          { en: "The monkey is thin.", zh: "猴子很瘦。" }
+        ],
+        practice: {
+          question: "The elephant ______ a long nose.",
+          options: ["has", "have", "is", "are"],
+          correct: "has"
+        }
+      },
+      4: {
+        title: "Where is my car?",
+        theme: "物品位置 / 介词",
+        words: ["desk", "chair", "on", "in", "under", "cap", "ball", "car", "toy"],
+        sentences: [
+          { en: "Where is my pencil box?", zh: "我的铅笔盒在哪？" },
+          { en: "It's under the chair.", zh: "它在椅子下面。" },
+          { en: "Put your book on the desk.", zh: "把你的书放在书桌上。" }
+        ],
+        practice: {
+          question: "— Where is the cat? — It's ______ the box.",
+          options: ["in", "to", "for", "with"],
+          correct: "in"
+        }
+      },
+      5: {
+        title: "Do you like pears?",
+        theme: "水果 / 喜好表达",
+        words: ["apple", "banana", "orange", "pear", "watermelon", "grape", "like", "eat"],
+        sentences: [
+          { en: "Do you like pears?", zh: "你喜欢梨吗？" },
+          { en: "Yes, I do. / No, I don't.", zh: "是的，我喜欢。/ 不，我不喜欢。" },
+          { en: "Let's have some fruit.", zh: "我们吃些水果吧。" }
+        ],
+        practice: {
+          question: "— Do you like bananas? — ______.",
+          options: ["Yes, I like", "No, I do", "Yes, I do", "I like it"],
+          correct: "Yes, I do"
+        }
+      },
+      6: {
+        title: "How many?",
+        theme: "数字 / 询问数量",
+        words: ["eleven", "twelve", "thirteen", "fourteen", "fifteen", "kite", "beautiful", "count"],
+        sentences: [
+          { en: "How many kites do you see?", zh: "你看见了多少只风筝？" },
+          { en: "I see twelve.", zh: "我看见十二只。" },
+          { en: "Let's count!", zh: "我们一起数一数！" }
+        ],
+        practice: {
+          question: "How many ______ can you see?",
+          options: ["kite", "kites", "a kite", "the kite"],
+          correct: "kites"
+        }
+      }
+    };
+
+    // 生成单元按钮
+    const unitGrid = document.getElementById('unitGrid');
+    const modal = document.getElementById('learningModal');
+    const modalContentDiv = document.getElementById('modalContent');
+
+    // 渲染单元卡片
+    function renderUnits() {
+      unitGrid.innerHTML = '';
+      for (let i = 1; i <= 6; i++) {
+        const unit = unitsData[i];
+        if (!unit) continue;
+        const card = document.createElement('div');
+        card.className = 'unit-card';
+        card.setAttribute('data-unit', i);
+        card.innerHTML = `
+          <div class="unit-number">Unit ${i}</div>
+          <div class="unit-title">${unit.title}</div>
+          <div class="unit-theme">${unit.theme}</div>
+        `;
+        card.addEventListener('click', () => openLearningModal(i));
+        unitGrid.appendChild(card);
+      }
+    }
+
+    // 打开学习内容弹窗 (单词 + 句子 + 练习)
+    function openLearningModal(unitId) {
+      const unit = unitsData[unitId];
+      if (!unit) return;
+
+      // 构建弹窗内容
+      const wordsHtml = unit.words.map(w => `<div class="word-card">${w}</div>`).join('');
+      const sentencesHtml = unit.sentences.map(s => `
+        <li>
+          <div class="sentence-english">📖 ${s.en}</div>
+          <div class="sentence-chinese">${s.zh}</div>
+        </li>
+      `).join('');
+
+      // 练习部分随机一个选项交互
+      const practice = unit.practice;
+      const practiceId = `practice-${unitId}`;
+
+      modalContentDiv.innerHTML = `
+        <div class="modal-header">
+          <h2>📘 Unit ${unitId} · ${unit.title}</h2>
+          <button class="close-modal-btn" id="closeModalInner">关闭</button>
+        </div>
+        
+        <div class="learn-section">
+          <div class="section-title">📖 核心单词</div>
+          <div class="word-grid" id="wordsGrid-${unitId}">
+            ${wordsHtml}
+          </div>
+        </div>
+
+        <div class="learn-section">
+          <div class="section-title">💬 重点句子</div>
+          <ul class="sentence-list">
+            ${sentencesHtml}
+          </ul>
+        </div>
+
+        <div class="learn-section">
+          <div class="section-title">✍️ 小练习</div>
+          <div class="practice-box" id="practiceBox-${unitId}">
+            <div class="practice-question">🎯 ${practice.question}</div>
+            <div class="practice-options" id="options-${practiceId}"></div>
+            <div class="feedback" id="feedback-${practiceId}"></div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+          <button class="close-modal-btn" id="closeModalBottom">关闭</button>
+        </div>
+      `;
+
+      // 渲染选项按钮
+      const optionsContainer = document.getElementById(`options-${practiceId}`);
+      if (optionsContainer) {
+        practice.options.forEach(opt => {
+          const optBtn = document.createElement('div');
+          optBtn.className = 'option-btn';
+          optBtn.innerText = opt;
+          optBtn.addEventListener('click', () => {
+            const feedbackDiv = document.getElementById(`feedback-${practiceId}`);
+            if (opt === practice.correct) {
+              feedbackDiv.innerHTML = '✅ 回答正确！ 很棒！继续加油～';
+              feedbackDiv.style.color = '#a0ffc0';
+              // 正确反馈闪烁效果
+              optBtn.style.background = '#0ff';
+              optBtn.style.color = '#010a1a';
+            } else {
+              feedbackDiv.innerHTML = `❌ 再想想哦，正确答案是 “${practice.correct}”。再试一次～`;
+              feedbackDiv.style.color = '#ffb090';
+            }
+            setTimeout(() => {
+              if (feedbackDiv) feedbackDiv.style.opacity = '0.9';
+            }, 50);
+          });
+          optionsContainer.appendChild(optBtn);
+        });
+      }
+
+      // 显示弹窗
+      modal.classList.add('active');
+
+      // 关闭事件绑定
+      const closeBtns = modalContentDiv.querySelectorAll('.close-modal-btn');
+      closeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          modal.classList.remove('active');
+        });
+      });
+
+      // 点击背景关闭
+      modal.onclick = (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+      };
+    }
+
+    // 额外增强：单词朗读简易效果（可选，点击单词发音使用Web Speech API）
+    function addWordAudioFeature() {
+      // 单词点击朗读（增强交互）
+      document.addEventListener('click', (e) => {
+        if (e.target.classList && e.target.classList.contains('word-card')) {
+          const word = e.target.innerText.trim();
+          if (word && window.speechSynthesis) {
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8;
+            speechSynthesis.cancel();
+            speechSynthesis.speak(utterance);
+          }
+        }
+      });
+    }
+
+    // 初始化目录
+    renderUnits();
+    addWordAudioFeature();
+
+    // 额外完善: 动态调整模态框高度，并初始化反馈
+    console.log('三年级下册学习中心已加载，包含单词/句子/互动练习');
+  </script>
+</body>
+</html>
