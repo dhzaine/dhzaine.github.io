@@ -1,67 +1,620 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>英语字母启蒙</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#e3f2fd;font-family:"微软雅黑";text-align:center;padding:10px}
-h1{color:#1976d2;margin:10px 0}
-.letter-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;max-width:600px;margin:20px auto}
-.letter-btn{background:#2196F3;color:#fff;border:none;border-radius:12px;padding:15px 0;font-size:24px;cursor:touch-manipulation}
-.letter-btn:hover{background:#1976d2}
-#display{font-size:48px;color:#0d47a1;margin:20px;font-weight:bold}
-.btn{background:#4CAF50;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:16px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>英语学习充电站 · 人教版同步 | 下册直达版</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Poppins', 'Inter', system-ui, -apple-system, '微软雅黑', sans-serif;
+      background: radial-gradient(circle at 10% 30%, #0a0f2a, #030514);
+      min-height: 100vh;
+      color: #eef5ff;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 动态光晕背景 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(0, 255, 255, 0.08), rgba(80, 60, 200, 0.12));
+      animation: slowRotate 28s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes slowRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* 粒子容器 */
+    #particlesContainer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: radial-gradient(circle, rgba(0, 230, 250, 0.5), rgba(100, 80, 255, 0.2));
+      border-radius: 50%;
+      animation: floatParticle 14s infinite ease-in-out;
+    }
+
+    @keyframes floatParticle {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      20% { opacity: 0.7; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+    }
+
+    /* 主容器 */
+    .main-wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    /* 顶部导航栏 */
+    .glass-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 40px;
+      padding: 8px 20px;
+      background: rgba(10, 20, 40, 0.5);
+      backdrop-filter: blur(12px);
+      border-radius: 80px;
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .back-btn {
+      background: rgba(0, 210, 255, 0.12);
+      border: 1px solid rgba(0, 255, 255, 0.6);
+      border-radius: 60px;
+      padding: 10px 24px;
+      color: #ccf5ff;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.2s;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 200, 255, 0.25);
+      border-color: #0ff;
+      transform: translateX(-3px);
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+    }
+
+    .title-section {
+      text-align: center;
+    }
+
+    .title-section h1 {
+      font-size: clamp(1.6rem, 6vw, 2.4rem);
+      background: linear-gradient(135deg, #00ffff, #a074ff, #ff88c0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 1px;
+      text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    }
+
+    .title-section p {
+      color: #9bc0ff;
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .right-placeholder {
+      width: 100px;
+    }
+
+    /* 教材描述条 */
+    .grade-subtitle {
+      text-align: center;
+      margin: 10px auto 30px;
+    }
+
+    .badge-light {
+      background: rgba(0, 230, 200, 0.18);
+      backdrop-filter: blur(4px);
+      display: inline-block;
+      padding: 6px 24px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      border: 1px solid rgba(0, 255, 200, 0.4);
+      color: #c0e4ff;
+    }
+
+    /* 年级网格 */
+    .grade-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 28px;
+      margin: 15px 0 40px;
+    }
+
+    .grade-card {
+      background: rgba(12, 22, 48, 0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 42px;
+      padding: 28px 16px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      border: 1px solid rgba(0, 200, 255, 0.4);
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .grade-card:hover {
+      transform: translateY(-8px);
+      border-color: #3efffa;
+      box-shadow: 0 20px 32px -8px rgba(0, 255, 255, 0.3);
+      background: rgba(28, 42, 80, 0.85);
+    }
+
+    /* 开发中徽章 */
+    .dev-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: linear-gradient(135deg, #ff8c00, #ff3366);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 60px;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 8px rgba(255, 51, 102, 0.5);
+      z-index: 5;
+      backdrop-filter: blur(2px);
+    }
+
+    .grade-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 6px rgba(0, 230, 250, 0.5));
+    }
+
+    .grade-name {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #f0f9ff, #aac9ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .grade-desc {
+      font-size: 0.75rem;
+      color: #9db8ef;
+      letter-spacing: 0.5px;
+    }
+
+    /* 三年级卡片特殊高亮 */
+    .grade-card.active-grade {
+      border: 1px solid rgba(0, 255, 200, 0.8);
+      box-shadow: 0 0 18px rgba(0, 255, 200, 0.3);
+    }
+
+    /* 册别选择快速弹窗 - 下册直接跳转，上册给出提示 */
+    .book-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.2s, opacity 0.2s ease;
+    }
+
+    .book-modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-card {
+      background: linear-gradient(145deg, #131e3c, #091030);
+      border-radius: 56px;
+      max-width: 380px;
+      width: 85%;
+      padding: 32px 20px 36px;
+      text-align: center;
+      border: 1px solid rgba(0, 255, 255, 0.6);
+      box-shadow: 0 30px 45px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-card h3 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #ffda88, #ffa5d0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .modal-card p {
+      color: #b8dcff;
+      margin-bottom: 28px;
+    }
+
+    .book-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .book-choice {
+      background: rgba(0, 210, 255, 0.12);
+      border: 1.5px solid #0ff;
+      border-radius: 60px;
+      padding: 12px 28px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #d6f0ff;
+      cursor: pointer;
+      transition: 0.2s;
+      min-width: 120px;
+    }
+
+    .book-choice:hover {
+      background: #0ff;
+      color: #010a1a;
+      box-shadow: 0 0 18px cyan;
+      transform: scale(1.02);
+    }
+
+    .close-modal-btn {
+      margin-top: 26px;
+      background: rgba(255, 70, 110, 0.2);
+      border: 1px solid #ff6680;
+      border-radius: 60px;
+      padding: 8px 22px;
+      color: #ffb7cc;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+
+    .close-modal-btn:hover {
+      background: rgba(255, 80, 120, 0.4);
+    }
+
+    /* 开发中卡片不可点击样式 */
+    .grade-card.disabled-card {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    .grade-card.disabled-card:hover {
+      transform: translateY(0);
+      border-color: rgba(0, 200, 255, 0.4);
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.4);
+    }
+    
+    .footer-credit {
+      text-align: center;
+      font-size: 0.7rem;
+      color: #5675a8;
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    @media (max-width: 680px) {
+      .glass-nav {
+        padding: 10px 16px;
+        border-radius: 50px;
+      }
+      .grade-grid {
+        gap: 18px;
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .grade-card {
+        padding: 20px 12px;
+      }
+      .grade-name {
+        font-size: 1.4rem;
+      }
+      .dev-badge {
+        top: 10px;
+        right: 10px;
+        font-size: 0.6rem;
+        padding: 3px 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .right-placeholder {
+        width: 50px;
+      }
+      .back-btn {
+        padding: 6px 18px;
+        font-size: 0.75rem;
+      }
+      .grade-icon {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
 </head>
 <body>
-<h1>英语字母启蒙</h1>
-<div id="display">A / eɪ</div>
-<div class="letter-grid" id="letterGrid"></div>
-<button class="btn" onclick="playSound()">播放发音</button>
+<div id="particlesContainer"></div>
+
+<div class="main-wrapper">
+  <div class="glass-nav">
+    <!-- 返回工坊按钮：正确跳转到上级目录的 index.html -->
+    <a href="../index.html" class="back-btn">← 返回工坊</a>
+    <div class="title-section">
+      <h1>📘 英语学习充电站</h1>
+      <p>人教版 · 三年级起点 · 同步教材</p>
+    </div>
+    <div class="right-placeholder"></div>
+  </div>
+
+  <div class="grade-subtitle">
+    <span class="badge-light">✨ 三年级下册现已开放 | 上册&其他年级开发中 ✨</span>
+  </div>
+
+  <div class="grade-grid" id="gradeGrid">
+    <!-- 三年级卡片 (完整可用，点击直接打开下册页面) -->
+    <div class="grade-card" data-grade="3" data-available="true">
+      <div class="grade-icon">🐼</div>
+      <div class="grade-name">三年级</div>
+      <div class="grade-desc">下册已解锁 · 单词/句子/互动练习</div>
+    </div>
+    <!-- 四年级卡片 (开发中) -->
+    <div class="grade-card disabled-card" data-grade="4" data-available="false">
+      <div class="dev-badge">🔨 开发中</div>
+      <div class="grade-icon">🦊</div>
+      <div class="grade-name">四年级</div>
+      <div class="grade-desc">词汇扩展 · 情景运用</div>
+    </div>
+    <!-- 五年级卡片 (开发中) -->
+    <div class="grade-card disabled-card" data-grade="5" data-available="false">
+      <div class="dev-badge">🔨 开发中</div>
+      <div class="grade-icon">🐺</div>
+      <div class="grade-name">五年级</div>
+      <div class="grade-desc">语法渗透 · 短文阅读</div>
+    </div>
+    <!-- 六年级卡片 (开发中) -->
+    <div class="grade-card disabled-card" data-grade="6" data-available="false">
+      <div class="dev-badge">🔨 开发中</div>
+      <div class="grade-icon">🦅</div>
+      <div class="grade-name">六年级</div>
+      <div class="grade-desc">小升初衔接 · 综合强化</div>
+    </div>
+  </div>
+
+  <div class="footer-credit">
+    🌟 三年级下册内容已完整上线（单元学习 + 单词/句子/练习）<br>
+    📘 三年级上册及其他年级正在全力准备中，敬请期待！
+  </div>
+</div>
+
+<!-- 简易提示弹窗（下册直接跳转；上册提示开发中） -->
+<div id="bookModal" class="book-modal">
+  <div class="modal-card">
+    <h3 id="modalGradeShow">三年级</h3>
+    <p>请选择学期开启学习</p>
+    <div class="book-buttons">
+      <div class="book-choice" data-semester="lower">📖 下册（已开放）</div>
+      <div class="book-choice" data-semester="upper">📘 上册（开发中）</div>
+    </div>
+    <div class="close-modal-btn" id="closeModalBtn">取消</div>
+  </div>
+</div>
 
 <script>
-// 26字母+音标+发音（浏览器自带语音）
-const letters = [
- {l:"A",p:"eɪ"},{l:"B",p:"biː"},{l:"C",p:"siː"},{l:"D",p:"diː"},
- {l:"E",p:"iː"},{l:"F",p:"ef"},{l:"G",p:"dʒiː"},{l:"H",p:"eɪtʃ"},
- {l:"I",p:"aɪ"},{l:"J",p:"dʒeɪ"},{l:"K",p:"keɪ"},{l:"L",p:"el"},
- {l:"M",p:"em"},{l:"N",p:"en"},{l:"O",p:"oʊ"},{l:"P",p:"piː"},
- {l:"Q",p:"kjuː"},{l:"R",p:"ɑːr"},{l:"S",p:"es"},{l:"T",p:"tiː"},
- {l:"U",p:"juː"},{l:"V",p:"viː"},{l:"W",p:"ˈdʌbljuː"},{l:"X",p:"eks"},
- {l:"Y",p:"waɪ"},{l:"Z",p:"ziː"}
-];
-let currentIndex=0;
+  // -------------------- 粒子效果 --------------------
+  (function initParticles() {
+    const container = document.getElementById('particlesContainer');
+    if (!container) return;
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const particleCount = isMobile ? 28 : 50;
+    for (let i = 0; i < particleCount; i++) {
+      const p = document.createElement('div');
+      p.classList.add('particle');
+      const size = Math.random() * 5 + 2;
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.background = `radial-gradient(circle, rgba(0, 230, 250, ${Math.random() * 0.6 + 0.2}), rgba(120, 80, 255, 0.2))`;
+      p.style.animationDelay = Math.random() * 12 + 's';
+      p.style.animationDuration = Math.random() * 10 + 12 + 's';
+      container.appendChild(p);
+    }
+  })();
 
-// 初始化字母按钮
-function initGrid(){
- const grid=document.getElementById("letterGrid");
- letters.forEach((item,index)=>{
- const btn=document.createElement("button");
- btn.className="letter-btn";
- btn.innerText=item.l;
- btn.onclick=()=>selectLetter(index);
- grid.appendChild(btn);
- });
-}
+  // -------------------- 核心功能：三年级下册直接跳转，上册提示开发中 --------------------
+  let activeModal = false;
+  const modal = document.getElementById('bookModal');
+  const closeModalBtn = document.getElementById('closeModalBtn');
+  const gradeNameMap = { 3: '三年级', 4: '四年级', 5: '五年级', 6: '六年级' };
 
-// 选择字母
-function selectLetter(index){
- currentIndex=index;
- const item=letters[index];
- document.getElementById("display").innerText=`${item.l} / ${item.p}`;
-}
+  // 关闭模态窗
+  function closeModal() {
+    if (!modal) return;
+    modal.classList.remove('active');
+    activeModal = false;
+    document.body.style.overflow = '';
+    window.currentPendingGrade = null;
+  }
 
-// 播放发音（浏览器语音合成）
-function playSound(){
- const item=letters[currentIndex];
- const utterance=new SpeechSynthesisUtterance(item.l);
- utterance.lang="en-US";
- speechSynthesis.speak(utterance);
-}
+  // 展示开发中提示（上册或其他未开放内容）
+  function showDevelopmentTip(contentName) {
+    const tipDiv = document.createElement('div');
+    tipDiv.style.position = 'fixed';
+    tipDiv.style.bottom = '30px';
+    tipDiv.style.left = '50%';
+    tipDiv.style.transform = 'translateX(-50%)';
+    tipDiv.style.backgroundColor = 'rgba(0,0,0,0.85)';
+    tipDiv.style.backdropFilter = 'blur(12px)';
+    tipDiv.style.color = '#ffec80';
+    tipDiv.style.padding = '12px 24px';
+    tipDiv.style.borderRadius = '60px';
+    tipDiv.style.border = '1px solid #ffaa33';
+    tipDiv.style.fontSize = '0.9rem';
+    tipDiv.style.fontWeight = 'bold';
+    tipDiv.style.zIndex = '3000';
+    tipDiv.style.fontFamily = 'system-ui';
+    tipDiv.style.boxShadow = '0 0 20px rgba(255,170,0,0.3)';
+    tipDiv.innerText = `✨ ${contentName} 正在全力开发中，敬请期待 ✨`;
+    document.body.appendChild(tipDiv);
+    setTimeout(() => {
+      tipDiv.style.opacity = '0';
+      setTimeout(() => tipDiv.remove(), 400);
+    }, 2200);
+  }
 
-initGrid();
+  // 直接跳转到三年级下册页面 (同目录下的 三年级下册.html)
+  function goToGrade3Lower() {
+    // 跳转到当前目录下的三年级下册.html
+    window.location.href = '三年级下册.html';
+  }
+
+  // ---------- 事件绑定：三年级卡片直接跳转下册，其他年级显示开发中 ----------
+  const gradeCards = document.querySelectorAll('.grade-card');
+  gradeCards.forEach(card => {
+    // 清除原有监听重建，确保纯净
+    const newCard = card.cloneNode(true);
+    card.parentNode.replaceChild(newCard, card);
+    
+    const gradeVal = parseInt(newCard.getAttribute('data-grade'));
+    const isAvailable = newCard.getAttribute('data-available') === 'true';
+    
+    newCard.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // 三年级卡片: 直接跳转到 三年级下册.html (完整单元学习页面)
+      if (gradeVal === 3 && isAvailable) {
+        goToGrade3Lower();
+        return;
+      }
+      
+      // 四、五、六年级开发中提示
+      if (!isAvailable) {
+        const gradeName = gradeNameMap[gradeVal] || '高年级';
+        showDevelopmentTip(`${gradeName} 全套内容`);
+        return;
+      }
+      
+      // 其他意外情况
+      if (gradeVal === 3 && !isAvailable) {
+        showDevelopmentTip('三年级上册内容');
+      }
+    });
+  });
+
+  // ---------- 以下仅用于保留弹窗及其备用逻辑（上册提示等，如用户通过其他方式触发） ----------
+  function bindSemesterButtonsOnce() {
+    const lowerBtn = document.querySelector('.book-choice[data-semester="lower"]');
+    const upperBtn = document.querySelector('.book-choice[data-semester="upper"]');
+    if (lowerBtn && !lowerBtn.hasListener) {
+      const newLower = lowerBtn.cloneNode(true);
+      lowerBtn.parentNode.replaceChild(newLower, lowerBtn);
+      newLower.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // 下册跳转
+        goToGrade3Lower();
+        closeModal();
+      });
+      newLower.hasListener = true;
+    }
+    if (upperBtn && !upperBtn.hasListener) {
+      const newUpper = upperBtn.cloneNode(true);
+      upperBtn.parentNode.replaceChild(newUpper, upperBtn);
+      newUpper.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // 上册开发提示
+        closeModal();
+        showDevelopmentTip('三年级上册（精彩内容制作中）');
+      });
+      newUpper.hasListener = true;
+    }
+  }
+  
+  if (closeModalBtn) {
+    const newCloseBtn = closeModalBtn.cloneNode(true);
+    closeModalBtn.parentNode.replaceChild(newCloseBtn, closeModalBtn);
+    newCloseBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeModal();
+    });
+  }
+  
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+  }
+  
+  const observer = new MutationObserver(() => {
+    bindSemesterButtonsOnce();
+  });
+  if (modal) {
+    observer.observe(modal, { childList: true, subtree: true });
+  }
+  bindSemesterButtonsOnce();
+  
+  // 注意：返回按钮已经使用 <a href="../index.html"> 实现正确跳转，无需额外 JS 干预。
+  // 但为了防止任何内建干扰，保留 clean 状态。
+  
+  // ESC关闭
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (activeModal) closeModal();
+    }
+  });
+  
+  // 页面加载时重置状态，确保没有残留弹窗
+  window.addEventListener('load', () => {
+    if (modal) modal.classList.remove('active');
+    activeModal = false;
+    document.body.style.overflow = '';
+  });
+  
+  console.log('英语学习站已升级：三年级卡片 → 直接打开三年级下册（单元学习页面）；返回按钮正确指向 ../index.html');
 </script>
 </body>
 </html>
