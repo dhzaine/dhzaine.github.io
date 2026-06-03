@@ -398,7 +398,7 @@
    * Unit 5 What time is it?      —— 几点了？
    * Unit 6 A great week          —— 精彩一周
    * 
-   * 数据来源：学科网、教习网等教学资源平台 [citation:1][citation:4][citation:6]
+   * 数据来源：学科网、教习网等教学资源平台
    */
   const unitsList = [
     { 
@@ -443,7 +443,8 @@
       title: "What time is it?", 
       theme: "时间管理 · 日常作息",
       description: "学习时间表达，描述日常活动，培养时间观念",
-      filename: "第五单元.html",
+      // 修改路径：指向 三年级下册/第五单元.html
+      filename: "三年级下册/第五单元.html",
       icon: "⏰"
     },
     { 
@@ -557,7 +558,7 @@
   observer.observe(unitGrid, { childList: true, subtree: false });
   
   window.addEventListener('load', () => {
-    console.log('2024外研版三年级下册目录已加载 — Unit 1~6 对应独立页面');
+    console.log('2024外研版三年级下册目录已加载 — Unit 1~6 对应独立页面，第五单元路径: 三年级下册/第五单元.html');
   });
 </script>
 </body>
