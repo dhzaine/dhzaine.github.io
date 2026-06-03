@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>⚡ 我在呢 | 游戏工坊</title>
+  <title>⚡ 我在呢 | 游戏工坊 · 英语直达</title>
   <style>
     * {
       margin: 0;
@@ -110,55 +110,10 @@
       cursor: pointer;
     }
 
-    /* 英语学习卡片特殊样式（可展开） */
+    /* 英语学习卡片 - 样式独立，无展开子菜单，整体就是一个跳转按钮 */
     .english-card {
-      min-height: 220px;
-      justify-content: flex-start;
-    }
-
-    /* 英语子项容器 */
-    .english-submenu {
-      display: none;
-      width: 100%;
-      margin-top: 20px;
-      gap: 10px;
-      flex-direction: column;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* 英语子项按钮 */
-    .english-subitem {
-      background: rgba(20, 30, 60, 0.8);
-      border: 1px solid rgba(123, 97, 255, 0.5);
-      border-radius: 16px;
-      padding: 12px 16px;
-      width: 100%;
-      text-align: center;
-      color: #c0d8ff;
-      font-size: clamp(0.8rem, 3vw, 0.95rem);
       cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .english-subitem:hover {
-      background: rgba(30, 45, 85, 0.9);
-      border-color: rgba(0, 255, 255, 0.7);
-      color: #ffffff;
-      transform: translateY(-2px);
-    }
-
-    .english-subitem:active {
-      transform: scale(0.98);
-    }
-
-    /* 展开状态 */
-    .english-card.expanded .english-submenu {
-      display: flex;
+      transition: all 0.3s ease;
     }
 
     .game-card:active {
@@ -285,19 +240,12 @@
         padding: 16px 12px;
         min-height: 150px;
       }
-      .english-card {
-        min-height: 180px;
-      }
       .game-icon {
         font-size: 2rem;
         margin-bottom: 6px;
       }
       .game-card h3 {
         font-size: 1rem;
-      }
-      .english-subitem {
-        padding: 8px 12px;
-        font-size: 0.75rem;
       }
       .header {
         margin-bottom: 20px;
@@ -315,9 +263,6 @@
       .game-card {
         padding: 24px 20px;
         min-height: 170px;
-      }
-      .english-card {
-        min-height: 200px;
       }
       .game-badge {
         top: 10px;
@@ -365,7 +310,7 @@
 
   <div class="header">
     <h1>✨ 我在呢 ✨</h1>
-    <p>| 自制游戏一起玩 |</p>
+    <p>| 自制游戏一起玩 · 英语学习直通车 |</p>
   </div>
 
   <div class="game-grid">
@@ -378,20 +323,14 @@
       <p style="font-size:0.7rem; margin-top:10px; color:#88aaff;">⚡ 智能拦截 | 随机波次 | 霓虹战场</p>
     </a>
 
-    <!-- 英语学习卡片 (集成完整跳转) -->
-    <div class="game-card english-card" id="englishCard">
+    <!-- 英语学习卡片：点击直接跳转至 “英语/英语学习.html” ，无二级菜单 -->
+    <a href="英语/英语学习.html" class="game-card english-card" id="englishDirectCard">
       <div class="game-badge english-badge">📚 英语学习</div>
       <div class="game-icon">📖</div>
       <h3>英语学习充电站</h3>
-      <p>点击展开选择学习模块</p>
-      <!-- 英语子项 - 全部配置实际跳转链接 -->
-      <div class="english-submenu">
-        <div class="english-subitem" data-page="英语/英语单词配对.html">📝 英语单词配对</div>
-        <div class="english-subitem" data-page="英语/英语听力选图.html">🎧 英语听力选图</div>
-        <div class="english-subitem" data-page="英语/英语拼写闯关.html">📖 英语拼写闯关</div>
-        <div class="english-subitem" data-page="英语/英语字母启蒙.html">🔤 英语字母启蒙</div>
-      </div>
-    </div>
+      <p>点击进入 · 综合学习门户</p>
+      <p style="font-size:0.7rem; margin-top:8px; color:#aaddff;">✨ 单词 · 听力 · 拼写 · 启蒙 ✨</p>
+    </a>
 
     <!-- 占位开发中卡片 -->
     <a href="#" class="game-card" style="opacity:0.7; cursor:not-allowed;" onclick="return false;">
@@ -410,7 +349,7 @@
   </div>
 
   <div class="footer">
-    <p>© 2026 我在呢 | 全平台适配 · 极致体验</p>
+    <p>© 2026 我在呢 | 全平台适配 · 极致体验 | ✨ 点击英语学习充电站，直达专属学习空间 ✨</p>
   </div>
 
   <script>
@@ -435,7 +374,7 @@
       }
     })();
 
-    // 移动端触摸反馈优化
+    // 移动端触摸反馈优化（仅视觉反馈，不会干扰跳转）
     (function addTouchFeedback() {
       const cards = document.querySelectorAll('.game-card');
       cards.forEach(card => {
@@ -451,7 +390,7 @@
       });
     })();
 
-    // 鼠标光晕效果 - 仅PC端启用（避免移动端性能问题）
+    // 鼠标光晕效果 - 仅PC端启用（无干扰）
     if (window.matchMedia('(hover: hover)').matches) {
       const cards = document.querySelectorAll('.game-card');
       cards.forEach(card => {
@@ -465,7 +404,7 @@
       });
     }
 
-    // 检测是否为移动设备并优化视口
+    // 检测视口变化动态适配
     function handleOrientationChange() {
       const vh = window.innerHeight;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -474,92 +413,26 @@
     handleOrientationChange();
 
     // --------------------------------------------------------------
-    // 英语学习卡片展开/收起 & 跳转逻辑 (完善跳转至真实HTML页面)
+    // 针对英语学习卡片：已经完全改为 <a> 标签直接跳转“英语/英语学习.html”
+    // 不再有任何子菜单或展开逻辑，完全遵循需求“点击英语学习充电站，打开英语/英语学习.html；去掉模块选择”
+    // 额外确保占位卡片不会意外跳转，并保留友好的“开发中”提示
     // --------------------------------------------------------------
-    const englishCard = document.getElementById('englishCard');
-    const subItems = document.querySelectorAll('.english-subitem');
-
-    // 智能跳转函数：检查文件是否存在（前端无法完全检测，但提供友好降级 + 尝试跳转）
-    function navigateToEnglishPage(pageName) {
-      if (!pageName) return;
-      // 当前目录下直接跳转到对应的html文件
-      // 由于所有英语学习页面已经提供（英语单词配对.html, 英语听力选图.html, 英语拼写闯关.html, 英语字母启蒙.html）
-      // 直接执行跳转
-      try {
-        window.location.href = pageName;
-      } catch (err) {
-        console.warn("跳转失败: ", err);
-        alert(`页面 ${pageName} 加载失败，请确保文件存在于同一目录。`);
-      }
-    }
-
-    // 给英语子项绑定跳转 (同时阻止事件冒泡，避免触发卡片折叠)
-    subItems.forEach(item => {
-      const targetPage = item.getAttribute('data-page');
-      if (targetPage) {
-        // 移除原有内联onclick，统一用事件监听
-        item.removeEventListener('click', item._boundClick);
-        const clickHandler = (e) => {
-          e.stopPropagation();    // 关键：阻止事件冒泡到父级englishCard
-          navigateToEnglishPage(targetPage);
-        };
-        item.addEventListener('click', clickHandler);
-        item._boundClick = clickHandler; // 便于调试但不影响
-      }
-    });
-
-    // 英语卡片展开/收起逻辑 (单击卡片本身不跳转，只展开/收起)
-    // 重要: 由于子项有自己的click事件且冒泡被阻止，点击子项不会触发展开收缩，符合预期。
-    englishCard.addEventListener('click', function(e) {
-      // 防止点击子菜单时误触展开/收起 (子菜单已stopPropagation，此监听不会被触发, 但是为了安全再次判断)
-      if (e.target.classList && e.target.classList.contains('english-subitem')) {
-        return;
-      }
-      // 切换展开状态
-      this.classList.toggle('expanded');
-      const tipText = this.querySelector('p');
-      if (this.classList.contains('expanded')) {
-        if (tipText) tipText.textContent = '✨ 选择模块，快乐学习 ✨';
-      } else {
-        if (tipText) tipText.textContent = '点击展开选择学习模块';
-      }
-    });
-
-    // 优化: 如果从其他页面返回，确保卡片默认收起，提示文字重置
-    const resetEnglishCardState = () => {
-      if (englishCard.classList.contains('expanded')) {
-        englishCard.classList.remove('expanded');
-      }
-      const tipPara = englishCard.querySelector('p');
-      if (tipPara && tipPara.textContent.includes('选择模块')) {
-        tipPara.textContent = '点击展开选择学习模块';
-      }
-    };
-    resetEnglishCardState();
-
-    // 给所有带有真实链接的卡片a标签添加平滑退出，防空系统直接可用，开发中卡片已禁用
-    const legitGameLink = document.getElementById('gameCardMain');
-    if (legitGameLink) {
-      legitGameLink.addEventListener('click', (e) => {
-        // 防空系统链接正常跳转，无需额外处理
-      });
-    }
-
-    // 防止未完成的占位卡片意外跳转
+    
+    // 处理所有占位卡片（href="#"）的点击：阻止跳转并显示toast提示
     const disabledCards = document.querySelectorAll('.game-card[href="#"]');
     disabledCards.forEach(card => {
       card.addEventListener('click', (e) => {
         e.preventDefault();
-        // 震动反馈 (如果有)
+        // 轻微震动（支持设备）
         if (navigator.vibrate) navigator.vibrate(50);
-        // 轻提示表示开发中
+        // 动态提示
         const tipDiv = document.createElement('div');
         tipDiv.innerText = '⚙️ 战备升级中，敬请期待 ⚙️';
         tipDiv.style.position = 'fixed';
         tipDiv.style.bottom = '20px';
         tipDiv.style.left = '50%';
         tipDiv.style.transform = 'translateX(-50%)';
-        tipDiv.style.backgroundColor = 'rgba(0,0,0,0.8)';
+        tipDiv.style.backgroundColor = 'rgba(0,0,0,0.85)';
         tipDiv.style.color = '#0ff';
         tipDiv.style.padding = '8px 20px';
         tipDiv.style.borderRadius = '40px';
@@ -568,34 +441,35 @@
         tipDiv.style.backdropFilter = 'blur(8px)';
         tipDiv.style.border = '1px solid #0ff';
         tipDiv.style.fontWeight = 'bold';
+        tipDiv.style.whiteSpace = 'nowrap';
+        tipDiv.style.fontFamily = 'system-ui, sans-serif';
         document.body.appendChild(tipDiv);
         setTimeout(() => { tipDiv.remove(); }, 1500);
       });
     });
-    
-    // 增加额外友好提示：如果某个英语页面不存在则控制台提醒，但实际文件均存在
-    // 注：由于所有英语页面代码都已提供，不会出现404，为保证体验不主动拦截
-    
-    // 修整英语卡片内部文字点击区域，如果点击空白区域折叠不影响美观
-    // 确保在移动端点击非子项区域展开不会有误跳转
-    const englishCardTitle = englishCard.querySelector('h3');
-    if (englishCardTitle) {
-      englishCardTitle.addEventListener('click', (e) => {
-        e.stopPropagation(); // 避免标题点击时多重触发, 但会触发父级事件，无大碍
+
+    // 针对英语学习卡片的额外保障：如果因为网络或路径问题导致无法跳转，可以给出友好控制台记录，但不影响核心体验
+    const englishDirectLink = document.getElementById('englishDirectCard');
+    if (englishDirectLink) {
+      englishDirectLink.addEventListener('click', (e) => {
+        // 由于是<a>标签且href正确，正常情况下会直接跳转。
+        // 如果路径可能出错, 这里仅做记录日志, 无需干预跳转过程。
+        console.log('正在跳转至英语综合学习门户: 英语/英语学习.html');
+        // 可选: 增加加载动画效果（极简）
       });
     }
-    
-    // 监听全屏加载完成后需要重置样式，避免卡片高度错位
-    window.addEventListener('load', () => {
-      resetEnglishCardState();
-      // 动态适应粒子效果，重新定位视口
-      handleOrientationChange();
-    });
-    
-    // 背面的鼠标跟随光晕样式动态生效
+
+    // 确保天穹防线链接正常跳转（<a>原生行为保持，无需额外动作）
+    const legitGameLink = document.getElementById('gameCardMain');
+    if (legitGameLink) {
+      legitGameLink.addEventListener('click', (e) => {
+        // 正常跳转，无额外逻辑
+      });
+    }
+
+    // 增加鼠标悬停光晕样式 (动态插入，不影响卡片样式)
     const styleForGlow = document.createElement('style');
     styleForGlow.textContent = `
-      /* 鼠标跟随光晕 - 仅桌面端生效 */
       @media (hover: hover) {
         .game-card {
           position: relative;
@@ -626,44 +500,69 @@
         .game-badge {
           z-index: 3;
         }
-        .english-subitem {
-          position: relative;
-          z-index: 2;
-        }
       }
     `;
     if (!document.querySelector('#dynamicGlowStyle')) {
       styleForGlow.id = 'dynamicGlowStyle';
       document.head.appendChild(styleForGlow);
     }
+
+    // 初始化完成时，在控制台打印提示，表明英语学习卡片已经简化为直连入口（无二级菜单）
+    window.addEventListener('load', () => {
+      handleOrientationChange();
+      console.log('✅ 游戏工坊主页已优化：英语学习充电站 → 直接跳转“英语/英语学习.html”，模块选择已移除');
+      
+      // 额外检查：如果英语学习页面可能存在路径问题，不做阻断，让浏览器尝试跳转
+      // 但为了提升用户体验，可捕获链接错误？不需要，浏览器自身会处理404。
+      // 另外添加一个友好的提示：如果用户快速点击，不会产生任何冲突。
+      
+      // 优化卡片焦点样式，去除可能由于原先遗留的额外样式
+      const englishCard = document.querySelector('.english-card');
+      if (englishCard) {
+        // 确保没有任何残余的 expanded 类或者子菜单容器（html结构中已经完全没有子菜单）
+        // 避免任何js残留影响
+        englishCard.classList.remove('expanded');
+      }
+    });
     
-    // 改进: 如果某些浏览器缓存导致事件冲突，确保英语子项目跳转使用location.href完全可靠
-    // 并将所有英语子项重新绑定强化（防止因html结构变动导致监听丢失）
-    function rebindEnglishItems() {
-      const allSubItems = document.querySelectorAll('.english-subitem');
-      allSubItems.forEach(item => {
-        // 避免重复绑定
-        if (item.getAttribute('data-bound') === 'true') return;
-        const page = item.getAttribute('data-page');
-        if (page) {
-          const newHandler = (e) => {
-            e.stopPropagation();
-            window.location.href = page;
-          };
-          item.removeEventListener('click', item._clickHandler);
-          item.addEventListener('click', newHandler);
-          item._clickHandler = newHandler;
-          item.setAttribute('data-bound', 'true');
+    // 由于完全移除了二级菜单，无需再绑定任何子项跳转和展开收起逻辑。
+    // 符合需求描述: 点击英语学习卡片打开对应目录的“英语学习.html”；去掉模块选择。
+    // 对于移动端，触摸反馈依然存在但不会干扰跳转。
+    
+    // 附加：为防止未来有缓存或动态内容影响，确认英语卡片内无多余子菜单DOM (基于提供的HTML已经去除)
+    // 且原本的 .english-submenu 和相关子项已完全删除，确保界面干净。
+    
+    // 同时如果有任何残留的旧事件监听（理论上不会），此处再做一次全局清理，确保英语卡片无额外事件。
+    // 因为之前版本可能有展开折叠逻辑，新版完全重构为纯净链接，因此安全。
+    
+    // 增加对“英语/英语学习.html”路径的有效性轻微控制台提示，无需弹窗干扰
+    const checkEnglishPath = () => {
+      // 由于前端无法强制检测文件是否存在，但为了用户友好，不做阻断。
+      // 仅提供参考信息
+      console.info("ℹ️ 英语学习门户路径: 英语/英语学习.html (请确保该文件位于正确的子目录)");
+    };
+    checkEnglishPath();
+    
+    // 确保所有卡片都拥有正确的角色和可访问性
+    const allCards = document.querySelectorAll('.game-card');
+    allCards.forEach(card => {
+      // 增加无障碍标签
+      if (card.getAttribute('href') && card.getAttribute('href') !== '#') {
+        card.setAttribute('aria-label', card.querySelector('h3')?.innerText || '游戏卡片');
+      } else if (card.getAttribute('href') === '#') {
+        card.setAttribute('aria-label', '开发中, 敬请期待');
+      }
+    });
+    
+    // 可选功能：统计点击英语学习卡片埋点（纯前端演示）
+    if (englishDirectLink) {
+      englishDirectLink.addEventListener('click', () => {
+        // 轻量统计，无侵入
+        if (window.gtag) {
+          // 如果有分析代码可扩展，无则忽略
         }
       });
     }
-    rebindEnglishItems();
-    
-    // 监听动态变化（如果有异步不会影响，但稳妥再调一次）
-    const observer = new MutationObserver(() => {
-      rebindEnglishItems();
-    });
-    observer.observe(document.getElementById('englishCard'), { childList: true, subtree: true });
   </script>
 </body>
 </html>
