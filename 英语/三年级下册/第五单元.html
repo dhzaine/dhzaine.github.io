@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>第五单元 · 时间大冒险 | 2024外研版三年级下册</title>
+  <title>第五单元 · 时间王国 | 2024外研版三年级下册</title>
   <style>
     * {
       margin: 0;
@@ -14,7 +14,7 @@
 
     body {
       font-family: 'Segoe UI', 'Poppins', 'Inter', system-ui, -apple-system, '微软雅黑', sans-serif;
-      background: linear-gradient(145deg, #0b1120 0%, #111b3a 100%);
+      background: linear-gradient(145deg, #0a0f2a 0%, #111b3a 100%);
       min-height: 100vh;
       color: #eef5ff;
       padding: 20px;
@@ -22,7 +22,6 @@
       overflow-x: hidden;
     }
 
-    /* 动态粒子背景 */
     #particlesCanvas {
       position: fixed;
       top: 0;
@@ -31,13 +30,13 @@
       height: 100%;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.4;
+      opacity: 0.35;
     }
 
-    .game-container {
+    .main-container {
       position: relative;
       z-index: 10;
-      max-width: 1300px;
+      max-width: 1400px;
       margin: 0 auto;
     }
 
@@ -50,8 +49,8 @@
       gap: 12px;
       margin-bottom: 28px;
       padding: 8px 20px;
-      background: rgba(10, 20, 45, 0.65);
-      backdrop-filter: blur(14px);
+      background: rgba(10, 20, 45, 0.7);
+      backdrop-filter: blur(16px);
       border-radius: 80px;
       border: 1px solid rgba(0, 210, 255, 0.4);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
@@ -73,11 +72,7 @@
       cursor: pointer;
     }
 
-    .back-btn:hover {
-      background: rgba(0, 210, 255, 0.3);
-      border-color: #3efffa;
-      transform: translateX(-4px);
-    }
+    .back-btn:hover { background: rgba(0, 210, 255, 0.3); transform: translateX(-4px); }
 
     .unit-badge {
       background: linear-gradient(135deg, #ffb347, #ff8c42);
@@ -89,312 +84,255 @@
       box-shadow: 0 2px 12px rgba(255, 140, 66, 0.4);
     }
 
-    /* 主游戏面板 */
-    .game-panel {
-      background: rgba(12, 22, 48, 0.65);
-      backdrop-filter: blur(16px);
-      border-radius: 56px;
-      padding: 28px 24px 36px;
-      border: 1px solid rgba(0, 255, 210, 0.4);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-      margin-bottom: 30px;
-    }
-
-    .game-header {
-      text-align: center;
+    /* 学习内容区块 */
+    .learning-section {
+      background: rgba(12, 22, 48, 0.6);
+      backdrop-filter: blur(12px);
+      border-radius: 48px;
+      padding: 24px;
       margin-bottom: 28px;
+      border: 1px solid rgba(0, 255, 200, 0.3);
+      transition: all 0.2s;
     }
 
-    .game-header h2 {
-      font-size: clamp(1.5rem, 6vw, 2.2rem);
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
       background: linear-gradient(135deg, #FFE6B0, #FFB347);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      border-left: 4px solid #ffaa44;
+      padding-left: 16px;
     }
 
-    .game-header p {
-      color: #b8d4ff;
-      font-size: 0.9rem;
+    /* 单词领读视频区域 */
+    .video-lead {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .video-box {
+      flex: 1;
+      min-width: 260px;
+      background: #00000055;
+      border-radius: 32px;
+      overflow: hidden;
+      border: 1px solid cyan;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+    .video-box video {
+      width: 100%;
+      display: block;
+      background: #000;
+    }
+    .video-caption {
+      text-align: center;
+      padding: 8px;
+      background: rgba(0,0,0,0.6);
+      font-size: 0.8rem;
     }
 
-    /* 计时器 & 得分栏 */
+    /* 单词网格 */
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .word-card {
+      background: rgba(0, 160, 210, 0.2);
+      border: 1px solid rgba(0, 200, 250, 0.5);
+      border-radius: 60px;
+      padding: 10px 12px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.1s;
+      backdrop-filter: blur(4px);
+    }
+    .word-card:active { transform: scale(0.96); background: rgba(0,200,255,0.4); }
+
+    /* 句型对话区 */
+    .dialog-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .dialog-item {
+      background: rgba(0, 30, 50, 0.5);
+      border-radius: 28px;
+      padding: 16px 20px;
+      border-left: 5px solid #ffaa66;
+    }
+    .dialog-en {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #f0f9ff;
+    }
+    .dialog-zh {
+      font-size: 0.85rem;
+      color: #bdd4ff;
+      margin-top: 8px;
+    }
+
+    /* 游戏面板 (计时挑战+时钟) */
+    .game-panel {
+      background: rgba(8, 18, 38, 0.75);
+      backdrop-filter: blur(16px);
+      border-radius: 56px;
+      padding: 24px;
+      border: 1px solid rgba(0, 255, 210, 0.5);
+    }
     .stats-bar {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       flex-wrap: wrap;
       gap: 16px;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0,0,0,0.4);
       border-radius: 60px;
       padding: 10px 20px;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
-
     .score-box, .timer-box {
-      background: rgba(0, 30, 60, 0.6);
+      background: rgba(0, 30, 60, 0.8);
       padding: 6px 20px;
       border-radius: 60px;
       font-weight: bold;
       font-size: 1.2rem;
-      backdrop-filter: blur(5px);
       border-left: 3px solid #0ff;
     }
-
-    .score-box span, .timer-box span {
-      color: #ffde9c;
-      margin-right: 8px;
-    }
-
-    /* 时钟展示区 */
     .clock-area {
       text-align: center;
-      margin-bottom: 30px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 72px;
-      padding: 20px;
+      margin-bottom: 28px;
     }
-
     .analog-clock {
-      width: 180px;
-      height: 180px;
+      width: 160px;
+      height: 160px;
       border-radius: 50%;
       background: #fef9e8;
-      margin: 0 auto 20px;
+      margin: 0 auto 16px;
       position: relative;
-      box-shadow: 0 0 0 6px rgba(0, 200, 255, 0.3), 0 12px 28px black;
+      box-shadow: 0 0 0 5px rgba(0,200,255,0.3);
     }
-
-    .clock-face {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      position: relative;
-      background: #fff6e5;
-    }
-
     .hour-hand, .minute-hand {
       position: absolute;
       background: #2c3e66;
       transform-origin: 50% 100%;
       left: 50%;
       bottom: 50%;
-      border-radius: 10px;
+      border-radius: 8px;
       transform: translateX(-50%) rotate(0deg);
     }
-
-    .hour-hand {
-      width: 6px;
-      height: 45px;
-      background: #1e2a47;
-      margin-bottom: 0px;
-    }
-
-    .minute-hand {
-      width: 4px;
-      height: 65px;
-      background: #ff8c42;
-    }
-
+    .hour-hand { width: 6px; height: 42px; background: #1e2a47; }
+    .minute-hand { width: 4px; height: 60px; background: #ff8c42; }
     .center-dot {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background: #ffaa44;
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 5;
+      position: absolute; width: 10px; height: 10px; background: #ffaa44;
+      border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);
     }
-
     .digital-time {
-      font-size: 2rem;
-      font-weight: bold;
-      background: #0a1028;
-      display: inline-block;
-      padding: 8px 24px;
-      border-radius: 60px;
-      font-family: monospace;
-      letter-spacing: 3px;
-      color: #7efff0;
-      box-shadow: inset 0 0 6px #0ff, 0 4px 12px black;
+      font-size: 1.8rem; font-weight: bold; background: #0a1028; display: inline-block;
+      padding: 6px 20px; border-radius: 60px; font-family: monospace; color: #7efff0;
     }
-
-    /* 选项区 (游戏卡片) */
     .options-area {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 18px;
-      margin: 30px 0 25px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
     }
-
     .time-card {
-      background: rgba(20, 35, 70, 0.8);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(0, 200, 255, 0.5);
+      background: rgba(20,35,70,0.9);
+      border: 1px solid #0ff;
       border-radius: 48px;
-      padding: 18px 10px;
+      padding: 14px 8px;
       text-align: center;
-      font-size: 1.3rem;
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.2s ease;
-      color: #f0f9ff;
-      letter-spacing: 1px;
+      transition: 0.2s;
     }
-
-    .time-card:hover {
-      transform: scale(1.02);
-      background: rgba(0, 180, 230, 0.3);
-      border-color: cyan;
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
-    }
-
-    .time-card.correct-feedback {
-      animation: pulseCorrect 0.4s ease;
-      background: #2e7d64;
-      border-color: #9effcf;
-    }
-
-    .time-card.wrong-feedback {
-      animation: shakeWrong 0.3s ease;
-      background: #a03e3e;
-    }
-
-    @keyframes pulseCorrect {
-      0% { transform: scale(1); background: #2e7d64; }
-      50% { transform: scale(1.05); background: #4caf7f; }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes shakeWrong {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-      100% { transform: translateX(0); }
-    }
-
-    /* 反馈消息 */
+    .time-card:active { transform: scale(0.96); }
     .feedback-msg {
       text-align: center;
-      font-size: 1.1rem;
       padding: 12px;
-      background: rgba(0, 20, 40, 0.6);
+      background: rgba(0,0,0,0.5);
       border-radius: 60px;
       margin-top: 12px;
-      transition: 0.2s;
     }
-
     .next-btn {
       background: linear-gradient(95deg, #ffb347, #ff8c42);
-      border: none;
-      padding: 12px 32px;
-      border-radius: 60px;
-      font-weight: bold;
-      font-size: 1rem;
-      color: #1e1a2f;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-top: 18px;
-      display: inline-block;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+      border: none; padding: 10px 28px; border-radius: 60px;
+      font-weight: bold; cursor: pointer; margin-top: 16px;
     }
 
-    .next-btn:hover {
-      transform: scale(1.02);
-      background: #ffaa55;
-      box-shadow: 0 0 16px #ffaa55;
-    }
-
-    /* 游戏结束面板 */
-    .game-over-panel {
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(12px);
-      border-radius: 56px;
-      padding: 32px;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .restart-btn {
-      background: #4caf50;
-      border: none;
-      padding: 12px 28px;
-      border-radius: 60px;
-      font-weight: bold;
-      margin-top: 16px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    /* 移动端调整 */
-    @media (max-width: 600px) {
-      .game-panel {
-        padding: 20px 16px;
-      }
-      .analog-clock {
-        width: 140px;
-        height: 140px;
-      }
-      .hour-hand {
-        height: 35px;
-        width: 5px;
-      }
-      .minute-hand {
-        height: 50px;
-        width: 4px;
-      }
-      .digital-time {
-        font-size: 1.5rem;
-        padding: 5px 16px;
-      }
-      .time-card {
-        font-size: 1rem;
-        padding: 14px 6px;
-      }
-      .stats-bar {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: center;
-      }
+    @media (max-width: 680px) {
+      .learning-section { padding: 18px; }
+      .section-title { font-size: 1.2rem; }
+      .word-card { font-size: 0.85rem; padding: 6px 10px; }
+      .analog-clock { width: 120px; height: 120px; }
+      .hour-hand { height: 32px; }
+      .minute-hand { height: 46px; }
+      .digital-time { font-size: 1.2rem; }
     }
   </style>
 </head>
 <body>
 <canvas id="particlesCanvas"></canvas>
-
-<div class="game-container">
+<div class="main-container">
   <div class="glass-nav">
     <a href="javascript:history.back()" class="back-btn">← 返回单元目录</a>
     <div class="unit-badge">Unit 5 · What time is it?</div>
     <div style="width: 40px;"></div>
   </div>
 
-  <div class="game-panel" id="gamePanel">
-    <div class="game-header">
-      <h2>⏰ 时间大冒险 · 报时挑战</h2>
-      <p>看时钟 → 选择正确的时间英文表达 | 2024外研版三年级下册</p>
+  <!-- 1. 单词领读 + 视频 -->
+  <div class="learning-section">
+    <div class="section-title">📣 单词领读 · 时间词汇</div>
+    <div class="video-lead">
+      <div class="video-box">
+        <video id="wordVideo" controls preload="metadata">
+          <source src="第五单元单词领读.mp4" type="video/mp4">
+          您的浏览器不支持 video 标签。可下载视频学习。
+        </video>
+        <div class="video-caption">🎬 第五单元单词领读.mp4</div>
+      </div>
+      <div style="flex:1; min-width:200px;">
+        <p style="margin-bottom: 8px;">✨ 核心词汇 (点击卡片可跟读)</p>
+        <div class="word-grid" id="wordsGrid"></div>
+      </div>
     </div>
+  </div>
 
+  <!-- 2. 重点句型 + 对话 -->
+  <div class="learning-section">
+    <div class="section-title">💬 句型加油站</div>
+    <div class="dialog-list" id="dialogList"></div>
+  </div>
+
+  <!-- 3. 互动游戏：时间大挑战 -->
+  <div class="game-panel">
+    <div class="section-title" style="margin-top:0;">⏰ 时间大挑战 · 看时钟选时间</div>
     <div class="stats-bar">
       <div class="score-box"><span>🎯 得分</span> <span id="scoreValue">0</span></div>
       <div class="timer-box"><span>⏱️ 剩余</span> <span id="timerValue">00:00</span></div>
     </div>
-
     <div class="clock-area">
       <div class="analog-clock" id="analogClock">
-        <div class="clock-face">
-          <div class="hour-hand" id="hourHand"></div>
-          <div class="minute-hand" id="minuteHand"></div>
-          <div class="center-dot"></div>
-        </div>
+        <div class="hour-hand" id="hourHand"></div>
+        <div class="minute-hand" id="minuteHand"></div>
+        <div class="center-dot"></div>
       </div>
       <div class="digital-time" id="digitalPlaceholder">--:--</div>
     </div>
-
     <div class="options-area" id="optionsContainer"></div>
-    <div class="feedback-msg" id="feedbackMsg">✨ 点击卡片，选择正确的时间～ ✨</div>
+    <div class="feedback-msg" id="feedbackMsg">✨ 点击卡片，选择正确的时间英文～ ✨</div>
     <div style="text-align: center;">
       <button class="next-btn" id="nextQuestionBtn">🎲 下一题 ➡</button>
     </div>
@@ -402,64 +340,53 @@
 </div>
 
 <script>
-  // 粒子背景绘制 (轻量)
-  const canvas = document.getElementById('particlesCanvas');
-  let ctx = canvas.getContext('2d');
-  let width, height;
-  let particles = [];
-
-  function resizeCanvas() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-  }
-
-  function initParticles() {
-    const particleCount = Math.min(60, Math.floor(width * height / 8000));
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        radius: Math.random() * 3 + 1,
-        alpha: Math.random() * 0.4 + 0.1,
-        speedX: (Math.random() - 0.5) * 0.3,
-        speedY: (Math.random() - 0.5) * 0.2
-      });
+  // 粒子背景
+  (function() {
+    const canvas = document.getElementById('particlesCanvas');
+    let ctx = canvas.getContext('2d');
+    let width, height, particles = [];
+    function resize() { width = window.innerWidth; height = window.innerHeight; canvas.width = width; canvas.height = height; }
+    function initParts() {
+      particles = [];
+      let count = Math.min(50, Math.floor(width * height / 10000));
+      for(let i=0;i<count;i++) particles.push({ x:Math.random()*width, y:Math.random()*height, r:Math.random()*3+1, a:Math.random()*0.4+0.1, sx:(Math.random()-0.5)*0.3, sy:(Math.random()-0.5)*0.2 });
     }
-  }
-
-  function drawParticles() {
-    if (!ctx) return;
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = '#0a0f1e';
-    ctx.fillRect(0, 0, width, height);
-    for (let p of particles) {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(100, 200, 255, ${p.alpha})`;
-      ctx.fill();
-      p.x += p.speedX;
-      p.y += p.speedY;
-      if (p.x < 0) p.x = width;
-      if (p.x > width) p.x = 0;
-      if (p.y < 0) p.y = height;
-      if (p.y > height) p.y = 0;
+    function draw() {
+      if(!ctx) return;
+      ctx.clearRect(0,0,width,height);
+      ctx.fillStyle = '#0a0f1e';
+      ctx.fillRect(0,0,width,height);
+      for(let p of particles) {
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle = `rgba(100,200,255,${p.a})`;
+        ctx.fill();
+        p.x+=p.sx; p.y+=p.sy;
+        if(p.x<0) p.x=width; if(p.x>width) p.x=0;
+        if(p.y<0) p.y=height; if(p.y>height) p.y=0;
+      }
+      requestAnimationFrame(draw);
     }
-    requestAnimationFrame(drawParticles);
-  }
+    window.addEventListener('resize', ()=>{ resize(); initParts(); });
+    resize(); initParts(); draw();
+  })();
 
-  window.addEventListener('resize', () => {
-    resizeCanvas();
-    particles = [];
-    initParticles();
-  });
-  resizeCanvas();
-  initParticles();
-  drawParticles();
+  // ---------- 单元数据 (2024外研版三年级下册 Unit 5) ----------
+  const wordsList = [
+    "time", "clock", "hour", "minute", "o'clock", "half past",
+    "seven", "eight", "nine", "ten", "eleven", "twelve",
+    "get up", "go to school", "have lunch", "go home", "go to bed"
+  ];
+  const sentencesData = [
+    { en: "What time is it?", zh: "几点了？" },
+    { en: "It's seven o'clock.", zh: "七点整。" },
+    { en: "It's half past eight.", zh: "八点半。" },
+    { en: "Time to get up!", zh: "该起床啦！" },
+    { en: "Let's go to school at eight.", zh: "我们八点去上学吧。" },
+    { en: "What time do you have lunch?", zh: "你几点吃午饭？" },
+    { en: "I go home at half past four.", zh: "我四点半回家。" }
+  ];
 
-  // -------------------- 游戏核心逻辑 --------------------
-  // 2024外研版第五单元核心时间词汇：整点、半点，并包含日常活动对应时间
+  // 游戏数据: 时间题目
   const timeQuestions = [
     { hour: 7, minute: 0, display: "7:00", textEn: "seven o'clock" },
     { hour: 8, minute: 0, display: "8:00", textEn: "eight o'clock" },
@@ -475,14 +402,36 @@
     { hour: 1, minute: 30, display: "1:30", textEn: "half past one" }
   ];
 
-  let currentQuestion = null;
-  let currentOptions = [];
-  let score = 0;
-  let timeLeft = 60;        // 60秒计时
-  let timerInterval = null;
-  let gameActive = true;
-  let waitingNext = false;
+  // 渲染单词网格 + 朗读支持
+  const wordsGrid = document.getElementById('wordsGrid');
+  wordsList.forEach(word => {
+    const card = document.createElement('div');
+    card.className = 'word-card';
+    card.innerText = word;
+    card.addEventListener('click', () => {
+      if (window.speechSynthesis) {
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.8;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
+      }
+    });
+    wordsGrid.appendChild(card);
+  });
 
+  // 渲染句型
+  const dialogContainer = document.getElementById('dialogList');
+  sentencesData.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'dialog-item';
+    item.innerHTML = `<div class="dialog-en">📖 ${s.en}</div><div class="dialog-zh">${s.zh}</div>`;
+    dialogContainer.appendChild(item);
+  });
+
+  // ---------- 游戏逻辑 (优化版) ----------
+  let currentQuestion = null, currentOptions = [];
+  let score = 0, timeLeft = 60, timerInterval = null, gameActive = true, waitingNext = false;
   const scoreSpan = document.getElementById('scoreValue');
   const timerSpan = document.getElementById('timerValue');
   const optionsContainer = document.getElementById('optionsContainer');
@@ -492,18 +441,6 @@
   const minuteHand = document.getElementById('minuteHand');
   const digitalSpan = document.getElementById('digitalPlaceholder');
 
-  // 更新钟表指针
-  function updateClockHands(hour, minute) {
-    let hourAngle = (hour % 12) * 30 + minute * 0.5;
-    let minuteAngle = minute * 6;
-    if (hourHand) hourHand.style.transform = `translateX(-50%) rotate(${hourAngle}deg)`;
-    if (minuteHand) minuteHand.style.transform = `translateX(-50%) rotate(${minuteAngle}deg)`;
-    let displayHour = hour % 12 === 0 ? 12 : hour % 12;
-    let minuteStr = minute < 10 ? '0' + minute : minute;
-    digitalSpan.innerText = `${displayHour}:${minuteStr}`;
-  }
-
-  // 洗牌函数
   function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -512,170 +449,151 @@
     return arr;
   }
 
-  // 生成选项 (包含正确+随机其他3个不同时间)
-  function generateOptions(correctItem, allQuestions) {
-    let others = allQuestions.filter(q => q.display !== correctItem.display).map(q => q.textEn);
-    let uniqueOthers = [...new Set(others)];
-    let shuffledOthers = shuffleArray([...uniqueOthers]);
-    let selected = shuffledOthers.slice(0, 3);
+  function updateClockHands(hour, minute) {
+    let hourAngle = (hour % 12) * 30 + minute * 0.5;
+    let minuteAngle = minute * 6;
+    hourHand.style.transform = `translateX(-50%) rotate(${hourAngle}deg)`;
+    minuteHand.style.transform = `translateX(-50%) rotate(${minuteAngle}deg)`;
+    let displayHour = hour % 12 === 0 ? 12 : hour % 12;
+    let minuteStr = minute < 10 ? '0' + minute : minute;
+    digitalSpan.innerText = `${displayHour}:${minuteStr}`;
+  }
+
+  function generateOptions(correctItem, all) {
+    let others = all.filter(q => q.display !== correctItem.display).map(q => q.textEn);
+    let unique = [...new Set(others)];
+    let shuffled = shuffleArray([...unique]);
+    let selected = shuffled.slice(0, 3);
     let opts = [correctItem.textEn, ...selected];
     return shuffleArray(opts);
   }
 
-  // 加载新题目
-  function loadNewQuestion() {
-    if (!gameActive) return;
-    if (waitingNext) waitingNext = false;
-    // 随机抽取时间题目
-    const randomIndex = Math.floor(Math.random() * timeQuestions.length);
-    currentQuestion = { ...timeQuestions[randomIndex] };
-    currentOptions = generateOptions(currentQuestion, timeQuestions);
-    // 更新表盘
-    updateClockHands(currentQuestion.hour, currentQuestion.minute);
-    // 渲染选项
-    renderOptions(currentOptions);
-    feedbackDiv.innerHTML = '⏳ 选择一个正确的时间表达～';
-    feedbackDiv.style.color = '#ccddff';
-  }
-
-  // 渲染游戏选项
   function renderOptions(options) {
     optionsContainer.innerHTML = '';
-    options.forEach(optText => {
+    options.forEach(opt => {
       const card = document.createElement('div');
       card.className = 'time-card';
-      card.innerText = optText;
+      card.innerText = opt;
       card.addEventListener('click', (e) => {
         e.stopPropagation();
         if (!gameActive || waitingNext) {
           feedbackDiv.innerHTML = waitingNext ? '🎮 点击「下一题」继续挑战' : '游戏已结束，请重新开始';
           return;
         }
-        handleAnswer(optText, card);
+        if (opt === currentQuestion.textEn) {
+          score += 10;
+          scoreSpan.innerText = score;
+          feedbackDiv.innerHTML = `✅ 正确！ +10分！ (${currentQuestion.textEn})`;
+          feedbackDiv.style.color = '#b9ffb0';
+          card.style.background = '#2e7d64';
+          waitingNext = true;
+          setTimeout(() => {
+            if (gameActive) loadNewQuestion();
+          }, 500);
+        } else {
+          feedbackDiv.innerHTML = `❌ 不对哦！ 正确答案是 “${currentQuestion.textEn}”。 继续加油～`;
+          feedbackDiv.style.color = '#ffbc9a';
+          card.style.background = '#a03e3e';
+          setTimeout(() => { card.style.background = ''; }, 400);
+          waitingNext = true;
+        }
+        setTimeout(() => { card.style.background = ''; }, 500);
       });
       optionsContainer.appendChild(card);
     });
   }
 
-  // 处理答案
-  function handleAnswer(selected, cardElement) {
-    if (!currentQuestion) return;
-    const isCorrect = (selected === currentQuestion.textEn);
-    if (isCorrect) {
-      score += 10;
-      scoreSpan.innerText = score;
-      feedbackDiv.innerHTML = '✅ 完美！ +10分！ ' + currentQuestion.textEn + ' 时间正确！';
-      feedbackDiv.style.color = '#b9ffb0';
-      cardElement.classList.add('correct-feedback');
-      setTimeout(() => cardElement.classList.remove('correct-feedback'), 400);
-      // 正确后直接加载下一题（自动跳转，给予流畅体验）
-      waitingNext = true;
-      setTimeout(() => {
-        if (gameActive) {
-          loadNewQuestion();
-        }
-      }, 500);
-    } else {
-      feedbackDiv.innerHTML = `❌ 噢不！正确答案是 “${currentQuestion.textEn}”。 继续加油～`;
-      feedbackDiv.style.color = '#ffbc9a';
-      cardElement.classList.add('wrong-feedback');
-      setTimeout(() => cardElement.classList.remove('wrong-feedback'), 400);
-      // 答错不扣分，但显示错误后不变题，直到点击下一题
-      waitingNext = true;
-    }
+  function loadNewQuestion() {
+    if (!gameActive) return;
+    waitingNext = false;
+    const rand = Math.floor(Math.random() * timeQuestions.length);
+    currentQuestion = { ...timeQuestions[rand] };
+    currentOptions = generateOptions(currentQuestion, timeQuestions);
+    updateClockHands(currentQuestion.hour, currentQuestion.minute);
+    renderOptions(currentOptions);
+    feedbackDiv.innerHTML = '⏳ 选择一个正确的时间表达～';
+    feedbackDiv.style.color = '#ccddff';
   }
 
-  // 手动下一题 (当答错或者需要跳过)
   function manualNext() {
-    if (!gameActive) {
-      return;
-    }
+    if (!gameActive) return;
     if (waitingNext || true) {
       loadNewQuestion();
       waitingNext = false;
-    } else {
-      // 如果没有等待状态 直接刷新
-      loadNewQuestion();
-    }
+    } else loadNewQuestion();
   }
 
-  // 计时器
   function startTimer() {
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(() => {
       if (!gameActive) return;
       if (timeLeft <= 1) {
-        // 游戏结束
         clearInterval(timerInterval);
         gameActive = false;
         timerSpan.innerText = '00:00';
         endGame();
       } else {
         timeLeft--;
-        let minutes = Math.floor(timeLeft / 60);
-        let seconds = timeLeft % 60;
-        timerSpan.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        let mins = Math.floor(timeLeft / 60);
+        let secs = timeLeft % 60;
+        timerSpan.innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
       }
     }, 1000);
   }
 
-  // 游戏结束
   function endGame() {
     gameActive = false;
     if (timerInterval) clearInterval(timerInterval);
     optionsContainer.innerHTML = '';
-    const gamePanel = document.getElementById('gamePanel');
-    const originalContent = gamePanel.innerHTML;
+    const gamePanel = document.querySelector('.game-panel');
     const gameOverDiv = document.createElement('div');
     gameOverDiv.className = 'game-over-panel';
+    gameOverDiv.style.background = 'rgba(0,0,0,0.9)';
+    gameOverDiv.style.borderRadius = '48px';
+    gameOverDiv.style.padding = '28px';
+    gameOverDiv.style.textAlign = 'center';
+    gameOverDiv.style.marginTop = '20px';
     gameOverDiv.innerHTML = `
-      <h2>🎉 游戏结束 🎉</h2>
-      <p style="font-size:1.6rem; margin: 20px 0;">你的总分: ${score} 分</p>
-      <p>⭐ 时间管家小英雄！继续练习会更棒~</p>
-      <button class="restart-btn" id="restartGameBtn">🔄 重新挑战</button>
+      <h2>🎉 时间挑战结束 🎉</h2>
+      <p style="font-size:1.8rem; margin: 20px 0;">🏆 ${score} 分</p>
+      <p>⭐ 你已经成为时间小管家！再玩一次巩固吧~</p>
+      <button class="restart-btn" id="restartGameBtn" style="background:#4caf50; border:none; padding:12px 28px; border-radius:60px; font-weight:bold; margin-top:16px;">🔄 重新挑战</button>
     `;
-    gamePanel.innerHTML = '';
-    gamePanel.appendChild(gameOverDiv);
+    const originalParent = gamePanel.parentNode;
+    const nextButton = document.getElementById('nextQuestionBtn');
+    if(nextButton) nextButton.style.display = 'none';
+    gamePanel.insertAdjacentElement('afterend', gameOverDiv);
+    gamePanel.style.opacity = '0.5';
     const restartBtn = document.getElementById('restartGameBtn');
-    if (restartBtn) {
-      restartBtn.addEventListener('click', () => {
-        location.reload();
-      });
-    }
+    if (restartBtn) restartBtn.addEventListener('click', () => location.reload());
   }
 
-  // 重置开始游戏 (初次启动)
   function initGame() {
-    score = 0;
-    timeLeft = 60;
-    gameActive = true;
-    waitingNext = false;
+    score = 0; timeLeft = 60; gameActive = true; waitingNext = false;
     scoreSpan.innerText = "0";
-    let minutes = Math.floor(timeLeft / 60);
-    let seconds = timeLeft % 60;
-    timerSpan.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    timerSpan.innerText = "01:00";
     loadNewQuestion();
     startTimer();
   }
 
-  // 绑定下一题按钮
-  nextBtn.addEventListener('click', () => {
-    if (!gameActive) return;
-    manualNext();
-  });
-
-  // 触摸优化防止按钮误触
-  const styleTouch = document.createElement('style');
-  styleTouch.textContent = `
-    .time-card, .next-btn, .back-btn, .restart-btn {
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-  `;
-  document.head.appendChild(styleTouch);
-
-  // 页面启动
+  nextBtn.addEventListener('click', () => { if (gameActive) manualNext(); });
   initGame();
+
+  // 视频错误后备处理 (如果mp4缺失, 仍显示文本)
+  const videoElem = document.getElementById('wordVideo');
+  if(videoElem) {
+    videoElem.addEventListener('error', () => {
+      const msg = document.createElement('div');
+      msg.style.background = '#ffaa3355'; msg.style.padding = '8px'; msg.style.borderRadius = '20px';
+      msg.innerText = '📢 提示: 单词领读视频暂未就绪，但您可以点击上方单词卡片跟读发音！';
+      videoElem.parentNode.appendChild(msg);
+    });
+  }
+
+  // 优化触摸样式
+  const style = document.createElement('style');
+  style.textContent = `.word-card, .time-card, .next-btn, .back-btn { cursor: pointer; user-select: none; }`;
+  document.head.appendChild(style);
 </script>
 </body>
 </html>
